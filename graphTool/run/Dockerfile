@@ -1,4 +1,4 @@
-FROM nginx:1.13.6-alpine
+FROM nginx:1.13.9-alpine
 
 EXPOSE 8080
 ADD run/nginx.conf /etc/nginx/nginx.conf
