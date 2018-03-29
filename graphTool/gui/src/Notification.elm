@@ -7,11 +7,15 @@ module Notification
 
 import Node exposing (Node)
 import Link exposing (Edge)
+import LinkParameters
+import Groups
 
 
 type NotificationData
     = BLOC Node
     | LIEN Edge
+    | PARAMETER LinkParameters.Property
+    | FUNCIONAL_CHAIN Groups.Property
     | NULLNOTIFICATION
 
 
