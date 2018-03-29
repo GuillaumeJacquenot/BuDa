@@ -1,6 +1,6 @@
 module NotificationActions exposing (header, updateNotificationModel)
 
-import Notification exposing (Model, NotificationData)
+import Notifications exposing (Model)
 import DataModelDecoders
 import Json.Decode
 
@@ -10,21 +10,6 @@ header userName object action =
     userName ++ "." ++ object ++ "." ++ action
 
 
-updateNotificationModel : String -> List NotificationData -> List NotificationData
+updateNotificationModel : String -> Notifications.Model -> Notifications.Model
 updateNotificationModel s list =
-    let
-        res_elts =
-            Json.Decode.decodeString DataModelDecoders.decodeNotification s
-
-        z =
-            Debug.log "updateNotificationModel" res_elts
-
-        newList =
-            case res_elts of
-                Ok element ->
-                    element.data :: list
-
-                Err _ ->
-                    list
-    in
-        newList
+    list
