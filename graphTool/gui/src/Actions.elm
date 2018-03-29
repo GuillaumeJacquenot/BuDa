@@ -672,7 +672,7 @@ globalUpdate msg model =
                 ( m2, cmd ) =
                     showView msg m1
             in
-                prepareNotification_ cmd m2 "node" "create"
+                prepareNotification_ cmd m2
 
         RenameNode ->
             let
@@ -682,7 +682,7 @@ globalUpdate msg model =
                 ( m2, cmd ) =
                     showView msg m1
             in
-                prepareNotification_ cmd m2 "node" "rename"
+                prepareNotification_ cmd m2
 
         CreateLink ->
             case model.selection of
@@ -694,7 +694,7 @@ globalUpdate msg model =
                         ( m2, cmd ) =
                             showView msg m1
                     in
-                        prepareNotification_ cmd m2 "edge" "create"
+                        prepareNotification_ cmd m2
 
                 _ ->
                     ( model, Cmd.none )
