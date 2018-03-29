@@ -1,18 +1,37 @@
-app.ports.mqttConnect.subscribe(function(word) {
-  UpdateOptions(word);
-  connectMQTT();
-});
+app.ports.mqttToJS.subscribe(function(value) {
+  try {
+    var tag = value["tag"];
+    var data = value["data"];
 
-app.ports.mqttDisconnect.subscribe(function(word) {
-  disconnectMQTT();
-});
+    if(tag == "MqttConnect")
+    {
+        UpdateOptions(data);
+        connectMQTT();
+    }
+    else if(tag == "MqttDisconnect") {
+      disconnectMQTT();
+    }
+    else if(tag == "MqttNotify") {
+      sendDataToMQTT(data);
+    }
+    else if(tag == "MqttSubscribeToTopic") {
+      subscribeToTopic(data);
+    }
+    else if(tag == "MqttUnsubscribeToTopic") {
+      unsubscribeToTopic(data);
+    }
+  }
+  catch(e) {
+    console.log("error: " + e.message);
+  }
 
-app.ports.sendNotification.subscribe(function(word) {
-  sendDataToMQTT(word);
   return false;
 });
 
-function app_port_sendToElm(msg) {
-  app.ports.fromJS.send(msg);
+
+function app_port_mqttFromJS(msg) {
+  //app.ports.mqttFromJS.send({ tag="MqttMessage", data= msg });
+  console.log ("receive msg" + msg);
+
   return false;
 }
