@@ -41,7 +41,7 @@ function connectMQTT() {
         client.on('message', function (topic, message) {
           // message is Buffer
           console.log(message.toString());
-          //app_port_sendToElm(message.toString());
+          app_port_mqttFromJS(message);
        });
 
 
@@ -50,51 +50,36 @@ function connectMQTT() {
     return false;
 }
 
-function subscribeToTopic(topic,value) {
+function subscribeToTopic(topic) {
   var client = globals.client;
-  if(value==true) {
-      client.subscribe(topic, {qos:1});
-  }
-  else {
-    client.unsubscribe(topic);
-    //console.log ("call to unsubscribe");
-  }
+  client.subscribe(topic, {qos:1});
   return false;
 }
 
-function sendDataToMQTT(word) {
-  var obj = JSON.parse(word);
+function unsubscribeToTopic(topic) {
+  var client = globals.client;
+  client.unsubscribe(topic);
+  return false;
+}
 
-  globals.url = obj["mqtt"]["url"];
-  globals.consumer = obj["mqtt"]["consumer"];
-  globals.clientId =obj["mqtt"]["clientId"];
-  globals.topic = obj["mqtt"]["topic"];
-
-
+function sendDataToMQTT(obj) {
+  UpdateOptions(obj);
   var topic = globals.topic;
-  var message = JSON.stringify(obj["message"]);
-
+  var message = JSON.stringify(obj.message);
   console.log ("sendDataToMQTT: " + topic + ', ' + message );
 
-  try {
-    var client = globals.client;
-    if(client!=null){
-        client.publish(topic, message, {qos: 1});
-    }
-  }
-  catch(e) {
-    console.log("error: " + e.message);
+  var client = globals.client;
+  if(client!=null){
+      client.publish(topic, message, {qos: 1});
   }
   return false;
 }
 
-function UpdateOptions(word) {
-  var obj = JSON.parse(word);
-
-  globals.url = obj["mqtt"]["url"];
-  globals.consumer = obj["mqtt"]["consumer"];
-  globals.clientId =obj["mqtt"]["clientId"];
-  globals.topic = obj["mqtt"]["topic"];
+function UpdateOptions(obj) {
+  globals.url = obj.mqtt.url;
+  globals.consumer = obj.mqtt.consumer;
+  globals.clientId =obj.mqtt.clientId;
+  globals.topic = obj.mqtt.topic;
 
   return false;
 }
