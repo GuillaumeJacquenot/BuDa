@@ -566,7 +566,7 @@ globalUpdate msg model =
         SaveToImage ->
             let
                 imgName =
-                    case (String.isEmpty model.inputFile) of
+                    case String.isEmpty model.inputFile of
                         True ->
                             "graph"
 
@@ -578,7 +578,7 @@ globalUpdate msg model =
         ExportLink ->
             let
                 saveName =
-                    case (String.isEmpty model.inputFile) of
+                    case String.isEmpty model.inputFile of
                         True ->
                             "export"
 
@@ -586,12 +586,12 @@ globalUpdate msg model =
                             model.inputFile
 
                 expNodes =
-                    DataModelEncoders.encodeExport { filename = saveName ++ "Nodes.txt", model = (Export.encodeNodes model.dataModel) }
+                    DataModelEncoders.encodeExport { filename = saveName ++ "Nodes.txt", model = Export.encodeNodes model.dataModel }
 
                 expEdges =
-                    DataModelEncoders.encodeExport { filename = saveName ++ "Links.csv", model = (Export.encodeLinks model.dataModel) }
+                    DataModelEncoders.encodeExport { filename = saveName ++ "Links.csv", model = Export.encodeLinks model.dataModel }
             in
-                ( model, Cmd.batch [ LinkToJS.exportLNK (expNodes), LinkToJS.exportLNK (expEdges) ] )
+                ( model, Cmd.batch [ LinkToJS.exportLNK expNodes, LinkToJS.exportLNK expEdges ] )
 
         CheckFlux s ->
             ( ModelActions.updateSelectedFlux s model, Cmd.none )
@@ -662,7 +662,7 @@ globalUpdate msg model =
                     { model | layoutMenu = newLayoutMenu }
             in
                 -- showView msg m1
-                ( m1, Cmd.batch [ (LinkToJS.setLayoutNameThenLayout s) ] )
+                ( m1, Cmd.batch [ LinkToJS.setLayoutNameThenLayout s ] )
 
         CreateNode ->
             let
@@ -708,7 +708,7 @@ globalUpdate msg model =
         Selection s ->
             let
                 x =
-                    Selection.decodeFromJSMsg (s)
+                    Selection.decodeFromJSMsg s
 
                 newSelection =
                     Selection.updateModelSelection model.selection x
@@ -768,7 +768,7 @@ globalUpdate msg model =
         SaveModel ->
             let
                 saveName =
-                    case (String.isEmpty model.inputFile) of
+                    case String.isEmpty model.inputFile of
                         True ->
                             "model.json"
 
