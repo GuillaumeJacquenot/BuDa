@@ -783,9 +783,11 @@ globalUpdate msg model =
         KeyDowns k ->
             case k of
                 16 ->
+                    -- shift
                     ( ModelActions.insertKey k model, Cmd.none )
 
                 17 ->
+                    -- ctrl
                     ( ModelActions.insertKey k model, Cmd.none )
 
                 _ ->
@@ -794,18 +796,23 @@ globalUpdate msg model =
         KeyUps k ->
             case k of
                 16 ->
+                    -- shift
                     ( ModelActions.removeKey k model, Cmd.none )
 
                 17 ->
+                    -- ctrl
                     ( ModelActions.removeKey k model, Cmd.none )
 
                 38 ->
+                    -- arrow up
                     upView msg model
 
                 45 ->
+                    -- insert
                     showView msg (ModelActions.mask model)
 
                 46 ->
+                    -- delete
                     deleteElement msg model
 
                 67 ->
