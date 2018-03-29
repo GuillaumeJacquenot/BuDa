@@ -76,7 +76,7 @@ createNode s m_parent model =
             n :: newDataModel.nodes
 
         newNotifications =
-            (Notification.BLOC n) :: newDataModel.notifications
+            { header = "node.create", data = (Notification.BLOC n) } :: newDataModel.notifications
     in
         { newDataModel | nodes = newNodes, notifications = newNotifications }
 
@@ -106,22 +106,7 @@ createLink s t model =
         newModel =
             case ( ns, nt ) of
                 ( Just ns1, Just nt1 ) ->
-                    let
-                        m1 =
-                            createLink_ ns1 nt1 model
-
-                        m_e =
-                            DataModel.getEdgeFromNodesId ns1.id nt1.id m1.edges
-
-                        newNotifications =
-                            case m_e of
-                                Nothing ->
-                                    m1.notifications
-
-                                Just edge ->
-                                    (Notification.LIEN edge) :: m1.notifications
-                    in
-                        { m1 | notifications = newNotifications }
+                    createLink_ ns1 nt1 model
 
                 ( _, _ ) ->
                     model
@@ -170,31 +155,26 @@ createAtomicEdge_ src dest model =
 
                 False ->
                     let
-                        dm1 =
+                        m1 =
                             DataModel.getNodeIdentifier model
 
-                        newEdges =
-                            { edge | id = dm1.curNodeId } :: dm1.edges
+                        e1 =
+                            { edge | id = m1.curNodeId }
 
-                        dm11 =
-                            { dm1 | edges = newEdges }
+                        newEdges =
+                            e1 :: m1.edges
+
+                        newNotifications =
+                            { header = "edge.create", data = (Notification.LIEN e1) } :: m1.notifications
                     in
-                        dm11
+                        { m1 | edges = newEdges, notifications = newNotifications }
     in
         dataModelNewId
 
 
 createAtomicDoubleEdge_ : Identifier -> Identifier -> Model -> Model
 createAtomicDoubleEdge_ src dest model =
-    let
-        m1 =
-            createAtomicEdge_ src dest model
-
-        m2 =
-            -- createAtomicEdge_ dest src m1
-            m1
-    in
-        m2
+    createAtomicEdge_ src dest model
 
 
 createAtomicEdgeForList_ : List Node -> Identifier -> Model -> Model
@@ -276,7 +256,7 @@ renameNode s m_nId model =
                                     model.notifications
 
                                 Just n ->
-                                    (Notification.BLOC n) :: model.notifications
+                                    { header = "node.rename", data = (Notification.BLOC n) } :: model.notifications
                     in
                         newNotifications2
     in
@@ -406,13 +386,18 @@ delEdgeDownForList_ n list model =
 delEdgeFromModel_ : Node -> Node -> Model -> Model
 delEdgeFromModel_ n m model =
     let
-        newEdges =
-            delEdge
-                --{ id = 0, source = n.id, target = m.id }
-                (Link.link n.id m.id)
-                model.edges
+        m_e =
+            DataModel.getEdgeFromNodesId n.id m.id model.edges
+
+        newModel =
+            case m_e of
+                Nothing ->
+                    model
+
+                Just edge ->
+                    delJustEdge edge model
     in
-        { model | edges = newEdges }
+        newModel
 
 
 delEdge : Edge -> List Edge -> List Edge
@@ -440,7 +425,19 @@ deleteAscN n asc_m model =
                 m1 =
                     case canDelete n x model of
                         True ->
-                            delJustEdge (DataModel.edgeST n x) model
+                            let
+                                m_e =
+                                    DataModel.getEdgeFromNodesId n.id x.id model.edges
+
+                                m2 =
+                                    case m_e of
+                                        Nothing ->
+                                            model
+
+                                        Just edge ->
+                                            delJustEdge edge model
+                            in
+                                m2
 
                         False ->
                             model
@@ -453,8 +450,11 @@ delJustEdge edge model =
     let
         newEdges =
             (delEdge edge model.edges)
+
+        newNotifications =
+            { header = "edge.delete", data = Notification.LIEN edge } :: model.notifications
     in
-        { model | edges = newEdges }
+        { model | edges = newEdges, notifications = newNotifications }
 
 
 deleteAsc : List Node -> List Node -> Model -> Model
@@ -523,13 +523,25 @@ canDelete n m model =
 deleteEdgeUp : Node -> Node -> Model -> Model
 deleteEdgeUp n m model =
     let
-        m0 =
-            delJustEdge (DataModel.edgeST n m) model
+        m_e =
+            DataModel.getEdgeFromNodesId n.id m.id model.edges
 
-        m2 =
-            deleteEdgeWithAsc n m m0
+        m3 =
+            case m_e of
+                Nothing ->
+                    model
+
+                Just edge ->
+                    let
+                        m0 =
+                            delJustEdge edge model
+
+                        m2 =
+                            deleteEdgeWithAsc n m m0
+                    in
+                        m2
     in
-        m2
+        m3
 
 
 
@@ -548,6 +560,23 @@ supprimer n de la liste
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 --}
+
+
+delJustNode : Node -> Model -> Model
+delJustNode n model =
+    let
+        newNodes =
+            (delNode n model.nodes)
+
+        newNotifications =
+            { header = "node.delete", data = Notification.BLOC n } :: model.notifications
+    in
+        { model | nodes = newNodes, notifications = newNotifications }
+
+
+delNode : Node -> List Node -> List Node
+delNode n nodes =
+    List.filter (\x -> not (n.id == x.id)) nodes
 
 
 deleteNode : Identifier -> Model -> Model
@@ -597,11 +626,8 @@ deleteEdgesAndNode_ n model =
         m1 =
             deleteEdgeFromList_ edgesToDelete model
 
-        newNodes =
-            List.filter (\x -> not (n.id == x.id)) m1.nodes
-
         m2 =
-            { m1 | nodes = newNodes }
+            delJustNode n m1
     in
         m2
 
@@ -744,12 +770,16 @@ updateProperty edge s model =
                     model
 
                 Just propId ->
-                    case Link.isActive propId edge of
-                        False ->
-                            LinkParametersActions.activateParameter propId edge model
+                    let
+                        m1 =
+                            case Link.isActive propId edge of
+                                False ->
+                                    LinkParametersActions.activateParameter propId edge model
 
-                        True ->
-                            LinkParametersActions.unActivateParameter propId edge model
+                                True ->
+                                    LinkParametersActions.unActivateParameter propId edge model
+                    in
+                        m1
     in
         newModel
 
