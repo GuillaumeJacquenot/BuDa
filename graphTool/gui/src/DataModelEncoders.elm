@@ -8,6 +8,8 @@ module DataModelEncoders
         , encodeExport
         , encodeMqttMessage
         , encodeMqttMessageNotification
+        , encodeMqttMessage_
+        , encodeMqttMessageNotification_
         )
 
 import Identifier exposing (Identifier)
@@ -272,6 +274,12 @@ encodeNotificationData_ notifdata =
 
         Notification.LIEN e ->
             encodeEdge_ e
+
+        Notification.PARAMETER p ->
+            encodeProperty p
+
+        Notification.FUNCIONAL_CHAIN fc ->
+            encodeGroupProperty fc
 
         Notification.NULLNOTIFICATION ->
             Json.Encode.null
