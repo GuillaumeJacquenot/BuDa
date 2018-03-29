@@ -1,4 +1,4 @@
-module Groups exposing (Model, Property, defaultModel, getPropertyIdFromName, property, getPropertyStringFromId)
+module Groups exposing (Model, Property, defaultModel, getPropertyIdFromName, property, getPropertyStringFromId, getPropertyFromName)
 
 import Identifier exposing (Identifier)
 
@@ -51,3 +51,18 @@ getPropertyIdFromName s list =
 
                 False ->
                     getPropertyIdFromName s xs
+
+
+getPropertyFromName : String -> Model -> Maybe Property
+getPropertyFromName s list =
+    case list of
+        [] ->
+            Nothing
+
+        x :: xs ->
+            case x.name == s of
+                True ->
+                    (Just x)
+
+                False ->
+                    getPropertyFromName s xs
