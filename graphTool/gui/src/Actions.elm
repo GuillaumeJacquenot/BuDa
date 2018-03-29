@@ -442,8 +442,61 @@ update msg model =
 
                 NoOp ->
                     model
+
+        ( m2, cmd ) =
+            (globalUpdate msg m1)
     in
-        globalUpdate msg m1
+        prepareAndSendNotification msg m2 cmd
+
+
+prepareAndSendNotification : Msg -> Model.Model -> Cmd Msg -> ( Model.Model, Cmd Msg )
+prepareAndSendNotification msg model cmd =
+    case msg of
+        CreateNode ->
+            prepareNotification_ cmd model
+
+        CreateLink ->
+            prepareNotification_ cmd model
+
+        RenameNode ->
+            prepareNotification_ cmd model
+
+        Undo ->
+            prepareNotification_ cmd model
+
+        Redo ->
+            prepareNotification_ cmd model
+
+        CreateParameter ->
+            prepareNotification_ cmd model
+
+        DeleteParameter ->
+            prepareNotification_ cmd model
+
+        CheckProperty edge s ->
+            prepareNotification_ cmd model
+
+        CreateGroup ->
+            prepareNotification_ cmd model
+
+        DeleteGroup ->
+            prepareNotification_ cmd model
+
+        CheckNodeGroupProperty node s ->
+            prepareNotification_ cmd model
+
+        KeyUps k ->
+            prepareNotification_ cmd model
+
+        _ ->
+            let
+                data_model =
+                    model.dataModel
+
+                newDataModel =
+                    { data_model | notifications = [] }
+            in
+                ( { model | dataModel = newDataModel }, cmd )
 
 
 globalUpdate : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
