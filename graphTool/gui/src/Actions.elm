@@ -147,8 +147,11 @@ deleteElement msg model =
 
                 _ ->
                     model
+
+        ( m2, cmd ) =
+            showView msg m1
     in
-        showView msg m1
+        prepareNotification_ cmd m2
 
 
 sendNotification : String -> Model.Model -> Notification.NotificationData -> Cmd Msg
