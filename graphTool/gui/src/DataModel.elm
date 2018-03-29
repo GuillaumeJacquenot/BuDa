@@ -477,17 +477,23 @@ createGroupProperty s model =
         m1 =
             getNodeIdentifier model
 
+        fc =
+            Groups.property m1.curNodeId s
+
         newGroups =
-            (Groups.property m1.curNodeId s) :: m1.groups
+            fc :: m1.groups
+
+        newNotifications =
+            { header = "functionalChain.create", data = (Notification.FUNCIONAL_CHAIN fc) } :: m1.notifications
     in
-        { m1 | groups = newGroups }
+        { m1 | groups = newGroups, notifications = newNotifications }
 
 
 deleteGroupProperty : String -> Model -> Model
 deleteGroupProperty s model =
     let
         maybe_group =
-            Groups.getPropertyIdFromName s model.groups
+            Groups.getPropertyFromName s model.groups
 
         newModel =
             case maybe_group of
@@ -497,15 +503,18 @@ deleteGroupProperty s model =
                 Just p ->
                     let
                         newGroups =
-                            List.filter (\x -> not (x.id == p)) model.groups
+                            List.filter (\x -> not (x == p)) model.groups
 
                         newNodes =
-                            List.map (\x -> { x | group = Set.remove p x.group }) model.nodes
+                            List.map (\x -> { x | group = Set.remove p.id x.group }) model.nodes
 
                         newEdges =
-                            TightnessActions.removeAllTightness p model.edges
+                            TightnessActions.removeAllTightness p.id model.edges
+
+                        newNotifications =
+                            { header = "functionalChain.delete", data = (Notification.FUNCIONAL_CHAIN p) } :: model.notifications
                     in
-                        { model | groups = newGroups, nodes = newNodes, edges = newEdges }
+                        { model | groups = newGroups, nodes = newNodes, edges = newEdges, notifications = newNotifications }
     in
         newModel
 
