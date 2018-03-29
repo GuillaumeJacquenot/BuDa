@@ -183,7 +183,7 @@ processFocus : Msg -> List (Cmd Msg) -> List (Cmd Msg)
 processFocus msg list =
     let
         taskFocus =
-            (Task.attempt FocusResult (Dom.focus "input"))
+            Task.attempt FocusResult (Dom.focus "input")
     in
         case msg of
             KeyUps s ->
