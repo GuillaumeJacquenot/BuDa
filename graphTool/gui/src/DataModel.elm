@@ -435,17 +435,23 @@ createProperty_ s model =
         m1 =
             getNodeIdentifier model
 
+        parameter =
+            (LinkParameters.property m1.curNodeId s)
+
         new_parameters =
-            (LinkParameters.property m1.curNodeId s) :: m1.parameters
+            parameter :: m1.parameters
+
+        newNotifications =
+            { header = "parameter.create", data = (Notification.PARAMETER parameter) } :: m1.notifications
     in
-        { m1 | parameters = new_parameters }
+        { m1 | parameters = new_parameters, notifications = newNotifications }
 
 
 deleteProperty : String -> Model -> Model
 deleteProperty s model =
     let
         maybe_param =
-            LinkParameters.getPropertyIdFromName s model.parameters
+            LinkParameters.getPropertyFromName s model.parameters
 
         newModel =
             case maybe_param of
@@ -455,9 +461,12 @@ deleteProperty s model =
                 Just p ->
                     let
                         newParameters =
-                            List.filter (\x -> not (x.id == p)) model.parameters
+                            List.filter (\x -> not (x == p)) model.parameters
+
+                        newNotifications =
+                            { header = "parameter.delete", data = (Notification.PARAMETER p) } :: model.notifications
                     in
-                        { model | parameters = newParameters }
+                        { model | parameters = newParameters, notifications = newNotifications }
     in
         newModel
 
