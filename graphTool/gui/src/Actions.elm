@@ -242,7 +242,7 @@ update : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
 update msg model =
     let
         searchBuildList =
-            (Search.mustBuildList model.searchModel True)
+            Search.mustBuildList model.searchModel True
 
         m1 =
             case msg of
