@@ -6,6 +6,7 @@ import Link exposing (Edge)
 import DataModel exposing (Model)
 import ModelManagement
 import Set exposing (Set)
+import Notification
 
 
 {--
@@ -163,8 +164,19 @@ unActivateParameterUpEdge_ idx mId nId model =
 
         newEdges =
             updatePropertyInEdgeList_ edge idx model.edges Link.unActivate
+
+        m_e =
+            DataModel.getEdgeFromNodesId mId nId newEdges
+
+        newNotifications =
+            case m_e of
+                Nothing ->
+                    model.notifications
+
+                Just edge1 ->
+                    { header = "edge.update", data = Notification.LIEN edge1 } :: model.notifications
     in
-        { model | edges = newEdges }
+        { model | edges = newEdges, notifications = newNotifications }
 
 
 unActivateParameterDown_ : Identifier -> Node -> Node -> Model -> Model
@@ -214,8 +226,19 @@ unActivateParameterDownForEdge_ idx mId nId model =
 
         newEdges =
             updatePropertyInEdgeList_ edge idx model.edges Link.unActivate
+
+        m_e =
+            DataModel.getEdgeFromNodesId mId nId newEdges
+
+        newNotifications =
+            case m_e of
+                Nothing ->
+                    model.notifications
+
+                Just edge1 ->
+                    { header = "edge.update", data = Notification.LIEN edge1 } :: model.notifications
     in
-        { model | edges = newEdges }
+        { model | edges = newEdges, notifications = newNotifications }
 
 
 
@@ -331,8 +354,19 @@ activateParameterForEdge_ idx mId nId model =
 
         newEdges =
             updatePropertyInEdgeList_ edge idx model.edges Link.activate
+
+        m_e =
+            DataModel.getEdgeFromNodesId mId nId newEdges
+
+        newNotifications =
+            case m_e of
+                Nothing ->
+                    model.notifications
+
+                Just edge1 ->
+                    { header = "edge.update", data = Notification.LIEN edge1 } :: model.notifications
     in
-        { model | edges = newEdges }
+        { model | edges = newEdges, notifications = newNotifications }
 
 
 updatePropertyInEdgeList_ : Edge -> Identifier -> List Edge -> (Identifier -> Edge -> Edge) -> List Edge
