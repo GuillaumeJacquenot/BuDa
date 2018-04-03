@@ -28,12 +28,12 @@ type alias Model =
     }
 
 
-init : Model
-init =
-    { url = "mqtt://130.66.124.234:15675/ws"
+init : String -> Model
+init url =
+    { url = url
     , clientId = "unknown"
     , topic = "architecture"
-    , consumer = False
+    , connectionType = Producer
     }
 
 
