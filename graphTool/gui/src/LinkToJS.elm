@@ -28,26 +28,10 @@ port module LinkToJS
         , sendGeometryToElm
         , setLayoutName
         , setLayoutNameThenLayout
-        , MqttToJSEvent
-        , mqttToJS
-        , mqttFromJS
         )
 
 import Identifier exposing (Identifier)
 import Json.Decode
-
-
-type alias MqttToJSEvent =
-    { tag : String
-    , data : Json.Decode.Value
-    }
-
-
-type alias MqttFromJSEvent =
-    { tag : String
-    , data : Json.Decode.Value
-    }
-
 
 
 {--
@@ -123,9 +107,6 @@ port setLayoutName : String -> Cmd msg
 port setLayoutNameThenLayout : String -> Cmd msg
 
 
-port mqttToJS : MqttToJSEvent -> Cmd msg
-
-
 
 {--
 //////////////////////////////////////////////////////////////////////////////
@@ -176,6 +157,3 @@ port nodesPositionRequest : (String -> msg) -> Sub msg
 
 
 port sendGeometryToElm : (String -> msg) -> Sub msg
-
-
-port mqttFromJS : (MqttFromJSEvent -> msg) -> Sub msg

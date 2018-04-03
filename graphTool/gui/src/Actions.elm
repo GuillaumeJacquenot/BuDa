@@ -166,7 +166,7 @@ sendNotification s model notifyData =
         m1 =
             { model | mqtt = newMqtt }
     in
-        LinkToJS.mqttToJS
+        Mqtt.send
             { tag = "MqttNotify", data = DataModelEncoders.encodeMqttMessageNotification_ m1.mqtt (Notification.notification s notifyData) }
 
 
@@ -932,7 +932,7 @@ globalUpdate msg model =
             ( { model | mqtt = Mqtt.setUrl s model.mqtt }, Cmd.none )
 
         MqttConnect ->
-            model ! [ LinkToJS.mqttToJS { tag = "MqttConnect", data = DataModelEncoders.encodeMqttMessage_ model.mqtt Notification.NULLNOTIFICATION } ]
+            model ! [ Mqtt.send { tag = "MqttConnect", data = DataModelEncoders.encodeMqttMessage_ model.mqtt Notification.NULLNOTIFICATION } ]
 
         MqttDisconnect ->
-            model ! [ LinkToJS.mqttToJS { tag = "MqttDisconnect", data = DataModelEncoders.encodeMqttMessage_ model.mqtt Notification.NULLNOTIFICATION } ]
+            model ! [ Mqtt.send { tag = "MqttDisconnect", data = DataModelEncoders.encodeMqttMessage_ model.mqtt Notification.NULLNOTIFICATION } ]

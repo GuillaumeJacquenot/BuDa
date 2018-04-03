@@ -1,4 +1,18 @@
-module Mqtt exposing (Model, init, url, clientId, setUrl, setClientId, setTopic, setConsumer)
+port module Mqtt exposing (Model, init, url, clientId, setUrl, setClientId, setTopic, setConsumer, send, receive)
+
+import Json.Decode
+
+
+type alias MqttToJSEvent =
+    { tag : String
+    , data : Json.Decode.Value
+    }
+
+
+type alias MqttFromJSEvent =
+    { tag : String
+    , data : Json.Decode.Value
+    }
 
 
 type alias Model =
@@ -46,3 +60,9 @@ setTopic s model =
 setConsumer : Bool -> Model -> Model
 setConsumer b model =
     { model | consumer = b }
+
+
+port send : MqttToJSEvent -> Cmd msg
+
+
+port receive : (MqttFromJSEvent -> msg) -> Sub msg
