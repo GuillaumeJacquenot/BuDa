@@ -95,5 +95,5 @@ defaultModel =
     , showGeometries = False
     , showParameters = False
     , searchModel = Search.defaultModel
-    , mqtt = Mqtt.init
+    , mqtt = Mqtt.init "mqtt://130.66.124.234:15675/ws"
     }
