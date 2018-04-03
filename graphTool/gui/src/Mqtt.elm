@@ -62,9 +62,9 @@ setTopic s model =
     { model | topic = s }
 
 
-setConsumer : Bool -> Model -> Model
-setConsumer b model =
-    { model | consumer = b }
+setConsumer : ConnectionType -> Model -> Model
+setConsumer c model =
+    { model | connectionType = c }
 
 
 port send : MqttToJSEvent -> Cmd msg
