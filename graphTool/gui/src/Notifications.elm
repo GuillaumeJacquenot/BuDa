@@ -1,4 +1,4 @@
-module Notifications exposing (Model, defaultModel)
+module Notifications exposing (Model, init)
 
 import Notification
 
@@ -7,6 +7,6 @@ type alias Model =
     List Notification.Model
 
 
-defaultModel : Model
-defaultModel =
+init : Model
+init =
     []

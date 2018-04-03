@@ -144,9 +144,9 @@ defaultModel =
     , lightLayout = Nothing
     , rootBubbleLayout = Nothing
     , mask = Mask.defaultModel
-    , notifications = Notifications.defaultModel
+    , notifications = Notifications.init
     , geometryImage = Nothing
-    , receivedNotifications = Notifications.defaultModel
+    , receivedNotifications = Notifications.init
     }
 
 
@@ -217,9 +217,9 @@ dataModelToModel dm model =
         , lightLayout = dm.lightLayout
         , rootBubbleLayout = dm.rootBubbleLayout
         , mask = dm.mask
-        , notifications = Notifications.defaultModel
+        , notifications = Notifications.init
         , geometryImage = Nothing
-        , receivedNotifications = Notifications.defaultModel
+        , receivedNotifications = Notifications.init
         }
 
 
