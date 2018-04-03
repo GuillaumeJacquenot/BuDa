@@ -37,14 +37,14 @@ init =
     }
 
 
-url : String
-url =
-    init.url
+url : Model -> String
+url model =
+    model.url
 
 
-clientId : String
-clientId =
-    init.clientId
+clientId : Model -> String
+clientId model =
+    model.clientId
 
 
 setUrl : String -> Model -> Model
