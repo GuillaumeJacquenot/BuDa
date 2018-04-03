@@ -76,4 +76,18 @@ connectionType2String connectionType =
         Consumer ->
             "Consumer"
 
-port receive : (MqttFromJSEvent -> msg) -> Sub msg
+
+port mqtt2JS : MqttToJSEvent -> Cmd msg
+
+
+send : MqttToJSEvent -> Cmd msg
+send =
+    mqtt2JS
+
+
+port mqttFromJS : (MqttFromJSEvent -> msg) -> Sub msg
+
+
+subscriptions : (MqttFromJSEvent -> msg) -> Sub msg
+subscriptions onEvent =
+    Sub.batch [ mqttFromJS onEvent ]
