@@ -1,6 +1,11 @@
-port module Mqtt exposing (Model, init, url, clientId, setUrl, setClientId, setTopic, setConsumer, send, receive)
+port module Mqtt exposing (ConnectionType(..), Model, init, url, clientId, setUrl, setClientId, setTopic, setConsumer, send, subscriptions, connectionType2String)
 
 import Json.Decode
+
+
+type ConnectionType
+    = Producer
+    | Consumer
 
 
 type alias MqttToJSEvent =
