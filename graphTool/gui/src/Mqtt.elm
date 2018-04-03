@@ -24,7 +24,7 @@ type alias Model =
     { url : String
     , clientId : String
     , topic : String
-    , consumer : Bool
+    , connectionType : ConnectionType
     }
 
 
