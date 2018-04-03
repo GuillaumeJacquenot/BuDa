@@ -438,13 +438,13 @@ createProperty_ s model =
         parameter =
             (LinkParameters.property m1.curNodeId s)
 
-        new_parameters =
+        newParameters =
             parameter :: m1.parameters
 
         newNotifications =
             { header = "parameter.create", data = (Notification.PARAMETER parameter) } :: m1.notifications
     in
-        { m1 | parameters = new_parameters, notifications = newNotifications }
+        { m1 | parameters = newParameters, notifications = newNotifications }
 
 
 deleteProperty : String -> Model -> Model
