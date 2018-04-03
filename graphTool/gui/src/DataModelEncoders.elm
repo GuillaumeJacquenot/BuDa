@@ -293,13 +293,18 @@ encodeNotificationModel_ model =
         ]
 
 
+encodeConnectionType_ : Mqtt.ConnectionType -> Value
+encodeConnectionType_ connectionType =
+    Json.Encode.string (Mqtt.connectionType2String connectionType)
+
+
 encodeMqtt_ : Mqtt.Model -> Value
 encodeMqtt_ model =
     object
         [ ( "url", Json.Encode.string model.url )
         , ( "topic", Json.Encode.string model.topic )
         , ( "clientId", Json.Encode.string model.clientId )
-        , ( "consumer", Json.Encode.bool model.consumer )
+        , ( "connectionType", encodeConnectionType_ model.connectionType )
         ]
 
 
