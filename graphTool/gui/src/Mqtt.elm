@@ -67,7 +67,13 @@ setConsumer c model =
     { model | connectionType = c }
 
 
-port send : MqttToJSEvent -> Cmd msg
+connectionType2String : ConnectionType -> String
+connectionType2String connectionType =
+    case connectionType of
+        Producer ->
+            "Producer"
 
+        Consumer ->
+            "Consumer"
 
 port receive : (MqttFromJSEvent -> msg) -> Sub msg
