@@ -4,7 +4,7 @@ var globals = {
   url : null // url = 'mqtt://' + host + ':' + port + '/ws';
   , connected_flag : 0
   , client : null
-  , consumer : false
+  , connectionType : "Producer"
   , clientId: null
   , message : null
   , topic : null
@@ -22,7 +22,7 @@ function connectMQTT() {
     console.log ("ask for connection ...");
     if(globals.connected_flag==0) {
         var coptions = {};
-        if(globals.consumer==true) {
+        if(globals.connectionType=="Consumer") {
           var cId = globals.clientId;
           coptions = {clientId: cId, clean:false};
         }
@@ -77,7 +77,7 @@ function sendDataToMQTT(obj) {
 
 function UpdateOptions(obj) {
   globals.url = obj.mqtt.url;
-  globals.consumer = obj.mqtt.consumer;
+  globals.connectionType = obj.mqtt.connectionType;
   globals.clientId =obj.mqtt.clientId;
   globals.topic = obj.mqtt.topic;
 
