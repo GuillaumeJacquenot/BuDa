@@ -932,15 +932,7 @@ globalUpdate msg model =
             ( { model | mqtt = Mqtt.setUrl s model.mqtt }, Cmd.none )
 
         MqttConnect ->
-            ( model
-            , Cmd.batch
-                [ LinkToJS.mqttToJS { tag = "MqttConnect", data = DataModelEncoders.encodeMqttMessage_ model.mqtt Notification.NULLNOTIFICATION }
-                ]
-            )
+            model ! [ LinkToJS.mqttToJS { tag = "MqttConnect", data = DataModelEncoders.encodeMqttMessage_ model.mqtt Notification.NULLNOTIFICATION } ]
 
         MqttDisconnect ->
-            ( model
-            , Cmd.batch
-                [ LinkToJS.mqttToJS { tag = "MqttDisconnect", data = DataModelEncoders.encodeMqttMessage_ model.mqtt Notification.NULLNOTIFICATION }
-                ]
-            )
+            model ! [ LinkToJS.mqttToJS { tag = "MqttDisconnect", data = DataModelEncoders.encodeMqttMessage_ model.mqtt Notification.NULLNOTIFICATION } ]
