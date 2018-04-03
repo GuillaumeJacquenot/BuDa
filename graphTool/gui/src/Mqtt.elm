@@ -1,4 +1,4 @@
-module Mqtt exposing (Model, defaultModel, url, clientId, setUrl, setClientId, setTopic, setConsumer)
+module Mqtt exposing (Model, init, url, clientId, setUrl, setClientId, setTopic, setConsumer)
 
 
 type alias Model =
@@ -9,8 +9,8 @@ type alias Model =
     }
 
 
-defaultModel : Model
-defaultModel =
+init : Model
+init =
     { url = "mqtt://130.66.124.234:15675/ws"
     , clientId = "unknown"
     , topic = "architecture"
@@ -20,12 +20,12 @@ defaultModel =
 
 url : String
 url =
-    defaultModel.url
+    init.url
 
 
 clientId : String
 clientId =
-    defaultModel.clientId
+    init.clientId
 
 
 setUrl : String -> Model -> Model

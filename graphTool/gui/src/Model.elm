@@ -95,5 +95,5 @@ defaultModel =
     , showGeometries = False
     , showParameters = False
     , searchModel = Search.defaultModel
-    , mqtt = Mqtt.defaultModel
+    , mqtt = Mqtt.init
     }
