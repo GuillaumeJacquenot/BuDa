@@ -43,6 +43,8 @@ module ModelActions
         , getNodeViewLabel
         , sendGeometryName
         , loadCsvModel
+        , blow
+        , getCounterViewLabel
         )
 
 import Identifier exposing (Identifier)
@@ -1008,6 +1010,11 @@ getNodeViewLabel model =
         s ++ sId
 
 
+getCounterViewLabel : Model -> String
+getCounterViewLabel model =
+    "Blocks " ++ toString (List.length model.dataModel.nodes) ++ " / Links " ++ toString (List.length model.dataModel.edges)
+
+
 getAscendantName : Model -> String
 getAscendantName model =
     let
@@ -1037,34 +1044,20 @@ getAscendantName model =
 searchElement : Model -> Model
 searchElement model =
     let
-        b =
-            SpecialKey.member 16 model.specialKey
-
-        m0 =
-            case b of
-                True ->
-                    let
-                        newSearchModel =
-                            Search.init model.input (DataModel.getNodeListFromName model.input model.dataModel.nodes)
-
-                        newModel =
-                            { model | searchModel = newSearchModel }
-                    in
-                        newModel
-
-                False ->
-                    model
-
         newSearchModel =
-            Search.next m0.searchModel
+            Search.search model.searchModel model.input model.dataModel.nodes
 
         m1 =
-            case newSearchModel.curElement of
+            case List.head newSearchModel.nodes of
                 Nothing ->
-                    { m0 | searchModel = newSearchModel }
+                    { model
+                        | nodeViewId = Nothing
+                        , selection = []
+                        , searchModel = newSearchModel
+                    }
 
                 Just n ->
-                    { m0
+                    { model
                         | nodeViewId = Just n.id
                         , selection = [ n.id ]
                         , searchModel = newSearchModel
@@ -1341,3 +1334,21 @@ loadCsvModel s model =
                 newDataModel
             , undo = newUndo
         }
+
+
+blow : Model.Model -> Model.Model
+blow model =
+    -- activation/desactivation du champ blow pour le bloc selectionné
+    let
+        m_s =
+            Selection.getFirstSelectionIdentifier model.selection
+
+        newDataModel =
+            case m_s of
+                Just id ->
+                    (DataModelActions.blow id model.dataModel)
+
+                _ ->
+                    model.dataModel
+    in
+        { model | dataModel = newDataModel }

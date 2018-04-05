@@ -1,102 +1,55 @@
-module Search exposing (Model, defaultModel, init, next)
+module Search exposing (Model, defaultModel, search, mustBuildList)
 
 import Node exposing (Node)
 
 
 type alias Model =
-    { name : String
-    , refList :
-        -- liste des blocs du modele ayant pour nom name
-        List Node
-    , dropList :
-        --liste de recherche (on initialise avec refList. on drop a chaque appel de next. quand on a terminé, on réinitialise)
-        List Node
-    , curElement : Maybe Node
-    , idx : Int
+    { nodes : List Node
+    , mustBuildList : Bool
     }
 
 
 defaultModel : Model
 defaultModel =
-    { name = ""
-    , refList = []
-    , dropList = []
-    , curElement = Nothing
-    , idx = 0
+    { nodes = []
+    , mustBuildList = False
     }
 
 
-init : String -> List Node -> Model
-init s list =
-    { name = s
-    , refList = list
-    , dropList = list
-    , curElement = Nothing
-    , idx = 0
+init_ : String -> List Node -> Model
+init_ s list =
+    { defaultModel
+        | nodes = List.filter (\x -> x.name == s) list
     }
 
 
-init_ : Model -> Model
-init_ model =
-    { model
-        | dropList = model.refList
-        , curElement = Nothing
-        , idx = 0
-    }
+bringToFront_ : Node -> List Node -> List Node
+bringToFront_ n l =
+    n :: (List.filter (\x -> not (x.id == n.id)) l)
 
 
-next_ : Model -> Model
-next_ model =
+bringToBack_ : Node -> List Node -> List Node
+bringToBack_ n l =
+    List.concat [ (List.filter (\x -> not (x.id == n.id)) l), [ n ] ]
+
+
+search : Model -> String -> List Node -> Model
+search model s nodes =
     let
-        element =
-            List.head model.dropList
-
-        newDropList =
-            List.drop 1 model.dropList
-
-        newIdx =
-            case element of
-                Nothing ->
-                    0
-
-                _ ->
-                    model.idx + 1
-
-        newModel =
-            { model
-                | dropList = newDropList
-                , curElement = element
-                , idx = newIdx
-            }
+        ll =
+            init_ s nodes
     in
-        newModel
+        case ( List.head model.nodes, model.mustBuildList ) of
+            ( Nothing, _ ) ->
+                ll
+
+            ( _, True ) ->
+                ll
+
+            ( Just x, False ) ->
+                { model | nodes = bringToBack_ x model.nodes }
 
 
-next : Model -> Model
-next model =
-    case List.isEmpty model.refList of
-        True ->
-            model
-
-        False ->
-            let
-                m1 =
-                    next_ model
-
-                m2 =
-                    case m1.curElement of
-                        Just n ->
-                            case m1.idx > (List.length m1.refList) of
-                                True ->
-                                    next_ (init_ m1)
-
-                                False ->
-                                    m1
-
-                        Nothing ->
-                            next_ (init_ m1)
-
-                z =
-                    Debug.log "next" m2.idx
-            in
-                m2
+mustBuildList : Model -> Bool -> Model
+mustBuildList model b =
+    { model | mustBuildList = b }

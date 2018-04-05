@@ -70,6 +70,40 @@
     left: 32em;
 }
 
+#userInput {
+  width: 8em;
+  height: 2.5em;
+  position: absolute;
+  top: 0em;
+  left: 50em;
+}
+
+#urlInput {
+  width: 15em;
+  height: 2.5em;
+  position: absolute;
+  top: 0em;
+  left: 58.5em;
+}
+
+#mqttConnect {
+  width: 6em;
+  height: 3em;
+  position: absolute;
+  top: 0em;
+  left: 74em;
+}
+
+#mqttDisconnect {
+  width: 7em;
+  height: 3em;
+  position: absolute;
+  top: 0em;
+  left: 80.5em;
+
+}
+
+
 #fieldset {
     width: 35em;
     height: 1em;
@@ -161,6 +195,14 @@
   left: 54em;
 }
 
+#verification {
+  width: 5em;
+  height: 3em;
+  position: absolute;
+  top: 3.2em;
+  left: 59.5em;
+}
+
 #menu {
   width: 1em;
   height: 3em;
@@ -190,6 +232,15 @@
   position: absolute;
   top: 7em;
   left: 1em;
+}
+
+#counter {
+  width: 80em;
+  height: 3em;
+  position: absolute;
+  top: 7em;
+  right: -50em;
+
 }
 
 #logo {
@@ -263,5 +314,12 @@
   width: 16em;
 }
 #btnGeometries {
+  width: 16em;
+}
+
+#notification {
+  position: absolute;
+  bottom: 1em;
+  right:1em;
   width: 16em;
 }

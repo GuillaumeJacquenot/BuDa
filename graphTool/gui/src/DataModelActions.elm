@@ -30,6 +30,8 @@ module DataModelActions
         , isMasked
         , insertFromTmp
         , sendGeometryName
+        , blow
+        , unblowAll
         )
 
 import DataModel exposing (Model, isNodeIdPresent)
@@ -48,7 +50,7 @@ import TightnessActions
 import Layout exposing (Layout, NodeLayout)
 import Mask
 import TranslateTmpDataModel
-import Notifications
+import Notification
 import Geometries
 import GeometryActions
 
@@ -74,7 +76,7 @@ createNode s m_parent model =
             n :: newDataModel.nodes
 
         newNotifications =
-            (Notifications.BLOC n) :: newDataModel.notifications
+            { header = "node.create", data = (Notification.BLOC n) } :: newDataModel.notifications
     in
         { newDataModel | nodes = newNodes, notifications = newNotifications }
 
@@ -104,17 +106,7 @@ createLink s t model =
         newModel =
             case ( ns, nt ) of
                 ( Just ns1, Just nt1 ) ->
-                    let
-                        m1 =
-                            createLink_ ns1 nt1 model
-
-                        edge =
-                            (Link.link s t)
-
-                        newNotifications =
-                            (Notifications.LIEN edge) :: m1.notifications
-                    in
-                        { m1 | notifications = newNotifications }
+                    createLink_ ns1 nt1 model
 
                 ( _, _ ) ->
                     model
@@ -163,31 +155,26 @@ createAtomicEdge_ src dest model =
 
                 False ->
                     let
-                        dm1 =
+                        m1 =
                             DataModel.getNodeIdentifier model
 
-                        newEdges =
-                            { edge | id = dm1.curNodeId } :: dm1.edges
+                        e1 =
+                            { edge | id = m1.curNodeId }
 
-                        dm11 =
-                            { dm1 | edges = newEdges }
+                        newEdges =
+                            e1 :: m1.edges
+
+                        newNotifications =
+                            { header = "edge.create", data = (Notification.LIEN e1) } :: m1.notifications
                     in
-                        dm11
+                        { m1 | edges = newEdges, notifications = newNotifications }
     in
         dataModelNewId
 
 
 createAtomicDoubleEdge_ : Identifier -> Identifier -> Model -> Model
 createAtomicDoubleEdge_ src dest model =
-    let
-        m1 =
-            createAtomicEdge_ src dest model
-
-        m2 =
-            -- createAtomicEdge_ dest src m1
-            m1
-    in
-        m2
+    createAtomicEdge_ src dest model
 
 
 createAtomicEdgeForList_ : List Node -> Identifier -> Model -> Model
@@ -248,12 +235,32 @@ renameNodeInList_ s id list =
 
 
 renameNode : String -> Maybe Identifier -> Model -> Model
-renameNode s nId model =
+renameNode s m_nId model =
     let
         newNodes =
-            (renameNodeInList_ s nId model.nodes)
+            (renameNodeInList_ s m_nId model.nodes)
+
+        newNotifications =
+            case m_nId of
+                Nothing ->
+                    model.notifications
+
+                Just nId ->
+                    let
+                        m_n =
+                            DataModel.getNodeFromId nId newNodes
+
+                        newNotifications2 =
+                            case m_n of
+                                Nothing ->
+                                    model.notifications
+
+                                Just n ->
+                                    { header = "node.rename", data = (Notification.BLOC n) } :: model.notifications
+                    in
+                        newNotifications2
     in
-        { model | nodes = newNodes }
+        { model | nodes = newNodes, notifications = newNotifications }
 
 
 
@@ -379,13 +386,18 @@ delEdgeDownForList_ n list model =
 delEdgeFromModel_ : Node -> Node -> Model -> Model
 delEdgeFromModel_ n m model =
     let
-        newEdges =
-            delEdge
-                --{ id = 0, source = n.id, target = m.id }
-                (Link.link n.id m.id)
-                model.edges
+        m_e =
+            DataModel.getEdgeFromNodesId n.id m.id model.edges
+
+        newModel =
+            case m_e of
+                Nothing ->
+                    model
+
+                Just edge ->
+                    delJustEdge edge model
     in
-        { model | edges = newEdges }
+        newModel
 
 
 delEdge : Edge -> List Edge -> List Edge
@@ -413,7 +425,19 @@ deleteAscN n asc_m model =
                 m1 =
                     case canDelete n x model of
                         True ->
-                            delJustEdge (DataModel.edgeST n x) model
+                            let
+                                m_e =
+                                    DataModel.getEdgeFromNodesId n.id x.id model.edges
+
+                                m2 =
+                                    case m_e of
+                                        Nothing ->
+                                            model
+
+                                        Just edge ->
+                                            delJustEdge edge model
+                            in
+                                m2
 
                         False ->
                             model
@@ -426,8 +450,11 @@ delJustEdge edge model =
     let
         newEdges =
             (delEdge edge model.edges)
+
+        newNotifications =
+            { header = "edge.delete", data = Notification.LIEN edge } :: model.notifications
     in
-        { model | edges = newEdges }
+        { model | edges = newEdges, notifications = newNotifications }
 
 
 deleteAsc : List Node -> List Node -> Model -> Model
@@ -496,13 +523,25 @@ canDelete n m model =
 deleteEdgeUp : Node -> Node -> Model -> Model
 deleteEdgeUp n m model =
     let
-        m0 =
-            delJustEdge (DataModel.edgeST n m) model
+        m_e =
+            DataModel.getEdgeFromNodesId n.id m.id model.edges
 
-        m2 =
-            deleteEdgeWithAsc n m m0
+        m3 =
+            case m_e of
+                Nothing ->
+                    model
+
+                Just edge ->
+                    let
+                        m0 =
+                            delJustEdge edge model
+
+                        m2 =
+                            deleteEdgeWithAsc n m m0
+                    in
+                        m2
     in
-        m2
+        m3
 
 
 
@@ -521,6 +560,23 @@ supprimer n de la liste
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 --}
+
+
+delJustNode : Node -> Model -> Model
+delJustNode n model =
+    let
+        newNodes =
+            (delNode n model.nodes)
+
+        newNotifications =
+            { header = "node.delete", data = Notification.BLOC n } :: model.notifications
+    in
+        { model | nodes = newNodes, notifications = newNotifications }
+
+
+delNode : Node -> List Node -> List Node
+delNode n nodes =
+    List.filter (\x -> not (n.id == x.id)) nodes
 
 
 deleteNode : Identifier -> Model -> Model
@@ -570,11 +626,8 @@ deleteEdgesAndNode_ n model =
         m1 =
             deleteEdgeFromList_ edgesToDelete model
 
-        newNodes =
-            List.filter (\x -> not (n.id == x.id)) m1.nodes
-
         m2 =
-            { m1 | nodes = newNodes }
+            delJustNode n m1
     in
         m2
 
@@ -717,12 +770,16 @@ updateProperty edge s model =
                     model
 
                 Just propId ->
-                    case Link.isActive propId edge of
-                        False ->
-                            LinkParametersActions.activateParameter propId edge model
+                    let
+                        m1 =
+                            case Link.isActive propId edge of
+                                False ->
+                                    LinkParametersActions.activateParameter propId edge model
 
-                        True ->
-                            LinkParametersActions.unActivateParameter propId edge model
+                                True ->
+                                    LinkParametersActions.unActivateParameter propId edge model
+                    in
+                        m1
     in
         newModel
 
@@ -1012,7 +1069,7 @@ makeGroupNodes_ list s m_p model =
             List.filter
                 (\x ->
                     (DataModel.isNodeIdPresent x.target list)
-                        && not (isDescendantOneOfList_ x.target list model)
+                        && not (isDescendantOneOfList_ x.source list model)
                 )
                 m1.edges
 
@@ -1296,12 +1353,71 @@ addLayout_ i lay model =
         { model | layouts = newLayouts }
 
 
+completeMaybeLayout_ : Maybe Layout -> Layout -> Maybe Layout
+completeMaybeLayout_ ori new =
+    case ori of
+        Nothing ->
+            Just new
+
+        Just olayout ->
+            Just (completeLayout_ olayout new)
+
+
+isNodePositionMember_ : Layout -> NodePosition -> Bool
+isNodePositionMember_ lay np =
+    case lay of
+        [] ->
+            False
+
+        x :: xs ->
+            case x.id == np.id of
+                True ->
+                    True
+
+                False ->
+                    isNodePositionMember_ xs np
+
+
+completeLayoutWithNodePosition_ : Layout -> NodePosition -> Layout
+completeLayoutWithNodePosition_ lay np =
+    case isNodePositionMember_ lay np of
+        True ->
+            List.map
+                (\x ->
+                    case x.id == np.id of
+                        True ->
+                            np
+
+                        False ->
+                            x
+                )
+                lay
+
+        False ->
+            np :: lay
+
+
+completeLayout_ : Layout -> Layout -> Layout
+completeLayout_ ori new =
+    -- on enrichit le layout ori avec new.
+    -- Les nouveaux elements sont ajoutés.
+    -- Les positions des éléments existant sont mises à jour
+    case new of
+        [] ->
+            ori
+
+        x :: xs ->
+            completeLayout_ (completeLayoutWithNodePosition_ ori x) xs
+
+
 updateLayoutFromNodeId : Maybe Identifier -> Layout -> Model -> Model
 updateLayoutFromNodeId m_id lay model =
     -- ajout ou update du layout pour le bloc d'indice id
+    -- IL FAUDRAIT NETTOYER le layout en verifiant la presence des blocs dans le model
+    -- CE NETTOYAGE DEVRAIT ÊTRE FAIT, mais pas nécessairement ici
     case m_id of
         Nothing ->
-            { model | rootBubbleLayout = Just lay }
+            { model | rootBubbleLayout = completeMaybeLayout_ model.rootBubbleLayout lay }
 
         Just id ->
             let
@@ -1323,7 +1439,7 @@ updateLayoutFromNodeId m_id lay model =
                                         (\x ->
                                             case x.id == id of
                                                 True ->
-                                                    { x | layout = lay }
+                                                    { x | layout = completeLayout_ x.layout lay }
 
                                                 False ->
                                                     x
@@ -1579,3 +1695,36 @@ sendGeometryName element model =
                 model.geometries
     in
         { model | geometries = newGeometries }
+
+
+blow : Identifier -> Model -> Model
+blow id model =
+    case (DataModel.getNodeFromId id model.nodes) of
+        Nothing ->
+            model
+
+        Just n ->
+            -- blow n in nodes
+            let
+                newNodes =
+                    List.map
+                        (\x ->
+                            case x.id == n.id of
+                                True ->
+                                    Node.blow x
+
+                                False ->
+                                    x
+                        )
+                        model.nodes
+            in
+                { model
+                    | nodes = newNodes
+                }
+
+
+unblowAll : Model -> Model
+unblowAll model =
+    { model
+        | nodes = List.map (\x -> { x | blow = False }) model.nodes
+    }

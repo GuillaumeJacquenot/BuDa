@@ -6,7 +6,10 @@ module DataModelEncoders
         , encodeModel
         , encodeMetaModel
         , encodeExport
-        , encodeNotification
+        , encodeMqttMessage
+        , encodeMqttMessageNotification
+        , encodeMqttMessage_
+        , encodeMqttMessageNotification_
         )
 
 import Identifier exposing (Identifier)
@@ -20,8 +23,9 @@ import Set exposing (Set)
 import LinkParameters
 import Groups
 import Layout exposing (NodeLayout, GeometryLayout)
-import Notifications
+import Notification
 import Geometries
+import Mqtt
 
 
 encodeMaybeIdentifier : Maybe Identifier -> String
@@ -77,6 +81,16 @@ encodeNode_ n =
                 )
           )
         , ( "position", encodePosition_ n.position )
+        , ( "blow"
+          , Json.Encode.int
+                (case n.blow of
+                    True ->
+                        1
+
+                    False ->
+                        0
+                )
+          )
         ]
 
 
@@ -252,23 +266,69 @@ encodeExport =
     encode 0 << encodeExport_
 
 
-encodeNotification_ : Notifications.Model -> Json.Encode.Value
-encodeNotification_ notify =
-    let
-        s =
-            case notify.data of
-                Notifications.BLOC n ->
-                    encodeNode n
+encodeNotificationData_ : Notification.NotificationData -> Json.Encode.Value
+encodeNotificationData_ notifdata =
+    case notifdata of
+        Notification.BLOC n ->
+            encodeNode_ n
 
-                Notifications.LIEN e ->
-                    encodeEdge e
-    in
-        Json.Encode.object
-            [ ( "header", string (notify.header) )
-            , ( "data", string s )
-            ]
+        Notification.LIEN e ->
+            encodeEdge_ e
+
+        Notification.PARAMETER p ->
+            encodeProperty p
+
+        Notification.FUNCIONAL_CHAIN fc ->
+            encodeGroupProperty fc
+
+        Notification.NULLNOTIFICATION ->
+            Json.Encode.null
 
 
-encodeNotification : Notifications.Model -> String
-encodeNotification =
-    encode 0 << encodeNotification_
+encodeNotificationModel_ : Notification.Model -> Json.Encode.Value
+encodeNotificationModel_ model =
+    object
+        [ ( "header", Json.Encode.string model.header )
+        , ( "data", encodeNotificationData_ model.data )
+        ]
+
+
+encodeConnectionType_ : Mqtt.ConnectionType -> Value
+encodeConnectionType_ connectionType =
+    Json.Encode.string (Mqtt.connectionType2String connectionType)
+
+
+encodeMqtt_ : Mqtt.Model -> Value
+encodeMqtt_ model =
+    object
+        [ ( "url", Json.Encode.string model.url )
+        , ( "topic", Json.Encode.string model.topic )
+        , ( "clientId", Json.Encode.string model.clientId )
+        , ( "connectionType", encodeConnectionType_ model.connectionType )
+        ]
+
+
+encodeMqttMessage_ : Mqtt.Model -> Notification.NotificationData -> Value
+encodeMqttMessage_ model notifyData =
+    object
+        [ ( "mqtt", encodeMqtt_ model )
+        , ( "message", encodeNotificationData_ notifyData )
+        ]
+
+
+encodeMqttMessageNotification_ : Mqtt.Model -> Notification.Model -> Value
+encodeMqttMessageNotification_ mqtt notif =
+    object
+        [ ( "mqtt", encodeMqtt_ mqtt )
+        , ( "message", encodeNotificationModel_ notif )
+        ]
+
+
+encodeMqttMessage : Mqtt.Model -> Notification.NotificationData -> String
+encodeMqttMessage model notifyData =
+    encode 0 (encodeMqttMessage_ model notifyData)
+
+
+encodeMqttMessageNotification : Mqtt.Model -> Notification.Model -> String
+encodeMqttMessageNotification model notif =
+    encode 0 (encodeMqttMessageNotification_ model notif)

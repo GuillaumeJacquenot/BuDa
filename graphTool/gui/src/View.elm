@@ -12,6 +12,7 @@ import GroupsView
 import ModelActions
 import GeometriesView
 import LayoutView
+import Mqtt
 
 
 init : ( Model.Model, Cmd Messages.Msg )
@@ -76,6 +77,28 @@ view model =
         , button [ onClick Messages.Layout, id "layout", value "layout" ] [ text "Layout" ]
         , button [ onClick Messages.GetPositions, id "pos", value "pos" ] [ text "Pos" ]
         , button [ onClick Messages.Redo, id "redo", value "redo" ] [ text "Redo" ]
+        , button [ onClick Messages.Verification, id "verification", value "verification" ] [ text "Verif" ]
         , img [ id "logo", src "LogoSirehna_DC.png", title "logo sirehna" ] []
         , div [ id "label" ] [ text (ModelActions.getNodeViewLabel model) ]
+        , div [ id "counter" ] [ text (ModelActions.getCounterViewLabel model) ]
+        , button
+            [ onClick Messages.OnNotificationClick
+            , id "notification"
+            , value "notification"
+            , style
+                [ ( "visibility"
+                  , case (List.isEmpty model.dataModel.receivedNotifications) of
+                        True ->
+                            "hidden"
+
+                        False ->
+                            "visible"
+                  )
+                ]
+            ]
+            [ text "Notifications" ]
+        , input [ onInput Messages.UserChange, id "userInput", placeholder model.mqtt.clientId ] []
+        , input [ onInput Messages.UrlChange, id "urlInput", placeholder model.mqtt.url ] []
+        , button [ onClick Messages.MqttConnect, id "mqttConnect", value "mqttConnect" ] [ text "Connect" ]
+        , button [ onClick Messages.MqttDisconnect, id "mqttDisconnect", value "mqttDisconnect" ] [ text "Disconnect" ]
         ]

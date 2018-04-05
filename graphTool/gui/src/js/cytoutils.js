@@ -20,23 +20,6 @@ var dataElements = {
 		, edges: []
 };
 
-var preset_layout = {
-  name: 'preset',
-
-  positions: undefined, // map of (node id) => (position obj); or function(node){ return somPos; }
-  zoom: undefined, // the zoom level to set (prob want fit = false if set)
-  pan: undefined, // the pan level to set (prob want fit = false if set)
-  fit: true, // whether to fit to viewport
-  padding: 30, // padding on fit
-  animate: false, // whether to transition the node positions
-  animationDuration: 500, // duration of animation in ms if enabled
-  animationEasing: undefined, // easing of animation if enabled
-  animateFilter: function ( node, i ){ return true; }, // a function that determines whether the node should be animated.  All nodes animated by default on animate enabled.  Non-animated nodes are positioned immediately when the layout starts
-  ready: undefined, // callback on layoutready
-  stop: undefined, // callback on layoutstop
-  transform: function (node, position ){ return position; } // transform a given node position. Useful for changing flow direction in discrete layouts
-};
-
 var preset_layout_with_bbox = {
   name: 'preset',
 
@@ -332,24 +315,34 @@ function _sendDataModel_ (obj) {
 	var cy = getCyReference();
 	cy.remove (cy.elements());
 
+	var jsons = [];
+
 	var ns = obj.nodes;
 	ns.forEach(function (s)
 	{
-		cy.add({
-		    group: "nodes",
-		    data: { id: s.data.id, parent: s.data.parent, name: s.data.name, highLighted: s.data.highLighted }
-				, position: {x: s.data.position.x, y: s.data.position.y }
-		});
+
+		jsons.push (
+			{
+					group: "nodes",
+					data: { id: s.data.id, parent: s.data.parent, name: s.data.name, highLighted: s.data.highLighted, blow: s.data.blow }
+					, position: {x: s.data.position.x, y: s.data.position.y }
+			}
+		);
 	});
 
 	var eds = obj.edges;
 	eds.forEach(function (s)
 	{
-		cy.add({
-		    group: "edges",
-		    data: { id: s.data.id, source: s.data.source, target: s.data.target, highLighted: s.data.highLighted}
-		});
+		jsons.push (
+			{
+			    group: "edges",
+			    data: { id: s.data.id, source: s.data.source, target: s.data.target, highLighted: s.data.highLighted}
+			}
+		);
+
 	});
+
+	cy.add(jsons);
 }
 
 function _layout_main() {
@@ -370,21 +363,6 @@ function _layout_dagre () {
 function _layout_circle () {
 	var cy = getCyReference();
 	cy.layout(circle_layout);
-}
-
-function _layout_spread () {
-	var cy = getCyReference();
-	cy.layout(spread_layout);
-}
-
-function _layout_grid () {
-	var cy = getCyReference();
-	cy.layout(grid_layout);
-}
-
-function _layout_preset() {
-	var cy = getCyReference();
-	cy.layout(preset_layout);
 }
 
 function _layout_preset_with_bbox() {
@@ -418,4 +396,30 @@ function _saveAsPng_ (pngName) {
 function saveToImage (imgName) {
 	_saveAsSvg_ (imgName);
 	_saveAsPng_ (imgName);
+}
+
+function layoutElementsNoPosition() {
+	try {
+		var cy = getCyReference();
+		var collection = cy.nodes("[?blow]");
+
+		if(collection!=null)
+		{
+			console.log( "collection.size " + collection.size() );
+
+			// add the children of each elt of the collection
+			var children = collection.children();
+			console.log( "children.size " + children.size() );
+			collection = collection.add(children);
+
+			if(collection.size() > 0)
+			{
+				console.log( "collection.size " + collection.size() );
+				collection.layout(dagre_layout);
+			}
+		}
+	}
+	catch(err){
+		console.log ("err: " + err);
+	}
 }

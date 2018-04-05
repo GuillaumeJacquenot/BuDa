@@ -14,6 +14,17 @@ node[highLighted = 0] {
   background-color: #64B5F6;
 }
 
+node[blow = 1] {
+  border-width: 4;
+  border-color: #0E2E2E;
+}
+
+node[blow = 0] {
+  border-width: 1;
+  border-color: #555;
+}
+
+
 edge {
   curve-style: haystack;
   width: 1;

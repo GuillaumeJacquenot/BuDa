@@ -12,6 +12,8 @@ port module LinkToJS
         , saveModel
         , sendDataPBSModel
         , sendDataBullesModel
+        , sendDataFlatModel
+        , sendDataAllModel
         , sendDataGeometryModel
         , sendParentSelection
         , selection
@@ -25,9 +27,11 @@ port module LinkToJS
         , loadGeometryButton
         , sendGeometryToElm
         , setLayoutName
+        , setLayoutNameThenLayout
         )
 
 import Identifier exposing (Identifier)
+import Json.Decode
 
 
 {--
@@ -49,6 +53,12 @@ port sendDataBullesModel : String -> Cmd msg
 
 
 port sendDataGeometryModel : String -> Cmd msg
+
+
+port sendDataFlatModel : String -> Cmd msg
+
+
+port sendDataAllModel : String -> Cmd msg
 
 
 
@@ -92,6 +102,9 @@ port loadGeometryButton : String -> Cmd msg
 
 
 port setLayoutName : String -> Cmd msg
+
+
+port setLayoutNameThenLayout : String -> Cmd msg
 
 
 

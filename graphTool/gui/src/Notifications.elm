@@ -1,27 +1,12 @@
-module Notifications
-    exposing
-        ( Model
-        , NotificationData(..)
-        , notifyData
-        )
+module Notifications exposing (Model, init)
 
-import Node exposing (Node)
-import Link exposing (Edge)
-
-
-type NotificationData
-    = BLOC Node
-    | LIEN Edge
+import Notification
 
 
 type alias Model =
-    { header : String
-    , data : NotificationData
-    }
+    List Notification.Model
 
 
-notifyData : String -> NotificationData -> Model
-notifyData s notifyData =
-    { header = s
-    , data = notifyData
-    }
+init : Model
+init =
+    []

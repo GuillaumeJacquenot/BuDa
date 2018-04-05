@@ -62,4 +62,10 @@ type Msg
     | ShowHideFunctionalChain
     | ShowHideGeometries
     | ShowHideParameters
+    | Verification
+    | OnNotificationClick
+    | UserChange String
+    | UrlChange String
+    | MqttConnect
+    | MqttDisconnect
     | NoOp

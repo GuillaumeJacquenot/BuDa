@@ -62,6 +62,7 @@ import Set exposing (Set)
 import TightnessActions
 import Layout exposing (Layout, NodeLayout, GeometryLayout)
 import Mask
+import Notification
 import Notifications
 import Geometries
 
@@ -82,8 +83,9 @@ type alias Model =
     , lightLayout : Maybe Layout
     , rootBubbleLayout : Maybe Layout
     , mask : Mask.Model
-    , notifications : List Notifications.NotificationData
+    , notifications : Notifications.Model
     , geometryImage : Maybe String
+    , receivedNotifications : Notifications.Model
     }
 
 
@@ -142,8 +144,9 @@ defaultModel =
     , lightLayout = Nothing
     , rootBubbleLayout = Nothing
     , mask = Mask.defaultModel
-    , notifications = []
+    , notifications = Notifications.init
     , geometryImage = Nothing
+    , receivedNotifications = Notifications.init
     }
 
 
@@ -214,8 +217,9 @@ dataModelToModel dm model =
         , lightLayout = dm.lightLayout
         , rootBubbleLayout = dm.rootBubbleLayout
         , mask = dm.mask
-        , notifications = []
+        , notifications = Notifications.init
         , geometryImage = Nothing
+        , receivedNotifications = Notifications.init
         }
 
 
@@ -431,17 +435,23 @@ createProperty_ s model =
         m1 =
             getNodeIdentifier model
 
-        new_parameters =
-            (LinkParameters.property m1.curNodeId s) :: m1.parameters
+        parameter =
+            (LinkParameters.property m1.curNodeId s)
+
+        newParameters =
+            parameter :: m1.parameters
+
+        newNotifications =
+            { header = "parameter.create", data = (Notification.PARAMETER parameter) } :: m1.notifications
     in
-        { m1 | parameters = new_parameters }
+        { m1 | parameters = newParameters, notifications = newNotifications }
 
 
 deleteProperty : String -> Model -> Model
 deleteProperty s model =
     let
         maybe_param =
-            LinkParameters.getPropertyIdFromName s model.parameters
+            LinkParameters.getPropertyFromName s model.parameters
 
         newModel =
             case maybe_param of
@@ -451,9 +461,12 @@ deleteProperty s model =
                 Just p ->
                     let
                         newParameters =
-                            List.filter (\x -> not (x.id == p)) model.parameters
+                            List.filter (\x -> not (x == p)) model.parameters
+
+                        newNotifications =
+                            { header = "parameter.delete", data = (Notification.PARAMETER p) } :: model.notifications
                     in
-                        { model | parameters = newParameters }
+                        { model | parameters = newParameters, notifications = newNotifications }
     in
         newModel
 
@@ -464,17 +477,23 @@ createGroupProperty s model =
         m1 =
             getNodeIdentifier model
 
+        fc =
+            Groups.property m1.curNodeId s
+
         newGroups =
-            (Groups.property m1.curNodeId s) :: m1.groups
+            fc :: m1.groups
+
+        newNotifications =
+            { header = "functionalChain.create", data = (Notification.FUNCIONAL_CHAIN fc) } :: m1.notifications
     in
-        { m1 | groups = newGroups }
+        { m1 | groups = newGroups, notifications = newNotifications }
 
 
 deleteGroupProperty : String -> Model -> Model
 deleteGroupProperty s model =
     let
         maybe_group =
-            Groups.getPropertyIdFromName s model.groups
+            Groups.getPropertyFromName s model.groups
 
         newModel =
             case maybe_group of
@@ -484,15 +503,18 @@ deleteGroupProperty s model =
                 Just p ->
                     let
                         newGroups =
-                            List.filter (\x -> not (x.id == p)) model.groups
+                            List.filter (\x -> not (x == p)) model.groups
 
                         newNodes =
-                            List.map (\x -> { x | group = Set.remove p x.group }) model.nodes
+                            List.map (\x -> { x | group = Set.remove p.id x.group }) model.nodes
 
                         newEdges =
-                            TightnessActions.removeAllTightness p model.edges
+                            TightnessActions.removeAllTightness p.id model.edges
+
+                        newNotifications =
+                            { header = "functionalChain.delete", data = (Notification.FUNCIONAL_CHAIN p) } :: model.notifications
                     in
-                        { model | groups = newGroups, nodes = newNodes, edges = newEdges }
+                        { model | groups = newGroups, nodes = newNodes, edges = newEdges, notifications = newNotifications }
     in
         newModel
 
@@ -842,11 +864,7 @@ triN list todo model =
 
 triNodes : Model -> Model
 triNodes model =
-    let
-        newNodes =
-            triN [] model.nodes model
-    in
-        { model | nodes = newNodes }
+    model
 
 
 getCurIdFromModel : Model -> Identifier

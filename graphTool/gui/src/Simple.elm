@@ -8,8 +8,6 @@ import Messages exposing (Msg(..))
 import Model exposing (Model, defaultModel)
 import LinkToJS
 import Keyboard
-import WebSocket
-import Addresses
 
 
 subscriptions : Model -> Sub Msg
@@ -28,7 +26,6 @@ subscriptions model =
         , LinkToJS.sendGeometryToElm SendGeometryToElm
         , Keyboard.ups KeyUps
         , Keyboard.downs KeyDowns
-        , WebSocket.listen (Addresses.wsUrl) NewMessage
           -- , subLayout model
         ]
 

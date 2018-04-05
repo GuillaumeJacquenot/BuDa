@@ -1,0 +1,23 @@
+<html>
+<head>
+  <title>consumer MQTT</title>
+</head>
+<body>
+<script src="./mqtt.min.js"></script>
+<script>
+  //var url = 'mqtt://130.66.124.234:15675/ws';
+  var url = 'http://localhost/ws';
+
+  var client = mqtt.connect(url, {clientId: 'michel', clean:false}); // you add a ws:// url here
+
+  client.on('message', function (topic, message) {
+  // message is Buffer
+  console.log(message.toString());
+});
+
+client.subscribe('*.*.node.*', {qos:1});
+
+</script>
+
+</body>
+</html>
