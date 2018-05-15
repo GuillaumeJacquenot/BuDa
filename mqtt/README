@@ -1,7 +1,7 @@
+# Exemple de consommateur
 
-exemple consumer
-================
 
+~~~~{.js}
 var host='130.66.124.234';
 var port=15675;
 var client = mqtt.connect('mqtt://host:port/ws', {clientId: 'alan', clean:false});
@@ -12,10 +12,12 @@ client.on('message', function (topic, message) {
 });
 
 client.subscribe('toto', {qos:1});
+~~~~
 
-exemple producer
-================
 
+# Exemple de producteur
+
+~~~~{.js}
 var host='130.66.124.234';
 var port=15675;
 var client = mqtt.connect('mqtt://host:port/ws', {clientId: 'alan'});
@@ -23,15 +25,16 @@ var client = mqtt.connect('mqtt://host:port/ws', {clientId: 'alan'});
 var send = function (message) {
   client.publish('toto', message, {qos: 1});
 };
+~~~~
 
-Principe de fonctionnement
-==========================
+# Principe de fonctionnement
 
-Le consumer c1(clientId: alan) se connecte une premiere fois au serveur, la queue qc1 est crée.
+
+Le consumer `c1(clientId: alan)` se connecte une premiere fois au serveur, la queue qc1 est crée.
 si le paramètre clean vaut false, alors la queue est persistante.
 => La queue qc1 (mqtt-subscription-alanqos1) est crée et ne sera pas détruite quand le consumer c1 se deconnectera
 
-RMQ: Le nom de la queue suit le schéma : 'mqtt-subscription-'' + clientId + 'qos' + qos
+Remarque : Le nom de la queue suit le schéma : 'mqtt-subscription-'' + clientId + 'qos' + qos
 
 
 Le consumer s'abonne au topic 'toto'
@@ -43,8 +46,8 @@ Deux cas sont possibles
      Lorsque le consumer c1 se reconnectera, il recevra tous les messages de la queue qc1.
 
 
-Test Offline
-============
+# Test offline
+
 1. Préparation du test : on suppose que le consumer c1 s'est connecté au serveur une première fois, et donc que
 la queue qc1 existe.
 2. On arrète le serveur. (sudo docker stop 9ef54688e642)
