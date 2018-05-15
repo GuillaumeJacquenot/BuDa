@@ -1,7 +1,7 @@
 # Exemple de consommateur
 
 
-~~~~{.js}
+```javascript
 var host='130.66.124.234';
 var port=15675;
 var client = mqtt.connect('mqtt://host:port/ws', {clientId: 'alan', clean:false});
@@ -12,12 +12,12 @@ client.on('message', function (topic, message) {
 });
 
 client.subscribe('toto', {qos:1});
-~~~~
+```
 
 
 # Exemple de producteur
 
-~~~~{.js}
+```javascript
 var host='130.66.124.234';
 var port=15675;
 var client = mqtt.connect('mqtt://host:port/ws', {clientId: 'alan'});
@@ -25,7 +25,7 @@ var client = mqtt.connect('mqtt://host:port/ws', {clientId: 'alan'});
 var send = function (message) {
   client.publish('toto', message, {qos: 1});
 };
-~~~~
+```
 
 # Principe de fonctionnement
 
