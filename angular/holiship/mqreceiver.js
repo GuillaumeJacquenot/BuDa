@@ -23,7 +23,14 @@ amqp.connect('amqp://0.0.0.0:5672', function(err, conn) {
   conn.createChannel(function(err, ch) {
     var q = 'object';
 
-    ch.assertQueue(q, {durable: false});
+    // abonnement topic '*.*.node.*'
+    ch.assertQueue(q, {durable: false}, function(err, qq){
+      var key = "*.*.node.*";
+      var ex = 'amq.topic';
+      ch.bindQueue(qq.queue, ex, key);
+    });
+
+
     console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q);
     ch.consume(q, function(msg) {
       console.log(" [x] Received %s", msg.content);
