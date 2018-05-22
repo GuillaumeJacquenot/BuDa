@@ -1,4 +1,4 @@
-app.ports.mqttToJS.subscribe(function(value) {
+app.ports.mqtt2JS.subscribe(function(value) {
   try {
     var tag = value["tag"];
     var data = value["data"];
