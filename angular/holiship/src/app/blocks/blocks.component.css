@@ -1,0 +1,16 @@
+#cont,
+#head {
+  padding: 5% 5% 1% 5%;
+}
+
+#foot {
+  padding: 0 0 0 5%;
+}
+
+::ng-deep.bordered {
+  border: 0.5px solid lightgrey;
+  /*border: 0.5px solid black;*/
+  /*border: 0.5px;px*/
+  /*background-color: red !important;*/
+  /*color: #5394ed !important;*/
+}

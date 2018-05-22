@@ -1,0 +1,168 @@
+<app-menu-parent (backEvent)="goToProjList()" [routes]="routes" [title]="project"></app-menu-parent>
+
+<div class="contParent">
+    <div class="rounded border cont col-xs-3" id="left">
+        <div class="img-rounded panel panel-success">
+          <div class="req panel-heading clickable" routerLink="/proj/{{project}}/requirements" routerLinkActive="active">
+               <h3 class="panel-title">Requirements</h3>
+          </div>
+
+          <!--<div class="checkbox" *ngFor="let req of requirements">-->
+            <!--<span class="leftspan">-->
+              <!--<input class="clickable" type="checkbox" [checked]="currentSce.requirements.indexOf(req.id)=== -1 ? false : true" value=""-->
+                     <!--(click)="(currentSce.requirements.indexOf(req.id)=== -1 ? connectRequirementToScenario(req.id) : disconnectRequirementFromScenario(req.id)); sortChecks();"-->
+                     <!--[disabled]="!currentSce.id">-->
+              <!--<label class="verName">{{req.id}} {{req.title}}</label>-->
+            <!--</span>-->
+            <!--<span class="rightspan">-->
+              <!--<span class="glyphicon glyphicon-edit clickable" data-toggle="modal" data-target="#myModal" (click)="reqEdit(req)"></span>-->
+              <!--<span class="glyphicon glyphicon-eye-open clickable" (click)="reqInfo(req)" data-toggle="modal" data-target="#infoModal"></span>-->
+              <!--<label class="switch">-->
+                <!--<input type="checkbox" [checked]="checkUserSubscribtion(req.id, 'requirement')" (click)="changeSubscription(req.id, 'requirement')">-->
+                <!--<span class="slider round"></span>-->
+              <!--</label>-->
+            <!--</span>-->
+          <!--</div>-->
+
+          <p-treeTable [value]="reqsObj.data" class="projTable">
+            <p-column>
+              <ng-template let-node="rowData">
+                {{node.data.id}} {{node.data.title}}
+              </ng-template>
+            </p-column>
+            <p-column>
+              <ng-template let-node="rowData">
+                <label class="switch">
+                  <input type="checkbox" [checked]="checkUserSubscribtion(node.data.id, 'requirement')" (click)="changeSubscription(node.data.id, 'requirement')">
+                  <span class="slider round"></span>
+                </label>
+              </ng-template>
+            </p-column>
+            <p-column>
+              <ng-template let-node="rowData">
+                <input class="clickable" type="checkbox" [checked]="currentSce.requirements.indexOf(node.data.id)=== -1 ? false : true" value=""
+                       (click)="(currentSce.requirements.indexOf(node.data.id)=== -1 ? connectRequirementToScenario(node.data.id) : disconnectRequirementFromScenario(node.data.id)); sortChecks();"
+                       [disabled]="!currentSce.id">
+                <span class="glyphicon glyphicon-edit clickable" data-toggle="modal" data-target="#myModal" (click)="reqEdit(node.data)"></span>
+                <span class="glyphicon glyphicon-eye-open clickable" (click)="reqInfo(node.data)" data-toggle="modal" data-target="#infoModal"></span>
+              </ng-template>
+            </p-column>
+          </p-treeTable>
+
+        </div>
+    </div>
+    <div class="rounded border cont col-xs-3" id="center">
+        <div class="img-rounded panel panel-danger">
+          <div class="panel-heading clickable" routerLink="/proj/{{project}}/scenarios" routerLinkActive="active">
+            <h3 class="panel-title">Scenarios</h3>
+          </div>
+          <ul class="nav nav-pills nav-stacked sce-selector danger">
+            <li role="presentation" class="clickable" *ngFor="let sce of scenarios">
+
+              <div class="btn-group" role="group" aria-label="..." [ngClass]="currentSce.id === sce.id ? 'mActive' : 'unActive'">
+                <button class="btn btn-default leftBtn btnOverflow" (click)="selectSce(sce)">{{sce.id}} {{sce.title}}</button>
+                <button type="button" class="btn btn-default rightBtn" (click)="sceEdit(sce)" data-toggle="modal" data-target="#myModal">
+                  <span class="glyphicon glyphicon-edit clickable"></span>
+                </button>
+                <button type="button" class="btn btn-default rightBtn" (click)="sceInfo(sce)" data-toggle="modal" data-target="#infoModal">
+                  <span class="glyphicon glyphicon-eye-open clickable"></span>
+                </button>
+                <button type="button" class="btn btn-default rightBtn btnSwitch">
+                  <label class="switch">
+                    <input type="checkbox" [checked]="checkUserSubscribtion(sce.id, 'scenario')" (click)="changeSubscription(sce.id, 'scenario')">
+                    <span class="slider round"></span>
+                  </label>
+                </button>
+              </div>
+
+            </li>
+          </ul>
+        </div>
+    </div>
+    <div class="rounded border cont col-xs-3" id="right">
+        <div class="img-rounded panel panel-info">
+          <div class="panel-heading clickable" routerLink="/proj/{{project}}/blocks" routerLinkActive="active">
+            <h3 class="panel-title">Blocks</h3>
+          </div>
+
+          <p-treeTable [value]="blocksObj.data" (onNodeExpand)="loadNode($event)" class="projTable">
+            <p-column field="name"></p-column>
+            <p-column>
+              <ng-template let-col let-node="rowData">
+                <label class="switch">
+                  <input type="checkbox" [checked]="newCheckUserSubscribtion(node.data.identity)" (click)="blockChangeSubscription(node)">
+                  <span class="slider round"></span>
+                </label>
+              </ng-template>
+            </p-column>
+            <p-column>
+              <ng-template let-col let-node="rowData">
+                <input class="clickable" type="checkbox" [checked]="currentSce.blocks.indexOf(node.data.identity['low'])=== -1 ? false : true" value=""
+                       (click)="currentSce.blocks.indexOf(node.data.identity['low'])=== -1 ? connectBlockToScenario(node.data) : disconnectBlockFromScenario(node.data)" [disabled]="!currentSce.id">
+                <!--<span class="glyphicon glyphicon-plus clickable" (click)="preAddBlockChild(node)"></span>-->
+                <span class="glyphicon glyphicon-eye-open clickable" (click)="blockInfo(node.data)" data-toggle="modal" data-target="#blockModal"></span>
+                <!--<span class="glyphicon glyphicon-refresh clickable" (click)="stateInfo(node.data)" data-toggle="modal" data-target="#stateModal"></span>-->
+                <span class="glyphicon glyphicon-edit clickable" data-toggle="modal" data-target="#blockEditModal" (click)="blockPreEdit(node)"></span>
+                <!--<span class="glyphicon glyphicon-trash clickable" (click)="deleteBlock(node)"></span>-->
+              </ng-template>
+            </p-column>
+          </p-treeTable>
+
+          <!--<div class="checkbox" *ngFor="let block of blocks">-->
+           <!--<span class="leftspan">-->
+             <!--<input class="clickable" type="checkbox" [checked]="currentSce.blocks.indexOf(block.name)=== -1 ? false : true" value=""-->
+                    <!--(click)="currentSce.blocks.indexOf(block.name)=== -1 ? connectBlockToScenario(block.name) : disconnectBlockFromScenario(block.name); sortChecks()" [disabled]="!currentSce.id">-->
+             <!--<label class="verName">{{block.name}}</label>-->
+           <!--</span>-->
+            <!--<span class="rightspan">-->
+                  <!--<span class="glyphicon glyphicon-edit clickable" data-toggle="modal" data-target="#blockEditModal" (click)="blockPreEdit(block)"></span>-->
+                  <!--<span class="glyphicon glyphicon-eye-open clickable" (click)="blockInfo(block)" data-toggle="modal" data-target="#blockModal"></span>-->
+                  <!--<label class="switch">-->
+                    <!--<input type="checkbox" [checked]="checkUserSubscribtion(block.name, 'block')" (click)="changeSubscription(block.identity, 'block')">-->
+                    <!--<span class="slider round"></span>-->
+                  <!--</label>-->
+            <!--</span>-->
+          <!--</div>-->
+        </div>
+    </div>
+</div>
+
+<div id="foot">
+  <button routerLink="/proj/{{project}}/compliance" routerLinkActive="active" class="btn btn-primary btn-sm">Generate compliance matrix</button>
+</div>
+
+<br>
+<textarea name="forJSON" id="forJSON" cols="100" rows="10" #forJSON></textarea>
+<br>
+<button class="btn btn-primary" (click)="getJSON(forJSON.value)">Send</button>
+
+<!--<button (click)="getCsv()">get CSV</button>-->
+
+<app-block-modal [block]="currBlock" [project]="project" *ngIf="blockShowing" (closeModalEvent)="closeBlockInfoModal()"></app-block-modal>
+
+<app-info-modal [data]="modalVer" *ngIf="infoShowing" (closeModalEvent)="closeInfoModal()"></app-info-modal>
+
+<div id="blockEditModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Block</h4>
+      </div>
+      <div class="modal-body form-group">
+        <label for="newTitle">Name:</label>
+        <input id="newTitle" type="text" class="form-control" value="{{currBlock&&currBlock.data?currBlock.data.name:''}}" (input)="blckEditOnChange($event, newTitle.value)" #newTitle>
+      </div>
+      <div class="modal-footer">
+        <button type="button" [disabled]="!canEditBlck" class="btn btn-default" data-dismiss="modal" (click)="blockEdit(newTitle.value)">Save</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<app-edit-modal [currentVer]="modalVer" (createVerEvent)="createVer($event)" (closeModalEvent)="closeEditModal(false)" *ngIf="editShowing"></app-edit-modal>
+
+<app-spinner *ngIf="loading"></app-spinner>

@@ -1,0 +1,18 @@
+#cont,
+#head {
+    padding: 5% 5% 0 5%;
+}
+
+#foot {
+    padding: 0 0 0 5%;
+}
+
+table#myTable {
+    /* width: 180vh; */
+    /* margin: 0 5% 0 5%; */
+}
+
+.boldSpan {
+  font-weight: bold;
+}
+

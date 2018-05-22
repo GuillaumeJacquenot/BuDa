@@ -1,0 +1,34 @@
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" (click)="closeModal()">&times;</button>
+        <h4 class="modal-title">{{currentVer.id}}</h4>
+      </div>
+      <div class="modal-body form-group">
+
+        <form [formGroup]="form">
+          <!--<label for="title">Title:</label>-->
+          <!--<input id="title" type="text" value="{{currentVer.title}}" class="form-control" #title>-->
+          <!--<label for="descr">Description:</label>-->
+          <!--<textarea id="descr" value="{{currentVer.desc}}" class="form-control" #descr rows="10"></textarea>-->
+
+          <label for="NewTitle">Title:</label>
+          <input formControlName="title" id="newTitle" value="{{currentVer.title}}" type="text" class="form-control" #NewTitle>
+          <br>
+          <label for="newDescr">Description:</label>
+          <textarea  formControlName="description" id="newDescr" value="{{currentVer.desc}}" class="form-control" #newDescr rows="10"></textarea>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" [disabled]="!form.valid" data-dismiss="modal" (click)="createAndClose(NewTitle.value, newDescr.value)">Save</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!--<span class="glyphicon glyphicon-edit clickable" data-toggle="modal" data-target="#myModal" (click)="reqEdit(ver)"></span>-->

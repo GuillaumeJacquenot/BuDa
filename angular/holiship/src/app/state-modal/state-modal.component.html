@@ -1,0 +1,120 @@
+<div id="stateModal" class="modal fade" role="dialog">
+  <div class="modal-dialog main">
+
+    <!-- Modal content-->
+    <div class="modal-content main">
+      <div class="modal-header main">
+        <button type="button" class="close" data-dismiss="modal" (click)="closeModal()">&times;</button>
+        <h4 class="modal-title">{{block.name}}</h4>
+      </div>
+      <div class="modal-body main">
+        <div>
+          <div #stateCont id="stateCont"></div>
+        </div>
+      </div>
+      <div class="modal-footer main">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeModal()">OK</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button [hidden]="true" id="hiddenBlockTr" type="button" data-toggle="modal" data-target="#stateModal" #hiddenBlockTr>
+</button>
+
+<div id="stateEditModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit State</h4>
+      </div>
+      <div class="modal-body form-group">
+        <label for="newTitle">Name:</label>
+        <input id="newTitle" type="text" class="form-control" value="{{tmpLabel}}" (input)="stateEditOnChange($event, newTitle.value)" #newTitle>
+      </div>
+      <div class="modal-footer">
+        <button type="button" [disabled]="!canEditState" class="btn btn-default" data-dismiss="modal" (click)="stateEdit(newTitle.value)">Save</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button [hidden]="true" id="hiddenEditStateTr" type="button" data-toggle="modal" data-target="#stateEditModal" #hiddenEditStateTr>
+</button>
+
+<div id="stateCreateModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Create State</h4>
+      </div>
+      <div class="modal-body form-group">
+        <label for="title">Name:</label>
+        <input id="title" type="text" class="form-control" value="" (input)="stateEditOnChange($event, title.value)" #title>
+      </div>
+      <div class="modal-footer">
+        <button type="button" [disabled]="!canEditState" class="btn btn-default" data-dismiss="modal" (click)="stateCreate(title.value)">Save</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button [hidden]="true" id="hiddenCreateStateTr" type="button" data-toggle="modal" data-target="#stateCreateModal" #hiddenCreateStateTr>
+</button>
+
+<div id="transitionEditModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Transition</h4>
+      </div>
+      <div class="modal-body form-group">
+        <label for="newTrTitle">Name:</label>
+        <input id="newTrTitle" type="text" class="form-control" value="{{tmpLabel}}" (input)="stateEditOnChange($event, newTrTitle.value)" #newTrTitle>
+      </div>
+      <div class="modal-footer">
+        <button type="button" [disabled]="!canEditState" class="btn btn-default" data-dismiss="modal" (click)="transitionEdit(newTrTitle.value)">Save</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button [hidden]="true" id="hiddenEditTransitionTr" type="button" data-toggle="modal" data-target="#transitionEditModal" #hiddenEditTransitionTr>
+</button>
+
+<div id="transitionCreateModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Create Transition</h4>
+      </div>
+      <div class="modal-body form-group">
+        <label for="titleTr">Name:</label>
+        <input id="titleTr" type="text" class="form-control" value="" (input)="stateEditOnChange($event, titleTr.value)" #titleTr>
+      </div>
+      <div class="modal-footer">
+        <button type="button" [disabled]="!canEditState" class="btn btn-default" data-dismiss="modal" (click)="transitionCreate(titleTr.value)">Save</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button [hidden]="true" id="hiddenCreateTransitionTr" type="button" data-toggle="modal" data-target="#transitionCreateModal" #hiddenCreateTransitionTr>
+</button>
