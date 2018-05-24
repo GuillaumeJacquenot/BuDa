@@ -1,8 +1,10 @@
-IMAGE_NAME=holiship-graphtool
+IMAGE_NAME=hgraphtool
 
 stop:
 	docker rm -f $(IMAGE_NAME) || true 2> /dev/null
 
-run: stop
+build:
 	docker build -t $(IMAGE_NAME) -f run/Dockerfile .
-	docker run -d --hostname holiship-graphtool --net holiship-network --name $(IMAGE_NAME) -p 8080:8080 -t $(IMAGE_NAME)
+
+run: stop build
+	docker run -d --network $(NETWORK) --name $(IMAGE_NAME) -p 8080:8080 -t $(IMAGE_NAME)
