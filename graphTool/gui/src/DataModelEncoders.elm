@@ -12,6 +12,7 @@ module DataModelEncoders
         , encodeMqttMessageNotification_
         )
 
+import ElementAttributes exposing (..)
 import Identifier exposing (Identifier)
 import Position exposing (Position)
 import Attribut exposing (Attribut)
@@ -61,6 +62,35 @@ encodePosition_ position =
         ]
 
 
+encodeElementType : ElementType -> Value
+encodeElementType nodeType =
+    case nodeType of
+        Producer ->
+            Json.Encode.string "producer"
+
+        Consumer ->
+            Json.Encode.string "consumer"
+
+        ProducerConsumer ->
+            Json.Encode.string "producer_consumer"
+
+        TypeUnknown ->
+            Json.Encode.string "unknown"
+
+
+encodeElementState : ElementState -> Value
+encodeElementState state =
+    case state of
+        RAS ->
+            Json.Encode.string "RAS"
+
+        HS ->
+            Json.Encode.string "HS"
+
+        StateUnknown ->
+            Json.Encode.string "unknown"
+
+
 encodeNode_ : Node -> Value
 encodeNode_ n =
     object
@@ -68,6 +98,8 @@ encodeNode_ n =
         , ( "name", Json.Encode.string n.name )
         , ( "parent", maybe encodeIdentifier n.parent )
         , ( "attribut", maybe encodeAttribut n.attribut )
+        , ( "nodeType", encodeElementType n.nodeType )
+        , ( "state", encodeElementState n.state )
         , ( "geometry", maybe encodeIdentifier n.geometry )
         , ( "group", (Json.Encode.list <| List.map encodeIdentifier (Set.toList n.group)) )
         , ( "highLighted"
@@ -117,6 +149,7 @@ encodeEdge_ je =
         , ( "source", encodeIdentifier je.source )
         , ( "target", encodeIdentifier je.target )
         , ( "parameters", (Json.Encode.list <| List.map encodeIdentifier (Set.toList je.parameters)) )
+        , ( "state", encodeElementState je.state )
         , ( "attribut", maybe encodeAttribut je.attribut )
         , ( "highLighted", Json.Encode.int je.highLighted )
         , ( "tightness", (Json.Encode.list <| List.map encodeIdentifier (Set.toList je.tightness)) )

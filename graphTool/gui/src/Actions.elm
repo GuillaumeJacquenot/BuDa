@@ -13,6 +13,7 @@ import DataModel
 import DataModelEncoders
 import Dom exposing (focus)
 import Export
+import ElementAttributes
 import Geometries
 import LayoutMenuActions
 import LinkToJS
@@ -297,6 +298,12 @@ update msg model =
                     model
 
                 SwitchToView _ ->
+                    model
+
+                SwitchElemType _ ->
+                    model
+
+                SwitchElemState _ ->
                     model
 
                 KeyUps s ->
@@ -663,6 +670,12 @@ globalUpdate msg model =
             in
                 -- showView msg m1
                 ( m1, Cmd.batch [ LinkToJS.setLayoutNameThenLayout s ] )
+
+        SwitchElemType elemType ->
+            ( ModelActions.updateNodeType model elemType, Cmd.none )
+
+        SwitchElemState elemState ->
+            ( ModelActions.updateState model elemState, Cmd.none )
 
         CreateNode ->
             let

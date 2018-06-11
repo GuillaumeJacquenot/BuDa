@@ -17,6 +17,8 @@ module ModelActions
         , createParameter
         , deleteParameter
         , updateAttribute
+        , updateNodeType
+        , updateState
         , updateProperty
         , undo
         , redo
@@ -54,6 +56,7 @@ import DataModel
 import Model exposing (Model)
 import LinkParameters
 import Set exposing (Set)
+import ElementAttributes exposing (..)
 import LinkParameters
 import DataModelActions
 import Scenario
@@ -561,6 +564,78 @@ updateAttribute model s =
 
         newUndo =
             Scenario.addMsg (Scenario.UpdateAttribute s m_id) model.undo
+    in
+        { model
+            | dataModel = newDataModel
+            , undo = newUndo
+        }
+
+
+
+{--
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+updateNodeType
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+--}
+
+
+updateNodeType : Model.Model -> ElementType -> Model.Model
+updateNodeType model elemType =
+    let
+        m_id =
+            case model.selection of
+                x :: xs ->
+                    Just x
+
+                [] ->
+                    Nothing
+
+        newDataModel =
+            DataModelActions.updateNodeType m_id elemType model.dataModel
+
+        newUndo =
+            Scenario.addMsg (Scenario.UpdateNodeType elemType m_id) model.undo
+    in
+        { model
+            | dataModel = newDataModel
+            , undo = newUndo
+        }
+
+
+
+{--
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+updateNodeType
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+--}
+
+
+updateState : Model.Model -> ElementState -> Model.Model
+updateState model elemState =
+    let
+        m_id =
+            case model.selection of
+                x :: xs ->
+                    Just x
+
+                [] ->
+                    Nothing
+
+        newDataModel =
+            DataModelActions.updateState m_id elemState model.dataModel
+
+        newUndo =
+            Scenario.addMsg (Scenario.UpdateState elemState m_id) model.undo
     in
         { model
             | dataModel = newDataModel

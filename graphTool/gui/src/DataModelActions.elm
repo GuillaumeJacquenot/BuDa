@@ -12,6 +12,8 @@ module DataModelActions
         , deleteGeometry
         , renameNode
         , updateAttribute
+        , updateNodeType
+        , updateState
         , lowestLevelEdges
         , updateProperty
         , groupNodes
@@ -39,6 +41,7 @@ import Identifier exposing (Identifier)
 import Position exposing (Position, NodePosition)
 import Node exposing (Node)
 import Link exposing (Edge)
+import ElementAttributes exposing (..)
 import ModelManagement
 import LinkParametersActions
 import LinkParameters
@@ -742,6 +745,103 @@ updateAttribute m_id s dataModel =
 
                 newEdges =
                     List.map (\x -> fedge_ id s x) dataModel.edges
+            in
+                { dataModel | nodes = newNodes, edges = newEdges }
+
+
+
+{--
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+updateNodeType :
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+--}
+
+
+f_replaceNodeType : Identifier -> ElementType -> Node -> Node
+f_replaceNodeType id elemType node =
+    let
+        newNode =
+            case node.id == id of
+                True ->
+                    { node | nodeType = elemType }
+
+                False ->
+                    node
+    in
+        newNode
+
+
+updateNodeType : Maybe Identifier -> ElementType -> Model -> Model
+updateNodeType m_id elemType dataModel =
+    case m_id of
+        Nothing ->
+            dataModel
+
+        Just id ->
+            let
+                newNodes =
+                    List.map (\x -> (f_replaceNodeType id elemType x)) dataModel.nodes
+            in
+                { dataModel | nodes = newNodes }
+
+
+
+{--
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+updateNodeType :
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+--}
+
+
+f_replaceNodeState : Identifier -> ElementState -> Node -> Node
+f_replaceNodeState id elemState node =
+    let
+        newNode =
+            case node.id == id of
+                True ->
+                    { node | state = elemState }
+
+                False ->
+                    node
+    in
+        newNode
+
+
+f_replaceEdgeState : Identifier -> ElementState -> Edge -> Edge
+f_replaceEdgeState id elemState edge =
+    let
+        newEdge =
+            case edge.id == id of
+                True ->
+                    { edge | state = elemState }
+
+                False ->
+                    edge
+    in
+        newEdge
+
+
+updateState : Maybe Identifier -> ElementState -> Model -> Model
+updateState m_id elemState dataModel =
+    case m_id of
+        Nothing ->
+            dataModel
+
+        Just id ->
+            let
+                newNodes =
+                    List.map (\x -> (f_replaceNodeState id elemState x)) dataModel.nodes
+
+                newEdges =
+                    List.map (\x -> (f_replaceEdgeState id elemState x)) dataModel.edges
             in
                 { dataModel | nodes = newNodes, edges = newEdges }
 

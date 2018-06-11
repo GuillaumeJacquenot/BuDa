@@ -3,6 +3,7 @@ module Node exposing (Node, node, inGroup, hasGeometry, removeGeometry, blow)
 import Identifier exposing (Identifier)
 import Position exposing (Position)
 import Attribut exposing (Attribut)
+import ElementAttributes exposing (..)
 import Set exposing (Set)
 
 
@@ -11,6 +12,8 @@ type alias Node =
     , name : String
     , parent : Maybe Identifier
     , attribut : Maybe Attribut
+    , nodeType : ElementType
+    , state : ElementState
     , geometry : Maybe Identifier
     , group : Set Identifier
     , highLighted : Bool
@@ -25,6 +28,8 @@ node i s p =
     , name = s
     , parent = p
     , attribut = Nothing
+    , nodeType = TypeUnknown
+    , state = RAS
     , geometry = Nothing
     , group = Set.empty
     , highLighted = False

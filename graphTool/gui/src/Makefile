@@ -9,7 +9,7 @@ SRC_BINARIES = $(BINARIES) *.elm elm-package.json Makefile
 all : clean test app
 	elm-make Main.elm --output elm.js --yes
 
-app : clean
+app : 
 	elm-make Main.elm --output elm.js --yes
 
 test: clean-test

@@ -19,6 +19,7 @@ import Identifier exposing (Identifier)
 import Set exposing (Set)
 import Attribut exposing (Attribut)
 import Tightness
+import ElementAttributes exposing (..)
 
 
 type alias ActivePoperties =
@@ -30,6 +31,7 @@ type alias Edge =
     , source : Identifier
     , target : Identifier
     , parameters : ActivePoperties
+    , state : ElementState
     , attribut : Maybe Attribut
     , highLighted : Int
     , tightness : Tightness.Model
@@ -42,6 +44,7 @@ makeLink i s t =
     , source = s
     , target = t
     , parameters = Set.empty
+    , state = RAS
     , attribut = Nothing
     , highLighted = 0
     , tightness = Tightness.default

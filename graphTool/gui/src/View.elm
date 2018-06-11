@@ -8,6 +8,7 @@ import Json.Decode
 import Model exposing (ViewType(..))
 import ParametersView
 import AttributView
+import ElementAttributesView
 import GroupsView
 import ModelActions
 import GeometriesView
@@ -55,6 +56,7 @@ view model =
         , LayoutView.view model
         , div [ id "leftLayout", class "vLayout" ]
             [ AttributView.view model
+            , ElementAttributesView.view model
             , ParametersView.view model
             , GroupsView.view model
             , GeometriesView.view model
