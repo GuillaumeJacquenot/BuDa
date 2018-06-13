@@ -66,6 +66,7 @@ type Msg
     | ShowHideGeometries
     | ShowHideParameters
     | Verification
+    | Propagation
     | OnNotificationClick
     | UserChange String
     | UrlChange String

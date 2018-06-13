@@ -432,6 +432,9 @@ update msg model =
                 Verification ->
                     model
 
+                Propagation ->
+                    model
+
                 OnNotificationClick ->
                     model
 
@@ -937,6 +940,9 @@ globalUpdate msg model =
                     { model | dataModel = dm2 }
             in
                 ( m1, Cmd.none )
+
+        Propagation ->
+            model ! []
 
         UserChange s ->
             ( { model | mqtt = Mqtt.setClientId s model.mqtt }, Cmd.none )

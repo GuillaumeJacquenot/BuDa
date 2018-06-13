@@ -80,6 +80,7 @@ view model =
         , button [ onClick Messages.GetPositions, id "pos", value "pos" ] [ text "Pos" ]
         , button [ onClick Messages.Redo, id "redo", value "redo" ] [ text "Redo" ]
         , button [ onClick Messages.Verification, id "verification", value "verification" ] [ text "Verif" ]
+        , button [ onClick Messages.Propagation, id "propagation", value "propagation" ] [ text "Propagation" ]
         , img [ id "logo", src "LogoSirehna_DC.png", title "logo sirehna" ] []
         , div [ id "label" ] [ text (ModelActions.getNodeViewLabel model) ]
         , div [ id "counter" ] [ text (ModelActions.getCounterViewLabel model) ]
