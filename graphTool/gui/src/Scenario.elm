@@ -25,6 +25,7 @@ type Msg
     | UpdateState ElementState (Maybe Identifier)
     | LoadModel DataModel.DataModel
     | GroupNodes (List Node) String
+    | UpdateOutpowered
     | UpdateNodeGroupProperty Node String
     | CreateGroup String
     | DeleteGroup String

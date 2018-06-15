@@ -33,6 +33,7 @@ module ModelActions
         , updateNodesPosition
         , updateLightLayout
         , updateGeometryLayout
+        , updateOutpowered
         , triNodes
         , getAscendantName
         , searchElement
@@ -69,6 +70,7 @@ import Selection
 import Geometries
 import Csv
 import Search
+import Propagation
 
 
 {--
@@ -564,6 +566,34 @@ updateAttribute model s =
 
         newUndo =
             Scenario.addMsg (Scenario.UpdateAttribute s m_id) model.undo
+    in
+        { model
+            | dataModel = newDataModel
+            , undo = newUndo
+        }
+
+
+
+{--
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+updateOutpowered:
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+--}
+
+
+updateOutpowered : Model.Model -> Model.Model
+updateOutpowered model =
+    let
+        newDataModel =
+            DataModelActions.updateOutpowered model.dataModel
+
+        newUndo =
+            Scenario.addMsg (Scenario.UpdateOutpowered) model.undo
     in
         { model
             | dataModel = newDataModel

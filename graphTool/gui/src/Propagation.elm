@@ -11,19 +11,55 @@ import Set exposing (..)
 propagation : Model -> Model
 propagation model =
     let
-        outpoweredNodes =
+        outpoweredNodesIds =
             findOutpoweredNodes model
 
+        hsNodes =
+            List.filter (\x -> x.state == HS) model.nodes
+
+        outpoweredNodes =
+            (nodeListFromIds model outpoweredNodesIds) ++ hsNodes
+
+        consumerNodeList =
+            consumerList model
+
+        initialConsumersIdList =
+            List.map (\x -> x.id) consumerNodeList
+
         newNodeList =
-            List.map (\x -> updateOutpoweredNode outpoweredNodes x) model.nodes
+            List.map (\x -> updateOutpoweredNode outpoweredNodes initialConsumersIdList x) model.nodes
 
-        _ =
-            Debug.log "test" newNodeList
+        outAndRASNodeIds =
+            outpoweredNodesIds ++ List.map (\x -> x.id) hsNodes
+
+        newEdgeList =
+            findOutpoweredEdges model.edges outAndRASNodeIds
     in
-        { model | nodes = newNodeList }
+        { model | nodes = newNodeList, edges = newEdgeList }
 
 
-findOutpoweredNodes : Model -> List Node
+
+-- Retruns a list f edge where outpoweres ones are highlighted
+
+
+findOutpoweredEdges : List Edge -> List Identifier -> List Edge
+findOutpoweredEdges edges outNodeIdList =
+    List.map (\x -> updateOutpoweredEdge x outNodeIdList) edges
+
+
+
+-- Update the highlight attribute of an edge if its outpowered
+
+
+updateOutpoweredEdge : Edge -> List Identifier -> Edge
+updateOutpoweredEdge edge outNodeIdList =
+    if ((List.member edge.source outNodeIdList) && (List.member edge.target outNodeIdList)) then
+        { edge | highLighted = 4 }
+    else
+        edge
+
+
+findOutpoweredNodes : Model -> List Identifier
 findOutpoweredNodes model =
     let
         prodNodeList =
@@ -32,19 +68,13 @@ findOutpoweredNodes model =
         initialProducersIdList =
             List.map (\x -> x.id) prodNodeList
 
-        consumerNodeList =
-            consumerList model
-
-        initialConsumersIdList =
-            List.map (\x -> x.id) consumerNodeList
+        modelNodeIdList =
+            List.map (\x -> x.id) model.nodes
 
         extendedProducerIdList =
             extendedProducerList [] initialProducersIdList model
-
-        outpoweredNodesIds =
-            removeListFromAnother initialConsumersIdList extendedProducerIdList
     in
-        nodeListFromIds model outpoweredNodesIds
+        removeListFromAnother modelNodeIdList extendedProducerIdList
 
 
 
@@ -183,14 +213,17 @@ nodeListFromIds model idList =
         List.filterMap (\x -> x) maybeNodeList
 
 
-updateOutpoweredNode : List Node -> Node -> Node
-updateOutpoweredNode outpoweredNodeList node =
+updateOutpoweredNode : List Node -> List Identifier -> Node -> Node
+updateOutpoweredNode outpoweredNodeList consumersIdList node =
     case outpoweredNodeList of
         [] ->
             node
 
         x :: xs ->
             if (x.id == node.id) then
-                { x | highLighted = 99 }
+                if (List.member x.id consumersIdList) then
+                    { x | highLighted = 3 }
+                else
+                    { x | highLighted = 2 }
             else
-                updateOutpoweredNode xs node
+                updateOutpoweredNode xs consumersIdList node

@@ -676,10 +676,10 @@ globalUpdate msg model =
                 ( m1, Cmd.batch [ LinkToJS.setLayoutNameThenLayout s ] )
 
         SwitchElemType elemType ->
-            ( ModelActions.updateNodeType model elemType, Cmd.none )
+            showView msg (ModelActions.updateNodeType model elemType)
 
         SwitchElemState elemState ->
-            ( ModelActions.updateState model elemState, Cmd.none )
+            showView msg (ModelActions.updateState model elemState)
 
         CreateNode ->
             let
@@ -931,6 +931,9 @@ globalUpdate msg model =
 
         Verification ->
             let
+                _ =
+                    Debug.log "verif" model.dataModel
+
                 dm =
                     Verification.verificationBlocs model.dataModel
 
@@ -943,7 +946,7 @@ globalUpdate msg model =
                 ( m1, Cmd.none )
 
         Propagation ->
-            ( { model | dataModel = Propagation.propagation model.dataModel }, Cmd.none )
+            showView msg (ModelActions.updateOutpowered model)
 
         UserChange s ->
             ( { model | mqtt = Mqtt.setClientId s model.mqtt }, Cmd.none )

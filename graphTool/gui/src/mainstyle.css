@@ -5,6 +5,14 @@ node {
   border-color: #555;
 }
 
+node[highLighted = 3] {
+  shape: ellipse;
+  background-color: #FF6A00;
+}
+node[highLighted = 2] {
+  shape: rectangle;
+  background-color: #FF6A00;
+}
 node[highLighted = 1] {
   shape: ellipse;
   background-color: #F2A5A9;
@@ -24,9 +32,10 @@ node[blow = 0] {
   border-color: #555;
 }
 
-node[highLighted = 99] {
-  shape: rectangle;
+node[state = "HS"] {
+  border-color: #CC0000;
   background-color: #CC0000;
+  border-width: 1;
 }
 
 
@@ -70,6 +79,19 @@ edge[highLighted = 3] {
   line-color: #555;
   line-style: dashed;
   width: 4;
+}
+
+/*interface non etanche*/
+edge[highLighted = 4] {
+  line-color: #FF6A00;
+  line-style: dashed;
+  width: 4;
+}
+
+edge[state = "HS"] {
+  line-color: #CC0000;
+  line-style: dashed;
+  width: 5;
 }
 
 edge:selected {

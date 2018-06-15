@@ -26,6 +26,7 @@ module DataModelActions
         , updateLayoutFromNodeId
         , updateGeometryLayoutFromId
         , updateLightLayout
+        , updateOutpowered
         , getAscendantName
         , insertMask
         , removeMask
@@ -56,6 +57,7 @@ import TranslateTmpDataModel
 import Notification
 import Geometries
 import GeometryActions
+import Propagation
 
 
 {--
@@ -1601,6 +1603,11 @@ updateGeometryLayoutFromId m_id lay model =
 updateLightLayout : Layout -> Model -> Model
 updateLightLayout elements model =
     { model | lightLayout = Just elements }
+
+
+updateOutpowered : Model -> Model
+updateOutpowered model =
+    Propagation.propagation model
 
 
 ascNameFromList_ : List Node -> String -> String
