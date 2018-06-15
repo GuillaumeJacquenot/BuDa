@@ -30,6 +30,7 @@ import Selection
 import SpecialKey
 import Task
 import Verification
+import Propagation
 
 
 upView : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
@@ -942,7 +943,7 @@ globalUpdate msg model =
                 ( m1, Cmd.none )
 
         Propagation ->
-            model ! []
+            ( { model | dataModel = Propagation.propagation model.dataModel }, Cmd.none )
 
         UserChange s ->
             ( { model | mqtt = Mqtt.setClientId s model.mqtt }, Cmd.none )

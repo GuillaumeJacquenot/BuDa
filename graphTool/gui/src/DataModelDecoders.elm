@@ -112,7 +112,7 @@ decodeNode =
         |> optional "state" decodeState StateUnknown
         |> optional "geometry" (Json.Decode.maybe decodeIdentifier) Nothing
         |> required "group" (Json.Decode.Extra.set decodeIdentifier)
-        |> hardcoded False
+        |> hardcoded 0
         |> optional "position" decodePosition Position.defaultPosition
         |> hardcoded False
 

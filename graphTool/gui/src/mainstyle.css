@@ -24,6 +24,11 @@ node[blow = 0] {
   border-color: #555;
 }
 
+node[highLighted = 99] {
+  shape: rectangle;
+  background-color: #CC0000;
+}
+
 
 edge {
   curve-style: haystack;

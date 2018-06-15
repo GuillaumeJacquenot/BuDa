@@ -1287,15 +1287,15 @@ highLightGroup s model =
                                 (\x ->
                                     case newLightedGroup of
                                         Nothing ->
-                                            { x | highLighted = False }
+                                            { x | highLighted = 0 }
 
                                         Just id ->
                                             case Set.member id x.group of
                                                 True ->
-                                                    { x | highLighted = True }
+                                                    { x | highLighted = 1 }
 
                                                 False ->
-                                                    { x | highLighted = False }
+                                                    { x | highLighted = 0 }
                                 )
                                 model.nodes
 
@@ -1381,10 +1381,10 @@ selectedParameters s model =
                                 (\x ->
                                     case List.any (\y -> y.source == x.id || y.target == x.id) newEdgesFilter of
                                         True ->
-                                            { x | highLighted = True }
+                                            { x | highLighted = 1 }
 
                                         False ->
-                                            { x | highLighted = False }
+                                            { x | highLighted = 0 }
                                 )
                                 model.nodes
                     in

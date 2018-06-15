@@ -102,16 +102,7 @@ encodeNode_ n =
         , ( "state", encodeElementState n.state )
         , ( "geometry", maybe encodeIdentifier n.geometry )
         , ( "group", (Json.Encode.list <| List.map encodeIdentifier (Set.toList n.group)) )
-        , ( "highLighted"
-          , Json.Encode.int
-                (case n.highLighted of
-                    True ->
-                        1
-
-                    False ->
-                        0
-                )
-          )
+        , ( "highLighted", Json.Encode.int n.highLighted )
         , ( "position", encodePosition_ n.position )
         , ( "blow"
           , Json.Encode.int

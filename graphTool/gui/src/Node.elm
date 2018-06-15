@@ -16,7 +16,7 @@ type alias Node =
     , state : ElementState
     , geometry : Maybe Identifier
     , group : Set Identifier
-    , highLighted : Bool
+    , highLighted : Int
     , position : Position
     , blow : Bool
     }
@@ -32,7 +32,7 @@ node i s p =
     , state = RAS
     , geometry = Nothing
     , group = Set.empty
-    , highLighted = False
+    , highLighted = 0
     , position = Position.defaultPosition
     , blow = False
     }
