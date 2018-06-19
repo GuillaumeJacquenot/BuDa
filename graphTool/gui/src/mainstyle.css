@@ -6,12 +6,12 @@ node {
 }
 
 node[highLighted = 3] {
-  shape: ellipse;
+  shape: rectangle;
   background-color: #FF6A00;
 }
 node[highLighted = 2] {
   shape: rectangle;
-  background-color: #FF6A00;
+  background-color: #FABE00;
 }
 node[highLighted = 1] {
   shape: ellipse;
@@ -83,7 +83,7 @@ edge[highLighted = 3] {
 
 /*interface non etanche*/
 edge[highLighted = 4] {
-  line-color: #FF6A00;
+  line-color: #FABE00;
   line-style: dashed;
   width: 4;
 }

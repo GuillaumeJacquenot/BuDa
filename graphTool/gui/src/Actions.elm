@@ -240,6 +240,24 @@ prepareNotification_ cmd model =
         ( m1, Cmd.batch cmds )
 
 
+initModelHighlights : Model.Model -> Model.Model
+initModelHighlights model =
+    let
+        dataModel =
+            model.dataModel
+
+        initNodes =
+            List.map (\x -> { x | highLighted = 0 }) dataModel.nodes
+
+        initEdges =
+            List.map (\x -> { x | highLighted = 0 }) dataModel.edges
+
+        dm1 =
+            { dataModel | nodes = initNodes, edges = initEdges }
+    in
+        { model | dataModel = dm1, propagationDone = False }
+
+
 update : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
 update msg model =
     let
@@ -676,10 +694,18 @@ globalUpdate msg model =
                 ( m1, Cmd.batch [ LinkToJS.setLayoutNameThenLayout s ] )
 
         SwitchElemType elemType ->
-            showView msg (ModelActions.updateNodeType model elemType)
+            let
+                m1 =
+                    initModelHighlights model
+            in
+                showView msg (ModelActions.updateNodeType m1 elemType)
 
         SwitchElemState elemState ->
-            showView msg (ModelActions.updateState model elemState)
+            let
+                m1 =
+                    initModelHighlights model
+            in
+                showView msg (ModelActions.updateState m1 elemState)
 
         CreateNode ->
             let
@@ -946,7 +972,14 @@ globalUpdate msg model =
                 ( m1, Cmd.none )
 
         Propagation ->
-            showView msg (ModelActions.updateOutpowered model)
+            if (model.propagationDone == False) then
+                let
+                    newModel =
+                        { model | propagationDone = True }
+                in
+                    showView msg (ModelActions.updateOutpowered newModel)
+            else
+                showView msg (initModelHighlights model)
 
         UserChange s ->
             ( { model | mqtt = Mqtt.setClientId s model.mqtt }, Cmd.none )

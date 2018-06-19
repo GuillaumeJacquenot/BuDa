@@ -1,7 +1,7 @@
 FILENAME := ../graphTool-bin$(shell date +_%Y%m%d_%Hh%M).tar.gz
 FILENAME2 := ../graphTool-src-bin$(shell date +_%Y%m%d_%Hh%M).tar.gz
 JSFILES = js/*.js
-SAMPLES = 
+SAMPLES = *.json
 IMAGES = *.svg *.png
 BINARIES = graphTool.html graphTool.css cytostylesheet.css maia.css mainstyle.css elm.js $(JSFILES) $(IMAGES) $(SAMPLES)
 SRC_BINARIES = $(BINARIES) *.elm elm-package.json Makefile
@@ -9,7 +9,7 @@ SRC_BINARIES = $(BINARIES) *.elm elm-package.json Makefile
 all : clean test app
 	elm-make Main.elm --output elm.js --yes
 
-app : 
+app :
 	elm-make Main.elm --output elm.js --yes
 
 test: clean-test

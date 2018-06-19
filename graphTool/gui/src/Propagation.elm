@@ -11,11 +11,14 @@ import Set exposing (..)
 propagation : Model -> Model
 propagation model =
     let
+        initialNodeList =
+            List.map (\x -> { x | highLighted = 0 }) model.nodes
+
         outpoweredNodesIds =
             findOutpoweredNodes model
 
         hsNodes =
-            List.filter (\x -> x.state == HS) model.nodes
+            List.filter (\x -> x.state == HS) initialNodeList
 
         outpoweredNodes =
             (nodeListFromIds model outpoweredNodesIds) ++ hsNodes
@@ -27,13 +30,16 @@ propagation model =
             List.map (\x -> x.id) consumerNodeList
 
         newNodeList =
-            List.map (\x -> updateOutpoweredNode outpoweredNodes initialConsumersIdList x) model.nodes
+            List.map (\x -> updateOutpoweredNode outpoweredNodes initialConsumersIdList x) initialNodeList
 
         outAndRASNodeIds =
             outpoweredNodesIds ++ List.map (\x -> x.id) hsNodes
 
+        initialEdgeList =
+            List.map (\x -> { x | highLighted = 0 }) model.edges
+
         newEdgeList =
-            findOutpoweredEdges model.edges outAndRASNodeIds
+            findOutpoweredEdges initialEdgeList outAndRASNodeIds
     in
         { model | nodes = newNodeList, edges = newEdgeList }
 
