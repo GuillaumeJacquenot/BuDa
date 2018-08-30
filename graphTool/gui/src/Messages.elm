@@ -18,6 +18,7 @@ type Msg
     | Selection (List String)
     | ModelToElm String
     | CsvModelToElm String
+    | Csv2ModelToElm String
     | ImportModelToElm String
     | ImportCsvModeltoElm String
     | NodesPositionToElm String
