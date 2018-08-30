@@ -18,6 +18,7 @@ subscriptions model =
           LinkToJS.selection Selection
         , LinkToJS.modeltoelm ModelToElm
         , LinkToJS.csvmodeltoelm CsvModelToElm
+        , LinkToJS.csv2modeltoelm Csv2ModelToElm
         , LinkToJS.importModeltoelm ImportModelToElm
         , LinkToJS.importCsvModeltoelm ImportCsvModeltoElm
         , LinkToJS.doubleclick DoubleClick
