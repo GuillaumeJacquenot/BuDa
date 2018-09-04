@@ -26,9 +26,23 @@ defaultCsvLine =
     }
 
 
+supprFirstLine : List String -> List String
+supprFirstLine list =
+    case list of
+        [] ->
+            []
+
+        x :: xs ->
+            xs
+
+
 loadCsvModel : String -> DataModel.Model -> DataModel.Model
 loadCsvModel s model =
-    testAddCsvToModel (List.map (\x -> stringToCsvLine x) (String.lines s)) model
+    let
+        lines =
+            supprFirstLine (String.lines s)
+    in
+        testAddCsvToModel (List.map (\x -> stringToCsvLine x) lines) model
 
 
 testAddCsvToModel : List CsvLine -> DataModel.Model -> DataModel.Model
