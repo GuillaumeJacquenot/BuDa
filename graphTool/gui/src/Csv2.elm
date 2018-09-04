@@ -52,7 +52,7 @@ testAddCsvToModel list model =
             List.filter (\x -> isValidLineForBloc_ x) list
 
         m1 =
-            List.foldr (\x -> addBlocToModel_ x.name x.parent) model l1
+            List.foldr (\x -> addBlocToModel_ x) model l1
 
         m2 =
             List.foldr (\x -> addLinkFromCsvLine_ x) m1 list
@@ -169,8 +169,23 @@ addLinkToModel_ csvLine model =
 
                                         False ->
                                             m2
+
+                                m4 =
+                                    let
+                                        m_edge =
+                                            DataModel.getEdgeFromNodesName csvLine.refAboutissant1 csvLine.refAboutissant2 m3
+
+                                        m_id =
+                                            case m_edge of
+                                                Just edge ->
+                                                    Just edge.id
+
+                                                Nothing ->
+                                                    Nothing
+                                    in
+                                        DataModelActions.updateAttribute m_id csvLine.denomination m3
                             in
-                                m3
+                                m4
 
                 _ ->
                     model
@@ -178,44 +193,64 @@ addLinkToModel_ csvLine model =
         m1
 
 
-addBlocToModel_ : String -> String -> DataModel.Model -> DataModel.Model
-addBlocToModel_ name sparent model =
-    case String.isEmpty sparent of
-        True ->
-            addSecondBlocToModel_ Nothing name model
+addBlocToModel_ : CsvLine -> DataModel.Model -> DataModel.Model
+addBlocToModel_ x model =
+    let
+        name =
+            x.name
 
-        -- root node
-        False ->
-            case DataModel.isNamePresent sparent model.nodes of
-                True ->
-                    let
-                        m_p =
-                            DataModel.getNodeIdFromName sparent model.nodes
+        sparent =
+            x.parent
 
-                        m =
-                            addSecondBlocToModel_ m_p name model
-                    in
-                        m
+        attribute =
+            x.denomination
+    in
+        case String.isEmpty sparent of
+            True ->
+                addSecondBlocToModel_ Nothing name attribute model
 
-                False ->
-                    let
-                        m1 =
-                            DataModelActions.createNode sparent Nothing model
+            -- root node
+            False ->
+                case DataModel.isNamePresent sparent model.nodes of
+                    True ->
+                        let
+                            m_p =
+                                DataModel.getNodeIdFromName sparent model.nodes
 
-                        m_p =
-                            DataModel.getNodeIdFromName sparent m1.nodes
+                            m =
+                                addSecondBlocToModel_ m_p name attribute model
+                        in
+                            m
 
-                        m =
-                            addSecondBlocToModel_ m_p name m1
-                    in
-                        m
+                    False ->
+                        let
+                            m1 =
+                                DataModelActions.createNode sparent Nothing model
+
+                            m_p =
+                                DataModel.getNodeIdFromName sparent m1.nodes
+
+                            m =
+                                addSecondBlocToModel_ m_p name attribute m1
+                        in
+                            m
 
 
-addSecondBlocToModel_ : Maybe Identifier -> String -> DataModel.Model -> DataModel.Model
-addSecondBlocToModel_ m_p s model =
+addSecondBlocToModel_ : Maybe Identifier -> String -> String -> DataModel.Model -> DataModel.Model
+addSecondBlocToModel_ m_p s attribute model =
     case (DataModel.getNodeFromNameAndParent s m_p model.nodes) of
         Nothing ->
-            (DataModelActions.createNode s m_p model)
+            let
+                m1 =
+                    DataModelActions.createNode s m_p model
+
+                m_id =
+                    DataModel.getNodeIdFromNameAndParent s m_p m1.nodes
+
+                m2 =
+                    DataModelActions.updateAttribute m_id attribute m1
+            in
+                m2
 
         Just n ->
             model
