@@ -779,14 +779,14 @@ globalUpdate msg model =
         CsvModelToElm s ->
             let
                 m1 =
-                    ModelActions.loadCsvModel s model
+                    ModelActions.loadCsv2Model s model
             in
                 showView msg m1
 
         Csv2ModelToElm s ->
             let
                 m1 =
-                    ModelActions.loadCsv2Model s model
+                    ModelActions.loadCsvModel s model
             in
                 showView msg m1
 
