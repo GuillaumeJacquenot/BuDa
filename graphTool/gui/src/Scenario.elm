@@ -1,6 +1,7 @@
 module Scenario exposing (Msg(..), Model, RedoModel, defaultModel, defaultRedoModel, addMsg)
 
 import Identifier exposing (Identifier)
+import ElementAttributes exposing (..)
 import Link exposing (Edge)
 import Node exposing (Node)
 import DataModel
@@ -20,8 +21,11 @@ type Msg
     | DeleteParameter String
     | UpdateProperty Edge String
     | UpdateAttribute String (Maybe Identifier)
+    | UpdateNodeType ElementType (Maybe Identifier)
+    | UpdateState ElementState (Maybe Identifier)
     | LoadModel DataModel.DataModel
     | GroupNodes (List Node) String
+    | UpdateOutpowered
     | UpdateNodeGroupProperty Node String
     | CreateGroup String
     | DeleteGroup String
