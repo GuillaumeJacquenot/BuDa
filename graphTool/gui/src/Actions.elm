@@ -299,6 +299,10 @@ update msg model =
                     -- nouveau csv model depuis javascript
                     { model | searchModel = searchBuildList }
 
+                Csv2ModelToElm _ ->
+                    -- nouveau csv model depuis javascript
+                    { model | searchModel = searchBuildList }
+
                 ImportModelToElm _ ->
                     -- import nouveau model depuis javascript
                     { model | searchModel = searchBuildList }
@@ -776,6 +780,13 @@ globalUpdate msg model =
             let
                 m1 =
                     ModelActions.loadCsvModel s model
+            in
+                showView msg m1
+
+        Csv2ModelToElm s ->
+            let
+                m1 =
+                    ModelActions.loadCsv2Model s model
             in
                 showView msg m1
 

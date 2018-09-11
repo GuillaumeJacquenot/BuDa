@@ -195,6 +195,10 @@
       function app_port_sendCsvModelToElm(msg) {
         app.ports.csvmodeltoelm.send(msg);
       }
+      function app_port_sendCsv2ModelToElm(msg) {
+        console.log (msg);
+        app.ports.csv2modeltoelm.send(msg);
+      }
       function app_port_sendImportModelToElm (msg) {
         app.ports.importModeltoelm.send(msg);
       }

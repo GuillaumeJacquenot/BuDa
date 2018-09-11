@@ -1,0 +1,29 @@
+<div id="NewModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" (click)="closeModal();">&times;</button>
+        <h4 class="modal-title">New {{context}}</h4>
+      </div>
+      <div class="modal-body form-group">
+        <form [formGroup]="form">
+          <label for="ID">ID:</label>
+          <input formControlName="id" id="ID" type="text" class="form-control" #ID>
+          <br>
+          <label for="NewTitle">Title:</label>
+          <input formControlName="title" id="NewTitle" type="text" class="form-control" #NewTitle>
+          <br>
+          <label for="newDescr">Description:</label>
+          <textarea formControlName="description" id="newDescr" class="form-control" #newDescr rows="10"></textarea>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" [disabled]="!form.valid"
+                (click)="createAndClose(ID.value, NewTitle.value, newDescr.value);">Save</button>
+      </div>
+    </div>
+
+  </div>
+</div>

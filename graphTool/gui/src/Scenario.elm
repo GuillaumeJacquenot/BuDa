@@ -40,6 +40,7 @@ type Msg
     | CtrlV (Maybe Identifier)
     | SendGeometryName Geometries.Property
     | LoadCsvModel String
+    | LoadCsv2Model String
 
 
 type alias Model =

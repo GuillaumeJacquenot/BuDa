@@ -1,0 +1,17 @@
+<router-outlet></router-outlet>
+
+<div id="errBlock" *ngIf="isConnErr">
+  <div id="connErr" class="panel panel-danger">
+    <div class="panel-heading">
+      <h3 class="panel-title">Server error!</h3>
+    </div>
+    <div class="panel-body">
+      {{error||'test'}}
+    </div>
+    <div class="panel-footer">
+      <button>
+        <a href="/">Reload</a>
+      </button>
+    </div>
+  </div>
+</div>

@@ -6,6 +6,7 @@ port module LinkToJS
         , importModel
         , modeltoelm
         , csvmodeltoelm
+        , csv2modeltoelm
         , importModeltoelm
         , importCsvModeltoelm
         , doubleclick
@@ -127,6 +128,9 @@ port modeltoelm : (String -> msg) -> Sub msg
 
 
 port csvmodeltoelm : (String -> msg) -> Sub msg
+
+
+port csv2modeltoelm : (String -> msg) -> Sub msg
 
 
 port importModeltoelm : (String -> msg) -> Sub msg

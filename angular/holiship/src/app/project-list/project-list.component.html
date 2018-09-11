@@ -1,0 +1,51 @@
+<app-menu-parent [title]="'Projects'"></app-menu-parent>
+
+<!--<a *ngFor="let proj of projArr" routerLink="/proj/{{proj}}" routerLinkActive="active">-->
+    <!--<h3 class="projtitle">{{proj}}</h3>-->
+  <!--<span class="glyphicon glyphicon-trash clickable" (click)="deleteReq(req)"></span>-->
+  <!--<span class="glyphicon glyphicon-edit clickable" data-toggle="modal" data-target="#myModal" (click)="reqEdit(topReqs[req])"></span>-->
+  <!--<span class="glyphicon glyphicon-eye-open clickable" (click)="openVerModal(topReqs[req])"></span>-->
+<!--</a>-->
+
+<div class="proj text-center" *ngFor="let proj of projArr">
+  <a routerLink="/proj/{{proj.properties.name}}" routerLinkActive="active" class="proj-a">
+    <h3 class="projtitle">{{proj.properties.name}}</h3>
+  </a>
+  <div class="proj-btns">
+    <span class="glyphicon glyphicon-trash clickable" (click)="deleteProj(proj)"></span>
+    <span class="glyphicon glyphicon-edit clickable" data-toggle="modal" data-target="#projEditModal" (click)="preEditProj(proj)"></span>
+    <!--<span class="glyphicon glyphicon-eye-open clickable" (click)="openVerModal(topReqs[req])"></span>-->
+  </div>
+</div>
+
+<div class="col-lg-6 col-lg-offset-3">
+  <div class="input-group">
+    <input type="text" class="form-control" placeholder="Name of new project" (input)="projInpOnChange($event, projName.value)" #projName>
+    <span class="input-group-btn">
+          <button [disabled]="!canCreateProj" class="btn btn-default" type="button" (click)="createProject(projName.value); projName.value = ''">Create</button>
+        </span>
+  </div>
+</div>
+
+<div id="projEditModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit Project</h4>
+      </div>
+      <div class="modal-body form-group">
+        <label for="newName">Name:</label>
+        <input id="newName" type="text" class="form-control" value="{{currProj?.properties?.name}}" (input)="projInpOnChange($event, newName.value)" #newName>
+      </div>
+      <div class="modal-footer">
+        <button type="button" [disabled]="!canCreateProj" class="btn btn-default" data-dismiss="modal" (click)="editProj(currProj, newName.value)">Save</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<app-spinner *ngIf="loading"></app-spinner>

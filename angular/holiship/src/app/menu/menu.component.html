@@ -1,0 +1,12 @@
+
+  <!--<li *ngFor="let notification of notifications" class="notification">{{notification.name}}</li>-->
+
+<div class="panel" [ngClass]="notification.action == 'created' && 'panel-success' ||
+    (notification.action == 'updated' || notification.action == 'linked') && 'panel-info' || notification.action == 'impacted' && 'panel-warning'
+    || (notification.action == 'deleted' || notification.action == 'unlinked') && 'panel-danger'"
+     *ngFor="let notification of notifications | reverse">
+  <div class="panel-heading">{{notification.impactedItemType}} {{notification.action}}</div>
+  <div class="panel-body">
+    {{notification.body}}
+  </div>
+</div>

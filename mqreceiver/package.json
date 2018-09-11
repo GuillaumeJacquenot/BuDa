@@ -1,0 +1,12 @@
+{
+  "name": "mqreceiver",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "http": "*",
+    "socket.io": "^2.0.4",
+    "amqplib": "^0.3.2",
+    "express": "^4.16.3"
+  }
+}

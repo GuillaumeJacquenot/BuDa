@@ -10,6 +10,9 @@ reader.onload = function(e) {
     else if(window.fileType == "csv") {
       app_port_sendCsvModelToElm(content);
     }
+    else if(window.fileType == "csv2") {
+      app_port_sendCsv2ModelToElm(content);
+    }
 
 }
 
@@ -31,6 +34,10 @@ function loadModelFromFile(loadModelId) {
   else if(extansion=="csv")
   {
     window.fileType = "csv"
+  }
+  else if(extansion=="csv2")
+  {
+    window.fileType = "csv2"
   }
 
 

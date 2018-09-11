@@ -1,0 +1,17 @@
+p, a{
+    width: 100%;
+    text-align: center;
+    margin: auto;
+}
+
+.proj-a {
+  margin-right: 5px;
+}
+
+span.glyphicon, .projtitle, div.proj-btns {
+  display: inline-block;
+}
+
+.input-group {
+  z-index: 0 !important;
+}

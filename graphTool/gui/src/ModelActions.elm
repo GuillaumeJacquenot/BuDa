@@ -46,6 +46,7 @@ module ModelActions
         , getNodeViewLabel
         , sendGeometryName
         , loadCsvModel
+        , loadCsv2Model
         , blow
         , getCounterViewLabel
         )
@@ -69,6 +70,7 @@ import Keyboard exposing (KeyCode)
 import Selection
 import Geometries
 import Csv
+import Csv2
 import Search
 import Propagation
 
@@ -1433,6 +1435,23 @@ loadCsvModel s model =
         --model.dataModel
         newUndo =
             Scenario.addMsg (Scenario.LoadCsvModel s) model.undo
+    in
+        { model
+            | dataModel =
+                newDataModel
+            , undo = newUndo
+        }
+
+
+loadCsv2Model : String -> Model.Model -> Model.Model
+loadCsv2Model s model =
+    let
+        newDataModel =
+            Csv2.loadCsvModel s DataModel.defaultModel
+
+        --model.dataModel
+        newUndo =
+            Scenario.addMsg (Scenario.LoadCsv2Model s) model.undo
     in
         { model
             | dataModel =

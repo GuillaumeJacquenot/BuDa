@@ -1,0 +1,112 @@
+::ng-deep.ui-treetable-data.ng-star-inserted {
+  padding-left: 0;
+  text-align: left;
+}
+
+/*::ng-deep th.ui-state-default{*/
+  /*display: none;*/
+/*}*/
+
+::ng-deep .projTable>div>div>table>thead{
+display: none;
+}
+
+::ng-deep div.p-center > td {
+  text-align: center;
+}
+
+.checkbox {
+  border: 0.5px solid lightgrey;
+  text-align: center;
+  background-color: white;
+  margin: 0;
+  padding: 3.5px 0px 3.5px 0px;
+}
+
+/*.req.panel-heading {*/
+  /*margin-bottom: 7px;*/
+/*}*/
+
+div.cont {
+    width: 33%;
+    height: 500px;
+    text-align: center;
+    top: 0;
+    /* background-color: yellow; */
+}
+
+div.cont > div {
+    background-color: lightgrey;
+    height: 95%;
+    width: 100%;
+    bottom: 0;
+    overflow-y: scroll;
+}
+
+#foot {
+  padding: 0 0 0 1%;
+}
+
+div#center > div {
+    background-color: lightpink;
+}
+
+.sce-selector {
+  padding: 15px;
+}
+
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+  color: black;
+  background-color: #f2dede;
+}
+
+.nav-pills > li > a {
+  color: gray;
+}
+
+.nav-pills > li > a:hover {
+  color: #707070;
+}
+
+.btn-group {
+  width: 100% !important;
+}
+
+.btn-group>.leftBtn {
+  width: 54% !important;
+}
+
+.btn-group>.mdlBtn, .btn-group>.rightBtn {
+  width: 15% !important;
+  /*min-width: 62px;*/
+  padding: auto;
+  margin: 0;
+  margin-bottom: 5px;
+}
+
+.unActive>* {
+  background-color: rgb(241,221,221);
+}
+
+label.verName {
+  padding-left: 0;
+}
+
+label.verName:hover {
+  cursor: default;
+}
+
+label.switch {
+  padding: 0;
+  margin: 0;
+}
+
+button.btnSwitch {
+  padding: 2px;
+  padding-top: 5px;
+  min-width: 62px;
+}
+
+.leftspan .rightspan {
+  display: inline;
+}

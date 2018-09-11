@@ -1,10 +1,10 @@
-IMAGE_NAME=holiship-nginx
-SERVICE_NAME=holiship-nginx
+IMAGE_NAME=hnginx
 
 stop:
 	docker rm -f $(IMAGE_NAME) || true 2> /dev/null
 
-
-run: stop
+build:
 	docker build -t $(IMAGE_NAME) -f run/Dockerfile .
-	docker run -d --hostname holiship-proxy --net holiship-network --name $(SERVICE_NAME) -p 80:80 -t $(IMAGE_NAME)
+
+run: stop build
+	docker run -d --network $(NETWORK) --name $(IMAGE_NAME) -p 80:80 -t $(IMAGE_NAME)

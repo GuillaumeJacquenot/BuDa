@@ -1,0 +1,21 @@
+#cont,
+#head {
+    padding: 5% 5% 0 5%;
+}
+
+#foot {
+    padding: 0 0 0 5%;
+}
+
+table#myTable {
+    /* width: 180vh; */
+    /* margin: 0 5% 0 5%; */
+}
+
+table .collapse.in {
+  display:table-row;
+}
+
+.green-text {
+  color: green;
+}

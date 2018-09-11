@@ -1,0 +1,65 @@
+<app-menu-parent (backEvent)="goToProjList()" [title]="'Users managment'"></app-menu-parent>
+
+<!--<div *ngFor="let user of usersArr" class="user">-->
+  <!--<h3>-->
+    <!--<label class="switch">-->
+      <!--<input type="checkbox" [checked]="true">-->
+      <!--<span class="slider round"></span>-->
+    <!--</label>-->
+    <!--{{user}}-->
+    <!--<span class="glyphicon glyphicon-edit clickable" data-toggle="modal" data-target="#editPassModal" (click)="preChangePass(user)" style="font-size: medium"></span>-->
+  <!--</h3>-->
+<!--</div>-->
+
+<table class="table table-responsive table-hover myTable">
+  <tr *ngFor="let user of usersArr" class="user">
+    <td>
+      <label class="switch">
+        <input type="checkbox" [checked]="user.active" (click)="changeUserStatus(user.login, user.active)">
+        <span class="slider round"></span>
+      </label>
+    </td>
+    <td><h4>{{user.login}}</h4></td>
+    <td>
+      <span class="glyphicon glyphicon-edit clickable" data-toggle="modal" data-target="#editPassModal" (click)="preChangePass(user)" style="font-size: medium"></span>
+    </td>
+    <td></td>
+  </tr>
+</table>
+
+<div class="user">
+  <span class="glyphicon glyphicon-plus-sign text-primary clickable" data-toggle="modal" data-target="#newUserModal" (click)="creatingModalShowing = true;"></span>
+</div>
+
+<app-create-user (createNewEvent)="createNewUser($event)" (closeModalEvent)="this.creatingModalShowing = false;" [closeable]="true" *ngIf="creatingModalShowing"></app-create-user>
+
+<div id="editPassModal" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="exampleModalLabel">Change Password</h4>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="editPassForm">
+          <div class="input-group">
+            <label for="newPass">New Password</label>
+            <input type="password" formControlName="password" id="newPass" class="form-control" #newPassword>
+          </div>
+          <div class="input-group">
+            <label for="passCnf">Confirm New Password</label>
+            <input type="password" formControlName="passwordCnf" id="passCnf" class="form-control" pattern="newPassword.value" #newPasswordCnf>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="changePass(editPassForm.value)" [disabled]="!editPassForm.valid && editPassForm.value.password !== editPassForm.value.passwordCnf">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-spinner *ngIf="loading"></app-spinner>
