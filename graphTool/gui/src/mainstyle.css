@@ -38,6 +38,10 @@ node[state = "HS"] {
   border-width: 1;
 }
 
+node[highLighted = 1][nodeType = "producer"] {
+  border-style: double;
+  border-width: 2;
+}
 
 edge {
   curve-style: haystack;
