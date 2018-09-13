@@ -12,7 +12,7 @@ module DataModelActions
         , deleteGeometry
         , renameNode
         , updateAttribute
-        , updateNodeType
+        , updateNodeRoles
         , updateState
         , lowestLevelEdges
         , updateProperty
@@ -40,7 +40,7 @@ module DataModelActions
 import DataModel exposing (Model, isNodeIdPresent)
 import Identifier exposing (Identifier)
 import Position exposing (Position, NodePosition)
-import Node exposing (Node)
+import Node exposing (Node, initRoles)
 import Link exposing (Edge)
 import ElementAttributes exposing (..)
 import ModelManagement
@@ -65,7 +65,7 @@ import Propagation
 
 
 createNode : String -> Maybe Identifier -> Model -> Model
-createNode s m_parent model =
+createNode name m_parent model =
     let
         newDataModel =
             DataModel.getNodeIdentifier model
@@ -73,11 +73,14 @@ createNode s m_parent model =
         newId =
             newDataModel.curNodeId
 
-        n =
-            (Node.node newId s m_parent)
+        node =
+            (Node.node newId name m_parent)
+
+        nodeWithRoles =
+            initRoles node model.parameters
 
         newNodes =
-            n :: newDataModel.nodes
+            nodeWithRoles :: newDataModel.nodes
     in
         { newDataModel | nodes = newNodes }
 
@@ -723,37 +726,45 @@ updateAttribute m_id s dataModel =
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-updateNodeType :
+updateNodeRole :
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 --}
 
 
-f_replaceNodeType : Identifier -> ElementType -> Node -> Node
-f_replaceNodeType id elemType node =
+updateRoles : Roles -> Identifier -> Role -> Roles
+updateRoles roles network newRole =
     let
-        newNode =
-            case node.id == id of
-                True ->
-                    { node | nodeType = elemType }
-
-                False ->
-                    node
+        updateRoleInNetwork item =
+            if item.network == network then
+                { item | role = newRole }
+            else
+                item
     in
-        newNode
+        List.map updateRoleInNetwork roles
 
 
-updateNodeType : Maybe Identifier -> ElementType -> Model -> Model
-updateNodeType m_id elemType dataModel =
-    case m_id of
+replaceNodeRoles : Identifier -> Identifier -> Role -> Node -> Node
+replaceNodeRoles id networkId role node =
+    case node.id == id of
+        True ->
+            { node | roles = updateRoles node.roles networkId role }
+
+        False ->
+            node
+
+
+updateNodeRoles : Maybe Identifier -> Identifier -> Role -> Model -> Model
+updateNodeRoles id networkId role dataModel =
+    case id of
         Nothing ->
             dataModel
 
         Just id ->
             let
                 newNodes =
-                    List.map (\x -> (f_replaceNodeType id elemType x)) dataModel.nodes
+                    List.map (\x -> (replaceNodeRoles id networkId role x)) dataModel.nodes
             in
                 { dataModel | nodes = newNodes }
 
@@ -763,7 +774,7 @@ updateNodeType m_id elemType dataModel =
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-updateNodeType :
+updateNodeState :
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

@@ -1,4 +1,4 @@
-module LinkParameters exposing (Model, Property, defaultModel, getPropertyIdFromName, getPropertyFromName, property)
+module LinkParameters exposing (Model, Property, defaultModel, getPropertyIdFromName, getPropertyNameFromId, getPropertyFromName, property)
 
 import Identifier exposing (Identifier)
 
@@ -27,6 +27,19 @@ getPropertyIdFromName s list =
                 False ->
                     getPropertyIdFromName s xs
 
+getPropertyNameFromId : Identifier -> Model -> Maybe String
+getPropertyNameFromId id parameters =
+    case parameters of
+        [] ->
+            Nothing
+
+        head :: tail ->
+            case head.id == id of
+                True ->
+                    Just head.name
+
+                False ->
+                    getPropertyNameFromId id tail
 
 getPropertyFromName : String -> List Property -> Maybe Property
 getPropertyFromName s list =

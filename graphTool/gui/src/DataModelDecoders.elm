@@ -15,7 +15,7 @@ import Node exposing (Node)
 import Link exposing (Edge)
 import DataModel
 import Json.Decode exposing (..)
-import Json.Decode.Pipeline exposing (required, optional, hardcoded)
+import Json.Decode.Pipeline exposing (required, optional, optionalAt, hardcoded)
 import Json.Decode.Extra
 import LinkParameters
 import Groups
@@ -42,48 +42,38 @@ decodePosition =
         |> required "y" Json.Decode.float
 
 
-decodeNodeType : Json.Decode.Decoder ElementType
-decodeNodeType =
-    Json.Decode.map strToNodeType Json.Decode.string
+decodeRole : Json.Decode.Decoder Role
+decodeRole =
+    let
+        strToRole role =
+            case role of
+                "producer" ->
+                    Producer
+
+                "consumer" ->
+                    Consumer
+
+                _ ->
+                    RoleUnknown
+    in
+        Json.Decode.map strToRole Json.Decode.string
+    
+
+decodeNetworkRole : Json.Decode.Decoder NetworkRole
+decodeNetworkRole =
+    Json.Decode.Pipeline.decode NetworkRole
+        |> required "network" decodeIdentifier
+        |> required "role" decodeRole
+
+
+decodeRoles : Json.Decode.Decoder Roles
+decodeRoles =
+    Json.Decode.list decodeNetworkRole
 
 
 decodeState : Json.Decode.Decoder ElementState
 decodeState =
     Json.Decode.map strToState Json.Decode.string
-
-
-
-{--decodeState : Json.Decode.Decoder ElementState
-decodeState =
-    let
-        elemState =
-            Json.Decode.string
-    in
-        case elemState of
-            "OK" ->
-                OK
-
-            "NOK" ->
-                NOK
-
-            _ ->
-                StateUnknown--}
-
-
-strToNodeType : String -> ElementType
-strToNodeType elemType =
-    case elemType of
-        "producer" ->
-            Producer
-
-        "consumer" ->
-            Consumer
-
-        "producer_consumer" ->
-            ProducerConsumer
-
-        _ ->
-            TypeUnknown
 
 
 strToState : String -> ElementState
@@ -106,8 +96,8 @@ decodeNode =
         |> required "name" Json.Decode.string
         |> required "parent" (Json.Decode.maybe decodeIdentifier)
         |> required "attribut" (Json.Decode.maybe decodeAttribut)
-        |> optional "nodeType" (decodeNodeType) TypeUnknown
         |> optional "state" decodeState StateUnknown
+        |> optional "roles" decodeRoles [] -- TODO: default roles based on networks?
         |> optional "geometry" (Json.Decode.maybe decodeIdentifier) Nothing
         |> required "group" (Json.Decode.Extra.set decodeIdentifier)
         |> hardcoded 0
