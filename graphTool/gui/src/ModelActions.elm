@@ -17,7 +17,7 @@ module ModelActions
         , createParameter
         , deleteParameter
         , updateAttribute
-        , updateNodeType
+        , updateNodeRole
         , updateState
         , updateProperty
         , undo
@@ -608,7 +608,7 @@ updateOutpowered model =
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-updateNodeType
+updateNodeRole
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -616,8 +616,8 @@ updateNodeType
 --}
 
 
-updateNodeType : Model.Model -> ElementType -> Model.Model
-updateNodeType model elemType =
+updateNodeRole : Model.Model -> Identifier -> Role -> Model.Model
+updateNodeRole model networkId role =
     let
         m_id =
             case model.selection of
@@ -628,10 +628,10 @@ updateNodeType model elemType =
                     Nothing
 
         newDataModel =
-            DataModelActions.updateNodeType m_id elemType model.dataModel
+            DataModelActions.updateNodeRoles m_id networkId role model.dataModel
 
         newUndo =
-            Scenario.addMsg (Scenario.UpdateNodeType elemType m_id) model.undo
+            Scenario.addMsg (Scenario.UpdateNodeRoles networkId role m_id) model.undo
     in
         { model
             | dataModel = newDataModel
@@ -644,7 +644,7 @@ updateNodeType model elemType =
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-updateNodeType
+updateState
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

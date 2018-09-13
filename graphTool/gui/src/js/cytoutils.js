@@ -141,7 +141,6 @@ cy.on('tap', function(event) {
 });
 
 cy.on('doubleTap', 'node', function(event) {
-
 	var selected = getSelectedEls();
 
 	if(selected.length > 0)
@@ -314,13 +313,12 @@ function _sendDataSimpleModel_ (obj) {
 function _sendDataModel_ (obj) {
 	var cy = getCyReference();
 	cy.remove (cy.elements());
-
+	console.log(obj);
 	var jsons = [];
 
 	var ns = obj.nodes;
 	ns.forEach(function (s)
 	{
-
 		jsons.push (
 			{
 					group: "nodes",

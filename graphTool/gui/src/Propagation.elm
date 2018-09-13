@@ -45,7 +45,7 @@ propagation model =
 
 
 
--- Retruns a list f edge where outpoweres ones are highlighted
+-- Returns a list of edges where outpowered ones are highlighted
 
 
 findOutpoweredEdges : List Edge -> List Identifier -> List Edge
@@ -54,7 +54,7 @@ findOutpoweredEdges edges outNodeIdList =
 
 
 
--- Update the highlight attribute of an edge if its outpowered
+-- Update the highlight attribute of an edge if it's outpowered
 
 
 updateOutpoweredEdge : Edge -> List Identifier -> Edge
@@ -84,21 +84,33 @@ findOutpoweredNodes model =
 
 
 
--- Get a list of all consumers node in model
+-- Get a list of all RAS consumers node in model
 
 
 consumerList : Model -> List Node
 consumerList model =
-    List.filter (\x -> (x.nodeType == Consumer && x.state == RAS)) model.nodes
+    List.filter (\node -> ((isConsumer node) && node.state == RAS)) model.nodes
 
 
+isConsumer : Node -> Bool
+isConsumer node =
+    hasRole Consumer node
 
--- Get a list of all producers node in model
+isProducer : Node -> Bool
+isProducer node =
+    hasRole Producer node
+
+
+hasRole : Role -> Node -> Bool
+hasRole role node =
+    List.any (\networkRole -> networkRole.role == role) node.roles
+
+-- Get a list of all RAS producers node in model
 
 
 producerList : Model -> List Node
 producerList model =
-    List.filter (\x -> (x.nodeType == Producer && x.state == RAS)) model.nodes
+    List.filter (\node -> ((isProducer node) && node.state == RAS)) model.nodes
 
 
 
@@ -190,10 +202,7 @@ validNodes model nodeId =
                 False
 
             Just justNode ->
-                if (justNode.state == RAS) then
-                    True
-                else
-                    False
+                justNode.state == RAS
 
 
 
