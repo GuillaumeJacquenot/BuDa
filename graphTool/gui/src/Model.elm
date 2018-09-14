@@ -20,11 +20,11 @@ import Search
 
 
 type ViewType
-    = BULL
-    | PBS
-    | ALL
-    | ALL_LIGHT
-    | GEOMETRY
+    = Bubble
+    | Pbs
+    | All
+    | Flat
+    | Geometry
 
 
 type SelectionType
@@ -78,7 +78,7 @@ defaultModel =
     , inputFile = "undefined"
     , selection = []
     , loadModelId = "loadModel"
-    , viewType = BULL
+    , viewType = Bubble
     , nodeViewId = Nothing
     , parameters = LinkParameters.defaultModel
     , exportFlux = Set.empty

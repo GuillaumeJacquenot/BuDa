@@ -44,19 +44,19 @@ showView msg model =
     let
         ( m1, cmd ) =
             case model.viewType of
-                Model.ALL ->
+                Model.All ->
                     showAllData msg model
 
-                Model.PBS ->
+                Model.Pbs ->
                     showPBS msg model
 
-                Model.BULL ->
+                Model.Bubble ->
                     showBulles msg model
 
-                Model.ALL_LIGHT ->
+                Model.Flat ->
                     showAllDataLight msg model
 
-                Model.GEOMETRY ->
+                Model.Geometry ->
                     showGeometry msg model
 
         m2 =
@@ -88,21 +88,27 @@ showView msg model =
 showAllData : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
 showAllData msg model =
     ( model
-    , LinkToJS.sendDataAllModel (DataModelEncoders.encodeModel (ModelWrapper.showAllData model).dataModel)
+    , LinkToJS.msg2js <|
+        LinkToJS.makeJsData "display-all" <|
+            DataModelEncoders.encodeModel (ModelWrapper.showAllData model).dataModel
     )
 
 
 showAllDataLight : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
 showAllDataLight msg model =
     ( model
-    , LinkToJS.sendDataFlatModel (DataModelEncoders.encodeModel (ModelWrapper.showAllDataLight model).dataModel)
+    , LinkToJS.msg2js <|
+        LinkToJS.makeJsData "display-flat" <|
+            DataModelEncoders.encodeModel (ModelWrapper.showAllDataLight model).dataModel
     )
 
 
 showPBS : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
 showPBS msg model =
     ( model
-    , LinkToJS.sendDataPBSModel (DataModelEncoders.encodeModel (ModelWrapper.showPBS model))
+    , LinkToJS.msg2js <|
+        LinkToJS.makeJsData "display-pbs" <|
+            DataModelEncoders.encodeModel (ModelWrapper.showPBS model)
     )
 
 
@@ -113,14 +119,14 @@ showBulles msg model =
             ModelWrapper.showAllDataLight (ModelWrapper.showBulles model)
     in
         ( model
-        , LinkToJS.sendDataBullesModel (DataModelEncoders.encodeModel m1.dataModel)
+        , LinkToJS.msg2js { tag = "display-bubble", data = (DataModelEncoders.encodeModel m1.dataModel) }
         )
 
 
 showGeometry : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
 showGeometry msg model =
     ( model
-    , LinkToJS.sendDataGeometryModel (DataModelEncoders.encodeModel (ModelWrapper.showGeometry model).dataModel)
+    , LinkToJS.msg2js { tag = "display-geometry", data = (DataModelEncoders.encodeModel (ModelWrapper.showGeometry model).dataModel) }
     )
 
 
@@ -411,10 +417,10 @@ globalUpdate msg model =
         NodesPositionRequest s ->
             ( model
             , case model.viewType of
-                Model.ALL_LIGHT ->
+                Model.Flat ->
                     LinkToJS.requestpositions ""
 
-                Model.BULL ->
+                Model.Bubble ->
                     LinkToJS.requestpositions ""
 
                 _ ->
@@ -644,10 +650,10 @@ globalUpdate msg model =
             let
                 m1 =
                     case model.viewType of
-                        Model.ALL_LIGHT ->
+                        Model.Flat ->
                             ModelActions.updateLightLayout s model
 
-                        Model.GEOMETRY ->
+                        Model.Geometry ->
                             ModelActions.updateGeometryLayout s model
 
                         _ ->

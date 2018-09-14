@@ -21,7 +21,7 @@
   <script src="./js/base64ToBlob.js"></script>
   <script src="./js/cytoscape-svg-convertor.js"></script>
   <script src="./js/svg.js"></script>
-
+  <script src="./js/graphTool.js"></script>
 
   <script type="text/javascript" src="elm.js"></script>
 </head>
@@ -34,6 +34,39 @@
     var div = document.getElementById('elm-app');
     var app = Elm.Main.embed(div);
 
+
+    /**
+   * Elm to JS
+   */
+
+    app.ports.msg2js.subscribe(function (msg) {
+      console.log(msg);
+
+      switch (msg.tag) {
+        case 'display-bubble':
+          displayModel(JSON.parse(msg.data));
+          break;
+
+        case 'display-all':
+          displayModel(JSON.parse(msg.data));
+          break;
+
+        case 'display-flat':
+          displayModel(JSON.parse(msg.data));
+          break;
+
+        case 'display-geometry':
+          displayModel(JSON.parse(msg.data));
+          break;
+
+        case 'display-pbs':
+          displayPbs(JSON.parse(msg.data));
+          break;
+
+        default:
+          break;
+      }
+    })
 
     app.ports.layout.subscribe(function (word) {
       _layout_main();
@@ -50,70 +83,6 @@
     app.ports.setLayoutNameThenLayout.subscribe(function (word) {
       options.layoutName = word;
       _layout_main();
-    });
-
-
-    function _sendDataBullesModel(word) {
-      var obj = JSON.parse(word);
-
-      if (obj["mustLayout"] == true) {
-        _sendDataSimpleModel_(obj);
-      }
-      else {
-        _sendDataModel_(obj);
-      }
-
-      var img = obj["geometryImage"];
-      // console.log ("geometryImage: " + img);
-
-      if (img != null) {
-        _loadImage(img);
-      }
-      else {
-        _unLoadImage();
-      }
-
-      if (obj["mustLayout"] == true) {
-        _layout_dagre();
-      }
-      else {
-        //_layout_preset();
-        _layout_preset_with_bbox();
-      }
-
-      if (obj["mustLayout"] == true) {
-        layoutElementsNoPosition();
-        _setNodesPositionsToElm_();
-      }
-    }
-
-    app.ports.sendDataBullesModel.subscribe(function (word) {
-      options.drawImage = false;
-      _sendDataBullesModel(word);
-    });
-
-    app.ports.sendDataPBSModel.subscribe(function (word) {
-      var obj = JSON.parse(word);
-      options.drawImage = false;
-
-      _sendDataSimpleModel_(obj);
-      setPBSStyle();
-      _layout_dagre();
-    });
-
-    app.ports.sendDataAllModel.subscribe(function (word) {
-      options.drawImage = false;
-      _sendDataBullesModel(word);
-    });
-
-    app.ports.sendDataFlatModel.subscribe(function (word) {
-      options.drawImage = false;
-      _sendDataBullesModel(word);
-    });
-
-    app.ports.sendDataGeometryModel.subscribe(function (word) {
-      options.drawImage = true;
-      _sendDataBullesModel(word);
     });
 
     app.ports.sendParentSelection.subscribe(function (word) {
@@ -179,6 +148,10 @@
     });
 
 
+    /**
+     * JS to Elm
+     */
+
     function app_port_sendSelectionToElm(msg) {
       app.ports.selection.send(msg);
     }
@@ -190,7 +163,6 @@
       app.ports.csvmodeltoelm.send(msg);
     }
     function app_port_sendCsv2ModelToElm(msg) {
-      console.log(msg);
       app.ports.csv2modeltoelm.send(msg);
     }
     function app_port_sendImportModelToElm(msg) {

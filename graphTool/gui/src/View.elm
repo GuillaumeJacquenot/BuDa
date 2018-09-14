@@ -42,11 +42,11 @@ view model =
     div []
         [ div []
             [ fieldset [ id "fieldset" ]
-                [ radio "viewType" (Messages.SwitchToView Model.BULL) "Bubble Diagram" (model.viewType == Model.BULL)
-                , radio "viewType" (Messages.SwitchToView Model.PBS) "PBS" (model.viewType == Model.PBS)
-                , radio "viewType" (Messages.SwitchToView Model.ALL) "All" (model.viewType == Model.ALL)
-                , radio "viewType" (Messages.SwitchToView Model.ALL_LIGHT) "Flat" (model.viewType == Model.ALL_LIGHT)
-                , radio "viewType" (Messages.SwitchToView Model.GEOMETRY) "Geometry" (model.viewType == Model.GEOMETRY)
+                [ radio "viewType" (Messages.SwitchToView Model.Bubble) "Bubble Diagram" (model.viewType == Model.Bubble)
+                , radio "viewType" (Messages.SwitchToView Model.Pbs) "PBS" (model.viewType == Model.Pbs)
+                , radio "viewType" (Messages.SwitchToView Model.All) "All" (model.viewType == Model.All)
+                , radio "viewType" (Messages.SwitchToView Model.Flat) "Flat" (model.viewType == Model.Flat)
+                , radio "viewType" (Messages.SwitchToView Model.Geometry) "Geometry" (model.viewType == Model.Geometry)
                 ]
             ]
         , button [ onClick Messages.CreateNode, id "new", value "new element" ] [ text "Block" ]
