@@ -29,15 +29,16 @@ port module LinkToJS
         )
 
 import Identifier exposing (Identifier)
+import Json.Encode exposing (Value)
 
 
 type alias JsData =
     { tag : String
-    , data : String
+    , data : Json.Encode.Value
     }
 
 
-makeJsData : String -> String -> JsData
+makeJsData : String -> Json.Encode.Value -> JsData
 makeJsData tag data =
     { tag = tag
     , data = data

@@ -236,8 +236,8 @@ encodeGeometryLayouts list =
     (Json.Encode.list <| List.map encodeGeometryLayout list)
 
 
-encodeModel_ : DataModel.Model -> Value
-encodeModel_ jsmodel =
+encodeModel : DataModel.Model -> Value
+encodeModel jsmodel =
     object
         [ ( "nodes", encodeNodes jsmodel.nodes )
         , ( "edges", encodeEdges jsmodel.edges )
@@ -253,16 +253,11 @@ encodeModel_ jsmodel =
         ]
 
 
-encodeModel : DataModel.Model -> String
-encodeModel =
-    encode 0 << encodeModel_
-
-
 encodeMetaModel_ : DataModel.MetaModel -> Value
 encodeMetaModel_ meta =
     object
         [ ( "filename", string meta.filename )
-        , ( "model", encodeModel_ meta.model )
+        , ( "model", encodeModel meta.model )
         ]
 
 

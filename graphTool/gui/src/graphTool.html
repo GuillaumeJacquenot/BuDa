@@ -44,23 +44,23 @@
 
       switch (msg.tag) {
         case 'display-bubble':
-          displayModel(JSON.parse(msg.data));
+          displayModel(msg.data);
           break;
 
         case 'display-all':
-          displayModel(JSON.parse(msg.data));
+          displayModel(msg.data);
           break;
 
         case 'display-flat':
-          displayModel(JSON.parse(msg.data));
+          displayModel(msg.data);
           break;
 
         case 'display-geometry':
-          displayModel(JSON.parse(msg.data));
+          displayModel(msg.data);
           break;
 
         case 'display-pbs':
-          displayPbs(JSON.parse(msg.data));
+          displayPbs(msg.data);
           break;
 
         default:
