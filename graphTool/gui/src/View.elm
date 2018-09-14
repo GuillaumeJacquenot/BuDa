@@ -13,7 +13,6 @@ import GroupsView
 import ModelActions
 import GeometriesView
 import LayoutView
-import Mqtt
 
 
 init : ( Model.Model, Cmd Messages.Msg )
@@ -72,7 +71,6 @@ view model =
         , button [ onClick Messages.SaveToImage, id "png", value "png" ] [ text "Print" ]
         , button [ onClick Messages.OnOpen, id "open", value "open" ] [ text "Open" ]
         , button [ onClick Messages.OnImport, id "import", value "import" ] [ text "Import" ]
-        , button [ onClick Messages.AskForMessages, id "ask", value "ask" ] [ text "GetMsg" ]
         , button [ onClick Messages.Undo, id "undo", value "undo" ] [ text "Undo" ]
         , button [ onClick Messages.GroupNodes, id "group", value "group" ] [ text "Group" ]
         , button [ onClick Messages.UpdateTightness, id "Tight", value "Tight" ] [ text "Tight" ]
@@ -84,24 +82,4 @@ view model =
         , img [ id "logo", src "LogoSirehna_DC.png", title "logo sirehna" ] []
         , div [ id "label" ] [ text (ModelActions.getNodeViewLabel model) ]
         , div [ id "counter" ] [ text (ModelActions.getCounterViewLabel model) ]
-        , button
-            [ onClick Messages.OnNotificationClick
-            , id "notification"
-            , value "notification"
-            , style
-                [ ( "visibility"
-                  , case (List.isEmpty model.dataModel.receivedNotifications) of
-                        True ->
-                            "hidden"
-
-                        False ->
-                            "visible"
-                  )
-                ]
-            ]
-            [ text "Notifications" ]
-        , input [ onInput Messages.UserChange, id "userInput", placeholder model.mqtt.clientId ] []
-        , input [ onInput Messages.UrlChange, id "urlInput", placeholder model.mqtt.url ] []
-        , button [ onClick Messages.MqttConnect, id "mqttConnect", value "mqttConnect" ] [ text "Connect" ]
-        , button [ onClick Messages.MqttDisconnect, id "mqttDisconnect", value "mqttDisconnect" ] [ text "Disconnect" ]
         ]

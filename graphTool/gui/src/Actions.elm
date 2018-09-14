@@ -21,10 +21,6 @@ import Messages exposing (Msg(..))
 import Model
 import ModelActions
 import ModelViews
-import Mqtt
-import Notification
-import Notifications
-import NotificationActions
 import Search
 import Selection
 import SpecialKey
@@ -149,36 +145,8 @@ deleteElement msg model =
 
                 _ ->
                     model
-
-        ( m2, cmd ) =
-            showView msg m1
     in
-        prepareNotification_ cmd m2
-
-
-sendNotification : String -> Model.Model -> Notification.NotificationData -> Cmd Msg
-sendNotification s model notifyData =
-    let
-        model_mqtt =
-            model.mqtt
-
-        newMqtt =
-            { model_mqtt | topic = "architecture." ++ s }
-
-        m1 =
-            { model | mqtt = newMqtt }
-    in
-        Mqtt.send
-            { tag = "MqttNotify", data = DataModelEncoders.encodeMqttMessageNotification_ m1.mqtt (Notification.notification s notifyData) }
-
-
-askForMessages : Model.Model -> ( Model.Model, Cmd Msg )
-askForMessages model =
-    let
-        z =
-            "Call askForMessages"
-    in
-        ( model, Cmd.none )
+        showView msg m1
 
 
 processFocus : Msg -> List (Cmd Msg) -> List (Cmd Msg)
@@ -203,41 +171,6 @@ processFocus msg list =
 
             _ ->
                 List.concat [ list, [ taskFocus ] ]
-
-
-prepareNotifications_ : List (Cmd Msg) -> Notifications.Model -> Model.Model -> List (Cmd Msg)
-prepareNotifications_ cmds notifications model =
-    case notifications of
-        [] ->
-            cmds
-
-        x :: xs ->
-            let
-                notification =
-                    { x | header = model.mqtt.clientId ++ "." ++ x.header }
-
-                newCmds =
-                    (sendNotification notification.header model notification.data) :: cmds
-            in
-                prepareNotifications_ newCmds xs model
-
-
-prepareNotification_ : Cmd Msg -> Model.Model -> ( Model.Model, Cmd Msg )
-prepareNotification_ cmd model =
-    let
-        cmds =
-            prepareNotifications_ [ cmd ] model.dataModel.notifications model
-
-        dataModel =
-            model.dataModel
-
-        newDataModel =
-            { dataModel | notifications = [] }
-
-        m1 =
-            { model | dataModel = newDataModel }
-    in
-        ( m1, Cmd.batch cmds )
 
 
 initModelHighlights : Model.Model -> Model.Model
@@ -410,12 +343,6 @@ update msg model =
                     -- envoie message importModel vers javascript
                     model
 
-                AskForMessages ->
-                    model
-
-                NewMessage _ ->
-                    model
-
                 SaveToImage ->
                     model
 
@@ -458,78 +385,10 @@ update msg model =
                 Propagation ->
                     model
 
-                OnNotificationClick ->
-                    model
-
-                UserChange _ ->
-                    model
-
-                UrlChange _ ->
-                    model
-
-                MqttConnect ->
-                    model
-
-                MqttDisconnect ->
-                    model
-
                 NoOp ->
                     model
-
-        ( m2, cmd ) =
-            (globalUpdate msg m1)
     in
-        prepareAndSendNotification msg m2 cmd
-
-
-prepareAndSendNotification : Msg -> Model.Model -> Cmd Msg -> ( Model.Model, Cmd Msg )
-prepareAndSendNotification msg model cmd =
-    case msg of
-        CreateNode ->
-            prepareNotification_ cmd model
-
-        CreateLink ->
-            prepareNotification_ cmd model
-
-        RenameNode ->
-            prepareNotification_ cmd model
-
-        Undo ->
-            prepareNotification_ cmd model
-
-        Redo ->
-            prepareNotification_ cmd model
-
-        CreateParameter ->
-            prepareNotification_ cmd model
-
-        DeleteParameter ->
-            prepareNotification_ cmd model
-
-        CheckProperty edge s ->
-            prepareNotification_ cmd model
-
-        CreateGroup ->
-            prepareNotification_ cmd model
-
-        DeleteGroup ->
-            prepareNotification_ cmd model
-
-        CheckNodeGroupProperty node s ->
-            prepareNotification_ cmd model
-
-        KeyUps k ->
-            prepareNotification_ cmd model
-
-        _ ->
-            let
-                data_model =
-                    model.dataModel
-
-                newDataModel =
-                    { data_model | notifications = [] }
-            in
-                ( { model | dataModel = newDataModel }, cmd )
+        globalUpdate msg m1
 
 
 globalUpdate : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
@@ -712,36 +571,15 @@ globalUpdate msg model =
                 showView msg (ModelActions.updateState m1 elemState)
 
         CreateNode ->
-            let
-                m1 =
-                    ModelActions.createNode model
-
-                ( m2, cmd ) =
-                    showView msg m1
-            in
-                prepareNotification_ cmd m2
+            showView msg <| ModelActions.createNode model
 
         RenameNode ->
-            let
-                m1 =
-                    ModelActions.renameNode model
-
-                ( m2, cmd ) =
-                    showView msg m1
-            in
-                prepareNotification_ cmd m2
+            showView msg <| ModelActions.renameNode model
 
         CreateLink ->
             case model.selection of
                 x1 :: x2 :: [] ->
-                    let
-                        m1 =
-                            ModelActions.createLink x1 x2 model
-
-                        ( m2, cmd ) =
-                            showView msg m1
-                    in
-                        prepareNotification_ cmd m2
+                    showView msg <| ModelActions.createLink x1 x2 model
 
                 _ ->
                     ( model, Cmd.none )
@@ -916,44 +754,6 @@ globalUpdate msg model =
         OnImport ->
             ( model, LinkToJS.onImport "" )
 
-        AskForMessages ->
-            askForMessages model
-
-        NewMessage str ->
-            let
-                newNotifications =
-                    NotificationActions.updateNotificationModel str model.dataModel.receivedNotifications
-
-                model_dataModel =
-                    model.dataModel
-
-                newDataModel =
-                    { model_dataModel | receivedNotifications = newNotifications }
-
-                m1 =
-                    { model | dataModel = newDataModel }
-
-                z =
-                    Debug.log "Notifications: " (List.length m1.dataModel.receivedNotifications)
-            in
-                ( m1, Cmd.none )
-
-        OnNotificationClick ->
-            let
-                model_dataModel =
-                    model.dataModel
-
-                newDataModel =
-                    { model_dataModel | receivedNotifications = [] }
-
-                m1 =
-                    { model | dataModel = newDataModel }
-
-                z =
-                    Debug.log "Notifications: " (List.length m1.dataModel.receivedNotifications)
-            in
-                ( m1, Cmd.none )
-
         ImportModel ->
             ( model, LinkToJS.importModel "importModel" )
 
@@ -991,15 +791,3 @@ globalUpdate msg model =
                     showView msg (ModelActions.updateOutpowered newModel)
             else
                 showView msg (initModelHighlights model)
-
-        UserChange s ->
-            ( { model | mqtt = Mqtt.setClientId s model.mqtt }, Cmd.none )
-
-        UrlChange s ->
-            ( { model | mqtt = Mqtt.setUrl s model.mqtt }, Cmd.none )
-
-        MqttConnect ->
-            model ! [ Mqtt.send { tag = "MqttConnect", data = DataModelEncoders.encodeMqttMessage_ model.mqtt Notification.NULLNOTIFICATION } ]
-
-        MqttDisconnect ->
-            model ! [ Mqtt.send { tag = "MqttDisconnect", data = DataModelEncoders.encodeMqttMessage_ model.mqtt Notification.NULLNOTIFICATION } ]

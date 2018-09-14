@@ -17,7 +17,6 @@ import Scenario
 import SpecialKey
 import LayoutMenu
 import Search
-import Mqtt
 
 
 type ViewType
@@ -67,7 +66,6 @@ type alias Model =
     , showParameters : Bool
     , propagationDone : Bool
     , searchModel : Search.Model
-    , mqtt : Mqtt.Model
     }
 
 
@@ -97,5 +95,4 @@ defaultModel =
     , showParameters = False
     , propagationDone = False
     , searchModel = Search.defaultModel
-    , mqtt = Mqtt.init "mqtt://130.66.124.234:15675/ws"
     }

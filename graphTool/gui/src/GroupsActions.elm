@@ -5,7 +5,6 @@ import Node exposing (Node)
 import DataModel exposing (Model, childs)
 import ModelManagement
 import Set
-import Notification
 
 
 addGroupsToNodes : List Node -> Model -> Model
@@ -73,16 +72,8 @@ addGroupToOneNode_ id n model =
 
         m_n =
             DataModel.getNodeFromId n.id newNodes
-
-        newNotifications =
-            case m_n of
-                Nothing ->
-                    model.notifications
-
-                Just n1 ->
-                    { header = "node.update", data = (Notification.BLOC n1) } :: model.notifications
     in
-        { model | nodes = newNodes, notifications = newNotifications }
+        { model | nodes = newNodes }
 
 
 
@@ -134,16 +125,8 @@ deleteGroupFromOneNode_ id n model =
 
                 m_n =
                     DataModel.getNodeFromId n.id newNodes
-
-                newNotifications =
-                    case m_n of
-                        Nothing ->
-                            model.notifications
-
-                        Just n1 ->
-                            { header = "node.update", data = (Notification.BLOC n1) } :: model.notifications
             in
-                { model | nodes = newNodes, notifications = newNotifications }
+                { model | nodes = newNodes }
 
 
 canDeleteGroupFromNode : Identifier -> Node -> Model -> Bool
