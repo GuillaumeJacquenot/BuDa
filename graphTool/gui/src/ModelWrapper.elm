@@ -1,4 +1,4 @@
-module ModelViews
+module ModelWrapper
     exposing
         ( getPBSView
         , getBullesViewFromNodeId

@@ -13,20 +13,18 @@ import DataModel
 import DataModelEncoders
 import Dom exposing (focus)
 import Export
-import ElementAttributes
 import Geometries
 import LayoutMenuActions
 import LinkToJS
 import Messages exposing (Msg(..))
 import Model
 import ModelActions
-import ModelViews
+import ModelWrapper
 import Search
 import Selection
 import SpecialKey
 import Task
 import Verification
-import Propagation
 
 
 upView : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
@@ -90,21 +88,21 @@ showView msg model =
 showAllData : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
 showAllData msg model =
     ( model
-    , LinkToJS.sendDataAllModel (DataModelEncoders.encodeModel (ModelViews.showAllData model).dataModel)
+    , LinkToJS.sendDataAllModel (DataModelEncoders.encodeModel (ModelWrapper.showAllData model).dataModel)
     )
 
 
 showAllDataLight : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
 showAllDataLight msg model =
     ( model
-    , LinkToJS.sendDataFlatModel (DataModelEncoders.encodeModel (ModelViews.showAllDataLight model).dataModel)
+    , LinkToJS.sendDataFlatModel (DataModelEncoders.encodeModel (ModelWrapper.showAllDataLight model).dataModel)
     )
 
 
 showPBS : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
 showPBS msg model =
     ( model
-    , LinkToJS.sendDataPBSModel (DataModelEncoders.encodeModel (ModelViews.showPBS model))
+    , LinkToJS.sendDataPBSModel (DataModelEncoders.encodeModel (ModelWrapper.showPBS model))
     )
 
 
@@ -112,7 +110,7 @@ showBulles : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
 showBulles msg model =
     let
         m1 =
-            ModelViews.showAllDataLight (ModelViews.showBulles model)
+            ModelWrapper.showAllDataLight (ModelWrapper.showBulles model)
     in
         ( model
         , LinkToJS.sendDataBullesModel (DataModelEncoders.encodeModel m1.dataModel)
@@ -122,7 +120,7 @@ showBulles msg model =
 showGeometry : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
 showGeometry msg model =
     ( model
-    , LinkToJS.sendDataGeometryModel (DataModelEncoders.encodeModel (ModelViews.showGeometry model).dataModel)
+    , LinkToJS.sendDataGeometryModel (DataModelEncoders.encodeModel (ModelWrapper.showGeometry model).dataModel)
     )
 
 
