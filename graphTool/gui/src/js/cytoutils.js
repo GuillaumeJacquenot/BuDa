@@ -291,7 +291,7 @@ function setPBSStyle() {
 	// cy.setStyle (stylesheetPBS);
 }
 
-function setBullesStyle() {
+function setBubblesStyle() {
 	var cy = getCyReference();
 	// cy.setStyle (stylesheetBubble);
 }
@@ -359,7 +359,7 @@ function _layout_preset_with_bbox() {
 	cy.layout(preset_layout_with_bbox);
 }
 
-function _updateBullesLayoutAndPos(obj) {
+function _updateBubblesLayoutAndPos(obj) {
 	_sendDataSimpleModel_(obj);
 	_layout_dagre();
 	_setNodesPositionsToElm_();

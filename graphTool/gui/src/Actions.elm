@@ -1,13 +1,4 @@
-module Actions
-    exposing
-        ( deleteElement
-        , showAllData
-        , showBulles
-        , showPBS
-        , showView
-        , upView
-        , update
-        )
+module Actions exposing (update)
 
 import DataModel
 import DataModelEncoders
@@ -19,7 +10,7 @@ import LinkToJS
 import Messages exposing (Msg(..))
 import Model
 import ModelActions
-import ModelWrapper
+import Board
 import Search
 import Selection
 import SpecialKey
@@ -45,19 +36,19 @@ showView msg model =
         ( m1, cmd ) =
             case model.viewType of
                 Model.All ->
-                    showAllData msg model
+                    displayAll model
 
                 Model.Pbs ->
-                    showPBS msg model
+                    displayPbs model
 
                 Model.Bubble ->
-                    showBulles msg model
+                    displayBubble model
 
                 Model.Flat ->
-                    showAllDataLight msg model
+                    displayFlat model
 
                 Model.Geometry ->
-                    showGeometry msg model
+                    displayGeometry model
 
         m2 =
             { m1 | selection = [], selectionType = Model.PARENT }
@@ -85,49 +76,29 @@ showView msg model =
         )
 
 
-showAllData : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
-showAllData msg model =
-    ( model
-    , LinkToJS.msg2js <|
-        LinkToJS.makeJsData "display-all" <|
-            DataModelEncoders.encodeModel (ModelWrapper.showAllData model).dataModel
-    )
+displayAll : Model.Model -> ( Model.Model, Cmd Msg )
+displayAll model =
+    ( model, Board.displayAll model )
 
 
-showAllDataLight : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
-showAllDataLight msg model =
-    ( model
-    , LinkToJS.msg2js <|
-        LinkToJS.makeJsData "display-flat" <|
-            DataModelEncoders.encodeModel (ModelWrapper.showAllDataLight model).dataModel
-    )
+displayFlat : Model.Model -> ( Model.Model, Cmd Msg )
+displayFlat model =
+    ( model, Board.displayFlat model )
 
 
-showPBS : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
-showPBS msg model =
-    ( model
-    , LinkToJS.msg2js <|
-        LinkToJS.makeJsData "display-pbs" <|
-            DataModelEncoders.encodeModel (ModelWrapper.showPBS model)
-    )
+displayPbs : Model.Model -> ( Model.Model, Cmd Msg )
+displayPbs model =
+    ( model, Board.displayPbs model )
 
 
-showBulles : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
-showBulles msg model =
-    let
-        m1 =
-            ModelWrapper.showAllDataLight (ModelWrapper.showBulles model)
-    in
-        ( model
-        , LinkToJS.msg2js { tag = "display-bubble", data = (DataModelEncoders.encodeModel m1.dataModel) }
-        )
+displayBubble : Model.Model -> ( Model.Model, Cmd Msg )
+displayBubble model =
+    ( model, Board.displayBubble model )
 
 
-showGeometry : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
-showGeometry msg model =
-    ( model
-    , LinkToJS.msg2js { tag = "display-geometry", data = (DataModelEncoders.encodeModel (ModelWrapper.showGeometry model).dataModel) }
-    )
+displayGeometry : Model.Model -> ( Model.Model, Cmd Msg )
+displayGeometry model =
+    ( model, Board.displayGeometry model )
 
 
 deleteElement : Msg -> Model.Model -> ( Model.Model, Cmd Msg )

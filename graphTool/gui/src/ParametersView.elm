@@ -147,7 +147,5 @@ view model =
 dialogButton : String -> Html Messages.Msg
 dialogButton caption =
     button
-        [ -- onClick Actions.ParametersDialog
-          class "mdl-button mdl-button--raised mdl-button--accent"
-        ]
+        [ class "mdl-button mdl-button--raised mdl-button--accent" ]
         [ text caption ]

@@ -2,6 +2,7 @@ port module LinkToJS
     exposing
         ( msg2js
         , makeJsData
+        , JsData
         , exportLNK
         , layout
         , loadModel

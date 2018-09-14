@@ -60,7 +60,6 @@ view model =
             , GroupsView.view model
             , GeometriesView.view model
             ]
-          -- , button [ onClick Actions.ParametersDialog, id "dialog", value "dialog" ] [ text "dialog" ]
         , button [ onClick Messages.ExportLink, id "export", value "export" ] [ text "Export" ]
         , input [ onInput Messages.InputChange, id "input", placeholder "undefined" ] []
         , input [ onInput Messages.InputFileChange, id "inputFile", placeholder "undefined" ] []

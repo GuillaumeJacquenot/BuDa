@@ -1,16 +1,10 @@
-module ModelWrapper
+module Board
     exposing
-        ( getPBSView
-        , getBullesViewFromNodeId
-        , getBullesView
-        , getPBSViewFromNodeId
-        , getPBSViewFromNodeName
-        , getGeometryView
-        , showAllDataLight
-        , showAllData
-        , showPBS
-        , showBulles
-        , showGeometry
+        ( displayAll
+        , displayFlat
+        , displayPbs
+        , displayBubble
+        , displayGeometry
         )
 
 import Identifier exposing (Identifier)
@@ -21,6 +15,64 @@ import Geometries
 import Model
 import ModelActions
 import DataModelActions
+import LinkToJS exposing (JsData, makeJsData, msg2js)
+import DataModelEncoders exposing (encodeModel)
+import Messages exposing (Msg)
+
+
+formatDisplayBubbleMessage : Model.Model -> JsData
+formatDisplayBubbleMessage model =
+    LinkToJS.makeJsData "display-bubble" <|
+        (DataModelEncoders.encodeModel (showAllDataLight (showBubbles model)).dataModel)
+
+
+formatDisplayPbsMessage : Model.Model -> JsData
+formatDisplayPbsMessage model =
+    LinkToJS.makeJsData "display-pbs" <|
+        DataModelEncoders.encodeModel (showPBS model)
+
+
+formatDisplayAllMessage : Model.Model -> JsData
+formatDisplayAllMessage model =
+    LinkToJS.makeJsData "display-all" <|
+        DataModelEncoders.encodeModel (showAllData model).dataModel
+
+
+formatDisplayFlatMessage : Model.Model -> JsData
+formatDisplayFlatMessage model =
+    LinkToJS.makeJsData "display-flat" <|
+        DataModelEncoders.encodeModel (showAllDataLight model).dataModel
+
+
+formatDisplayGeometryMessage : Model.Model -> JsData
+formatDisplayGeometryMessage model =
+    LinkToJS.makeJsData "display-geometry" <|
+        DataModelEncoders.encodeModel (showGeometry model).dataModel
+
+
+displayBubble : Model.Model -> Cmd Msg
+displayBubble model =
+    LinkToJS.msg2js <| formatDisplayBubbleMessage model
+
+
+displayPbs : Model.Model -> Cmd Msg
+displayPbs model =
+    LinkToJS.msg2js <| formatDisplayPbsMessage model
+
+
+displayAll : Model.Model -> Cmd Msg
+displayAll model =
+    LinkToJS.msg2js <| formatDisplayAllMessage model
+
+
+displayFlat : Model.Model -> Cmd Msg
+displayFlat model =
+    LinkToJS.msg2js <| formatDisplayFlatMessage model
+
+
+displayGeometry : Model.Model -> Cmd Msg
+displayGeometry model =
+    LinkToJS.msg2js <| formatDisplayGeometryMessage model
 
 
 getPBSView : DataModel.Model -> DataModel.Model
@@ -28,19 +80,19 @@ getPBSView model =
     ModelManagement.listNodeToPBS model.nodes
 
 
-getBullesViewFromNodeId : DataModel.Model -> Identifier -> DataModel.Model
-getBullesViewFromNodeId model id =
-    ModelManagement.subBullesModelFromId model id
+getBubblesViewFromNodeId : DataModel.Model -> Identifier -> DataModel.Model
+getBubblesViewFromNodeId model id =
+    ModelManagement.subBubblesModelFromId model id
 
 
-getBullesView : DataModel.Model -> DataModel.Model
-getBullesView model =
-    ModelManagement.subBullesFromUniverse model
+getBubblesView : DataModel.Model -> DataModel.Model
+getBubblesView model =
+    ModelManagement.subBubblesFromUniverse model
 
 
-getBullesViewFromNodeName : DataModel.Model -> String -> DataModel.Model
-getBullesViewFromNodeName model s =
-    ModelManagement.subBullesModelFromName model s
+getBubblesViewFromNodeName : DataModel.Model -> String -> DataModel.Model
+getBubblesViewFromNodeName model s =
+    ModelManagement.subBubblesModelFromName model s
 
 
 getPBSViewFromNodeId : DataModel.Model -> Identifier -> DataModel.Model
@@ -132,9 +184,9 @@ showAllData model =
     modelShowAllData_ (updateNodesPositionForLayout_ model)
 
 
-showBulles : Model.Model -> Model.Model
-showBulles model =
-    modelShowBulles_ (updateNodesPositionForLayout_ model)
+showBubbles : Model.Model -> Model.Model
+showBubbles model =
+    modelShowBubbles_ (updateNodesPositionForLayout_ model)
 
 
 showGeometry : Model.Model -> Model.Model
@@ -154,8 +206,8 @@ modelShowGeometry_ model =
         { model | dataModel = dm2 }
 
 
-modelShowBulles_ : Model.Model -> Model.Model
-modelShowBulles_ model =
+modelShowBubbles_ : Model.Model -> Model.Model
+modelShowBubbles_ model =
     let
         m1 =
             ModelManagement.filterWithMask model.dataModel
@@ -163,10 +215,10 @@ modelShowBulles_ model =
         subModel =
             case model.nodeViewId of
                 Nothing ->
-                    (getBullesView m1)
+                    (getBubblesView m1)
 
                 Just x ->
-                    (getBullesViewFromNodeId m1 x)
+                    (getBubblesViewFromNodeId m1 x)
 
         m2 =
             (DataModel.triNodes subModel)
