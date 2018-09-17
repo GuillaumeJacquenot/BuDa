@@ -152,13 +152,6 @@
   top: 3.2em;
   left: 43em;
 }
-#layout {
-  width: 5em;
-  height: 3em;
-  position: absolute;
-  top: 3.2em;
-  left: 48.5em;
-}
 
 #layoutset {
   width: 20em;
@@ -190,7 +183,7 @@
   height: 3em;
   position: absolute;
   top: 3.2em;
-  left: 65em;
+  left: 48.5em;
 }
 
 #menu {
