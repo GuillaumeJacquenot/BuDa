@@ -5,11 +5,7 @@ node {
   border-color: #555;
 }
 
-node[highLighted = 1] {
-  shape: ellipse;
-  background-color: #F2A5A9;
-}
-node[highLighted = 0] {
+node[highLighted = 0], node[highLighted = 1] {
   shape: rectangle;
   background-color: #64B5F6;
 }
