@@ -303,20 +303,23 @@ function _sendDataSimpleModel_(obj) {
 }
 
 function getSelectedNetworkIndex(objectNetworks, networks, selectedNetworks) {
-	let network = null;
+	let selected = [];
 
 	if (selectedNetworks) {
 		// get the id of the most recent selected network on the edge
-		for (let index = selectedNetworks.length - 1; index >= 0 && network === null; index--) {
+		for (let index = selectedNetworks.length - 1; index >= 0; index--) {
 			const currentNetwork = selectedNetworks[index];
 			if (objectNetworks.includes(currentNetwork)) {
-				network = currentNetwork;
+				selected.push(currentNetwork);
 			}
 		}
 	}
 	// returns the index of the network in the networks array
 	// => the color stays the same for a given network as long as the array doesn't change
-	return networks.indexOf(network);
+	return {
+		highlight: selected.length ? networks.indexOf(selected[0]) : -1,
+		multiple: selected.length > 1
+	};
 }
 
 function _sendDataModel_(model) {
@@ -340,6 +343,12 @@ function _sendDataModel_(model) {
 	var eds = model.edges;
 	eds.forEach(function (edge) {
 		var data = edge.data;
+		var networksFormat = getSelectedNetworkIndex(
+			data.parameters,
+			model.parameters.map(network => network.id),
+			model.selectedNetworks
+		);
+
 		jsons.push(
 			{
 				group: "edges",
@@ -348,16 +357,12 @@ function _sendDataModel_(model) {
 					source: data.source,
 					target: data.target,
 					highLighted: data.highLighted,
-					network: getSelectedNetworkIndex(
-						data.parameters,
-						model.parameters.map(network => network.id),
-						model.selectedNetworks
-					),
+					network: networksFormat.highlight,
+					multipleNetworks: networksFormat.multiple ? "true" : "false",
 					state: data.state
 				}
 			}
 		);
-
 	});
 
 	cy.add(jsons);

@@ -92,6 +92,10 @@ edge[network=4] {
   line-color: DarkMagenta;
 }
 
+edge[multipleNetworks="true"] {
+  line-style: dotted;
+}
+
 node:parent
 {
   background-opacity: 0.4;
