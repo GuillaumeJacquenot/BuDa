@@ -1,4 +1,4 @@
-module ElementAttributesView exposing (..)
+module ElementAttributesView exposing (view)
 
 import ElementAttributes exposing (..)
 import Html exposing (Html, Attribute, button, div, fieldset, input, label, span, text, textarea, p, legend)
@@ -12,6 +12,7 @@ import Link exposing (Edge)
 import Identifier exposing (Identifier)
 import LinkParameters exposing (getPropertyNameFromId)
 
+
 radio : String -> Messages.Msg -> String -> Bool -> Html Messages.Msg
 radio s msg value b =
     label
@@ -20,14 +21,17 @@ radio s msg value b =
         , text value
         ]
 
+
 getLegendName : Identifier -> LinkParameters.Model -> String
 getLegendName id parameters =
-    let 
-        name = getPropertyNameFromId id parameters
+    let
+        name =
+            getPropertyNameFromId id parameters
     in
-        case name of 
+        case name of
             Nothing ->
                 ""
+
             Just legend ->
                 legend
 
@@ -35,22 +39,29 @@ getLegendName id parameters =
 roleFieldset : LinkParameters.Model -> NetworkRole -> Html Messages.Msg
 roleFieldset parameters networkRole =
     let
-        network = toString networkRole.network
-        fieldsetName = "role-network-"++network
-        radioName ="r-n-"++network
-        legendLabel = getLegendName networkRole.network parameters
-    in 
-    fieldset [ id fieldsetName ]
-        [ legend [] [ text legendLabel ]
-        , radio radioName (Messages.SwitchElemRole networkRole.network Producer) "Producer" (networkRole.role == Producer)
-        , radio radioName (Messages.SwitchElemRole networkRole.network Consumer) "Consumer" (networkRole.role == Consumer)
-        ]
-        
+        network =
+            toString networkRole.network
+
+        fieldsetName =
+            "role-network-" ++ network
+
+        radioName =
+            "r-n-" ++ network
+
+        legendLabel =
+            getLegendName networkRole.network parameters
+    in
+        fieldset [ id fieldsetName ]
+            [ legend [] [ text legendLabel ]
+            , radio radioName (Messages.SwitchElemRole networkRole.network Producer) "Producer" (networkRole.role == Producer)
+            , radio radioName (Messages.SwitchElemRole networkRole.network Consumer) "Consumer" (networkRole.role == Consumer)
+            ]
+
 
 rolesFieldset : Roles -> LinkParameters.Model -> Html Messages.Msg
 rolesFieldset roles parameters =
-    div []
-        <| List.map (roleFieldset parameters) roles 
+    div [] <|
+        List.map (roleFieldset parameters) roles
 
 
 stateFieldset : ElementState -> Html Messages.Msg
@@ -61,76 +72,47 @@ stateFieldset state =
         ]
 
 
-getFieldsetNode : Maybe Node -> LinkParameters.Model -> Html Messages.Msg
-getFieldsetNode node parameters =
-    case node of
-        Nothing ->
-            div [] []
+getFieldsetNode : Identifier -> List Node -> LinkParameters.Model -> Html Messages.Msg
+getFieldsetNode id nodes parameters =
+    div []
+        (case DataModel.getNodeFromId id nodes of
+            Nothing ->
+                []
 
-        Just x ->
-            div []
-                [ stateFieldset x.state
-                , rolesFieldset x.roles parameters
+            Just node ->
+                [ stateFieldset node.state
+                , rolesFieldset node.roles parameters
+                ]
+        )
+
+
+getFieldsetEdge : Identifier -> List Edge -> Html Messages.Msg
+getFieldsetEdge id edges =
+    div []
+        (case DataModel.getEdgeFromId id edges of
+            Nothing ->
+                []
+
+            Just edge ->
+                [ stateFieldset edge.state ]
+        )
+
+
+makeElementAttributesView : Model -> Html Messages.Msg
+makeElementAttributesView model =
+    div []
+        (case model.selection of
+            firstElementId :: elementIdList ->
+                [ getFieldsetNode firstElementId model.dataModel.nodes model.dataModel.parameters
+                , getFieldsetEdge firstElementId model.dataModel.edges
                 ]
 
-
-getFieldsetEdge : Maybe Edge -> Html Messages.Msg
-getFieldsetEdge edge =
-    case edge of
-        Nothing ->
-            div [] []
-
-        Just x ->
-            div []
-                [ stateFieldset x.state ]
-
-
-expose : Model -> Html Messages.Msg
-expose model =
-    let
-        m_id =
-            case model.selection of
-                x :: xs ->
-                    Just x
-
-                [] ->
-                    Nothing
-
-        m_node =
-            case m_id of
-                Nothing ->
-                    Nothing
-
-                Just x ->
-                    DataModel.getNodeFromId x model.dataModel.nodes
-
-        m_edge =
-            case m_id of
-                Nothing ->
-                    Nothing
-
-                Just x ->
-                    DataModel.getEdgeFromId x model.dataModel.edges
-    in
-        div []
-            [ getFieldsetNode m_node model.dataModel.parameters
-            , getFieldsetEdge m_edge
-            ]
+            [] ->
+                []
+        )
 
 
 view : Model.Model -> Html Messages.Msg
 view model =
     div [ class "div-element-type" ]
-        [ expose model ]
-
-
-
---     [ fieldset [ id "role" ]
---         [ radio "elemType" (Messages.SwitchElemRole networkId Producer) "Producer" False
---         , radio "elemType" (Messages.SwitchElemRole networkId Consumer) "Consumer" False
---         ]
---     , fieldset [ id "elementState" ]
---         [ radio "elemState" (Messages.SwitchElemState RAS) "RAS" True
---         , radio "elemState" (Messages.SwitchElemState HS) "HS" False
---         ]
---     ]
+        [ makeElementAttributesView model ]
