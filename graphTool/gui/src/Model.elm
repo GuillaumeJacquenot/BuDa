@@ -65,6 +65,7 @@ type alias Model =
     , showFunctionalChain : Bool
     , showGeometries : Bool
     , showParameters : Bool
+    , propagationDone : Bool
     , searchModel : Search.Model
     , mqtt : Mqtt.Model
     }
@@ -94,6 +95,7 @@ defaultModel =
     , showFunctionalChain = False
     , showGeometries = False
     , showParameters = False
+    , propagationDone = False
     , searchModel = Search.defaultModel
     , mqtt = Mqtt.init "mqtt://130.66.124.234:15675/ws"
     }

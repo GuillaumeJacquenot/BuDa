@@ -5,6 +5,7 @@ import Keyboard
 import Link exposing (Edge)
 import Dom exposing (focus)
 import Node exposing (Node)
+import ElementAttributes exposing (..)
 
 
 type Msg
@@ -60,10 +61,13 @@ type Msg
     | LoadGeometryButton String
     | SendGeometryToElm String
     | SwitchToLayout String
+    | SwitchElemType ElementType
+    | SwitchElemState ElementState
     | ShowHideFunctionalChain
     | ShowHideGeometries
     | ShowHideParameters
     | Verification
+    | Propagation
     | OnNotificationClick
     | UserChange String
     | UrlChange String

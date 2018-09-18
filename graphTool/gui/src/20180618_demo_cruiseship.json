@@ -1,0 +1,630 @@
+{
+	"nodes": [
+		{
+			"data": {
+				"id": 17,
+				"name": "aft distribution",
+				"parent": null,
+				"attribut": null,
+				"nodeType": "unknown",
+				"state": "RAS",
+				"geometry": 1,
+				"group": [],
+				"highLighted": 0,
+				"position": {
+					"x": 0,
+					"y": 0
+				},
+				"blow": 0
+			}
+		},
+		{
+			"data": {
+				"id": 13,
+				"name": "fore distribution",
+				"parent": null,
+				"attribut": null,
+				"nodeType": "unknown",
+				"state": "RAS",
+				"geometry": 1,
+				"group": [],
+				"highLighted": 0,
+				"position": {
+					"x": 0,
+					"y": 0
+				},
+				"blow": 0
+			}
+		},
+		{
+			"data": {
+				"id": 10,
+				"name": "section 7",
+				"parent": null,
+				"attribut": null,
+				"nodeType": "consumer",
+				"state": "RAS",
+				"geometry": 1,
+				"group": [],
+				"highLighted": 0,
+				"position": {
+					"x": 0,
+					"y": 0
+				},
+				"blow": 0
+			}
+		},
+		{
+			"data": {
+				"id": 9,
+				"name": "section 6",
+				"parent": null,
+				"attribut": null,
+				"nodeType": "consumer",
+				"state": "RAS",
+				"geometry": 1,
+				"group": [],
+				"highLighted": 0,
+				"position": {
+					"x": 0,
+					"y": 0
+				},
+				"blow": 0
+			}
+		},
+		{
+			"data": {
+				"id": 8,
+				"name": "section 4",
+				"parent": null,
+				"attribut": null,
+				"nodeType": "consumer",
+				"state": "RAS",
+				"geometry": 1,
+				"group": [],
+				"highLighted": 0,
+				"position": {
+					"x": 0,
+					"y": 0
+				},
+				"blow": 0
+			}
+		},
+		{
+			"data": {
+				"id": 7,
+				"name": "section 3",
+				"parent": null,
+				"attribut": null,
+				"nodeType": "consumer",
+				"state": "RAS",
+				"geometry": 1,
+				"group": [],
+				"highLighted": 0,
+				"position": {
+					"x": 0,
+					"y": 0
+				},
+				"blow": 0
+			}
+		},
+		{
+			"data": {
+				"id": 6,
+				"name": "section 2",
+				"parent": null,
+				"attribut": null,
+				"nodeType": "consumer",
+				"state": "RAS",
+				"geometry": 1,
+				"group": [],
+				"highLighted": 0,
+				"position": {
+					"x": 0,
+					"y": 0
+				},
+				"blow": 0
+			}
+		},
+		{
+			"data": {
+				"id": 5,
+				"name": "section 1",
+				"parent": null,
+				"attribut": null,
+				"nodeType": "consumer",
+				"state": "RAS",
+				"geometry": 1,
+				"group": [],
+				"highLighted": 0,
+				"position": {
+					"x": 0,
+					"y": 0
+				},
+				"blow": 0
+			}
+		},
+		{
+			"data": {
+				"id": 4,
+				"name": "main distribution",
+				"parent": null,
+				"attribut": null,
+				"nodeType": "unknown",
+				"state": "RAS",
+				"geometry": 1,
+				"group": [],
+				"highLighted": 0,
+				"position": {
+					"x": 0,
+					"y": 0
+				},
+				"blow": 0
+			}
+		},
+		{
+			"data": {
+				"id": 3,
+				"name": "aft pump",
+				"parent": null,
+				"attribut": null,
+				"nodeType": "producer",
+				"state": "RAS",
+				"geometry": 1,
+				"group": [],
+				"highLighted": 0,
+				"position": {
+					"x": 0,
+					"y": 0
+				},
+				"blow": 0
+			}
+		},
+		{
+			"data": {
+				"id": 2,
+				"name": "fore pump",
+				"parent": null,
+				"attribut": null,
+				"nodeType": "producer",
+				"state": "RAS",
+				"geometry": 1,
+				"group": [],
+				"highLighted": 0,
+				"position": {
+					"x": 0,
+					"y": 0
+				},
+				"blow": 0
+			}
+		},
+		{
+			"data": {
+				"id": 34,
+				"name": "section 5",
+				"parent": null,
+				"attribut": null,
+				"nodeType": "consumer",
+				"state": "RAS",
+				"geometry": 1,
+				"group": [],
+				"highLighted": 0,
+				"position": {
+					"x": 0,
+					"y": 0
+				},
+				"blow": 0
+			}
+		},
+		{
+			"data": {
+				"id": 41,
+				"name": "section 0",
+				"parent": null,
+				"attribut": null,
+				"nodeType": "consumer",
+				"state": "RAS",
+				"geometry": 1,
+				"group": [],
+				"highLighted": 0,
+				"position": {
+					"x": 0,
+					"y": 0
+				},
+				"blow": 0
+			}
+		},
+		{
+			"data": {
+				"id": 53,
+				"name": "section 8",
+				"parent": null,
+				"attribut": null,
+				"nodeType": "consumer",
+				"state": "RAS",
+				"geometry": 1,
+				"group": [],
+				"highLighted": 0,
+				"position": {
+					"x": 0,
+					"y": 0
+				},
+				"blow": 0
+			}
+		}
+	],
+	"edges": [
+		{
+			"data": {
+				"id": 54,
+				"source": 13,
+				"target": 53,
+				"parameters": [],
+				"state": "RAS",
+				"attribut": null,
+				"highLighted": 0,
+				"tightness": []
+			}
+		},
+		{
+			"data": {
+				"id": 42,
+				"source": 17,
+				"target": 41,
+				"parameters": [],
+				"state": "RAS",
+				"attribut": null,
+				"highLighted": 0,
+				"tightness": []
+			}
+		},
+		{
+			"data": {
+				"id": 35,
+				"source": 13,
+				"target": 34,
+				"parameters": [],
+				"state": "RAS",
+				"attribut": null,
+				"highLighted": 0,
+				"tightness": []
+			}
+		},
+		{
+			"data": {
+				"id": 25,
+				"source": 4,
+				"target": 17,
+				"parameters": [],
+				"state": "RAS",
+				"attribut": null,
+				"highLighted": 0,
+				"tightness": []
+			}
+		},
+		{
+			"data": {
+				"id": 24,
+				"source": 10,
+				"target": 13,
+				"parameters": [],
+				"state": "RAS",
+				"attribut": null,
+				"highLighted": 0,
+				"tightness": []
+			}
+		},
+		{
+			"data": {
+				"id": 23,
+				"source": 9,
+				"target": 13,
+				"parameters": [],
+				"state": "RAS",
+				"attribut": null,
+				"highLighted": 0,
+				"tightness": []
+			}
+		},
+		{
+			"data": {
+				"id": 22,
+				"source": 8,
+				"target": 13,
+				"parameters": [],
+				"state": "RAS",
+				"attribut": null,
+				"highLighted": 0,
+				"tightness": []
+			}
+		},
+		{
+			"data": {
+				"id": 21,
+				"source": 7,
+				"target": 17,
+				"parameters": [],
+				"state": "RAS",
+				"attribut": null,
+				"highLighted": 0,
+				"tightness": []
+			}
+		},
+		{
+			"data": {
+				"id": 20,
+				"source": 5,
+				"target": 17,
+				"parameters": [],
+				"state": "RAS",
+				"attribut": null,
+				"highLighted": 0,
+				"tightness": []
+			}
+		},
+		{
+			"data": {
+				"id": 19,
+				"source": 3,
+				"target": 17,
+				"parameters": [],
+				"state": "RAS",
+				"attribut": null,
+				"highLighted": 0,
+				"tightness": []
+			}
+		},
+		{
+			"data": {
+				"id": 18,
+				"source": 6,
+				"target": 17,
+				"parameters": [],
+				"state": "RAS",
+				"attribut": null,
+				"highLighted": 0,
+				"tightness": []
+			}
+		},
+		{
+			"data": {
+				"id": 15,
+				"source": 2,
+				"target": 13,
+				"parameters": [],
+				"state": "RAS",
+				"attribut": null,
+				"highLighted": 0,
+				"tightness": []
+			}
+		},
+		{
+			"data": {
+				"id": 12,
+				"source": 2,
+				"target": 4,
+				"parameters": [],
+				"state": "RAS",
+				"attribut": null,
+				"highLighted": 0,
+				"tightness": []
+			}
+		},
+		{
+			"data": {
+				"id": 11,
+				"source": 3,
+				"target": 4,
+				"parameters": [],
+				"state": "RAS",
+				"attribut": null,
+				"highLighted": 0,
+				"tightness": []
+			}
+		}
+	],
+	"parameters": [],
+	"groups": [],
+	"geometries": [
+		{
+			"id": 1,
+			"name": "profile",
+			"svg": "cruiseship.svg"
+		}
+	],
+	"mustLayout": false,
+	"layouts": [],
+	"geometryLayouts": [
+		{
+			"id": 1,
+			"layout": [
+				{
+					"id": 17,
+					"position": {
+						"x": 266.54055650768873,
+						"y": 517.0187321519322
+					}
+				},
+				{
+					"id": 13,
+					"position": {
+						"x": 1304.452085260529,
+						"y": 517.8837813802988
+					}
+				},
+				{
+					"id": 10,
+					"position": {
+						"x": 1309.2270336068525,
+						"y": 444.9010659820154
+					}
+				},
+				{
+					"id": 9,
+					"position": {
+						"x": 1135.458998408767,
+						"y": 445.2203180688678
+					}
+				},
+				{
+					"id": 8,
+					"position": {
+						"x": 775.0886774658914,
+						"y": 439.06230435142214
+					}
+				},
+				{
+					"id": 7,
+					"position": {
+						"x": 592.0319952804875,
+						"y": 448.056623985212
+					}
+				},
+				{
+					"id": 6,
+					"position": {
+						"x": 423.44674051782175,
+						"y": 444.55693993640983
+					}
+				},
+				{
+					"id": 5,
+					"position": {
+						"x": 222.49420049197758,
+						"y": 443.37569644329744
+					}
+				},
+				{
+					"id": 4,
+					"position": {
+						"x": 724.7690718994708,
+						"y": 585.6756581209963
+					}
+				},
+				{
+					"id": 3,
+					"position": {
+						"x": 402.053338902452,
+						"y": 583.1752367422462
+					}
+				},
+				{
+					"id": 2,
+					"position": {
+						"x": 1115.3842042961473,
+						"y": 586.2902122020787
+					}
+				},
+				{
+					"id": 34,
+					"position": {
+						"x": 964.8534850640115,
+						"y": 439.29587482219057
+					}
+				},
+				{
+					"id": 41,
+					"position": {
+						"x": 86.26173541963014,
+						"y": 484.02418207681376
+					}
+				},
+				{
+					"id": 53,
+					"position": {
+						"x": 1496.8008534850642,
+						"y": 520.7652916073969
+					}
+				}
+			]
+		}
+	],
+	"lightLayout": null,
+	"rootBubbleLayout": [
+		{
+			"id": 17,
+			"position": {
+				"x": 614.9453063991124,
+				"y": 124.53122559644952
+			}
+		},
+		{
+			"id": 4,
+			"position": {
+				"x": 450.3359191973372,
+				"y": 23.001366598827484
+			}
+		},
+		{
+			"id": 5,
+			"position": {
+				"x": 669.5,
+				"y": 24.25
+			}
+		},
+		{
+			"id": 6,
+			"position": {
+				"x": 770.5,
+				"y": 24.25
+			}
+		},
+		{
+			"id": 7,
+			"position": {
+				"x": 765.667543369788,
+				"y": 114.64719901981259
+			}
+		},
+		{
+			"id": 8,
+			"position": {
+				"x": 227.5,
+				"y": 24.25
+			}
+		},
+		{
+			"id": 9,
+			"position": {
+				"x": 126.5,
+				"y": 24.25
+			}
+		},
+		{
+			"id": 10,
+			"position": {
+				"x": 25.5,
+				"y": 24.25
+			}
+		},
+		{
+			"id": 13,
+			"position": {
+				"x": 177,
+				"y": 122.75
+			}
+		},
+		{
+			"id": 14,
+			"position": {
+				"x": 248.75,
+				"y": 122.75
+			}
+		},
+		{
+			"id": 3,
+			"position": {
+				"x": 559.5,
+				"y": 24.25
+			}
+		},
+		{
+			"id": 2,
+			"position": {
+				"x": 338.5,
+				"y": 24.25
+			}
+		}
+	],
+	"geometryImage": null
+}

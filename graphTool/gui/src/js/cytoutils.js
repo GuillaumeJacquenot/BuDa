@@ -140,7 +140,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 	cy.on('doubleTap', 'node', function (event) {
-
 		var selected = getSelectedEls();
 
 		if (selected.length > 0) {
@@ -291,7 +290,7 @@ function setPBSStyle() {
 	// cy.setStyle (stylesheetPBS);
 }
 
-function setBullesStyle() {
+function setBubblesStyle() {
 	var cy = getCyReference();
 	// cy.setStyle (stylesheetBubble);
 }
@@ -322,6 +321,29 @@ function getSelectedNetworkIndex(objectNetworks, networks, selectedNetworks) {
 	};
 }
 
+function isProducerOnASelectedNetwork(node, selectedNetworks, allNetworks) {
+	let isProducer = false;
+
+	let networkRefence = selectedNetworks;
+	if (selectedNetworks.length === 0) {
+		networkRefence = allNetworks.map(function (network) {
+			return network.id;
+		})
+	}
+	if (node.roles.length > 0) {
+		const producerOnNetworkIds = node.roles.filter(function (networkRole) {
+			return networkRole.role === "producer"
+		}).map(function (networkRole) {
+			return networkRole.network;
+		})
+
+		for (let index = 0; index < producerOnNetworkIds.length && !isProducer; index++) {
+			isProducer = networkRefence.includes(producerOnNetworkIds[index]);
+		}
+	}
+	return isProducer;
+}
+
 function _sendDataModel_(model) {
 	var cy = getCyReference();
 	cy.remove(cy.elements());
@@ -329,12 +351,22 @@ function _sendDataModel_(model) {
 	var jsons = [];
 	var ns = model.nodes;
 
+	var ns = model.nodes;
 	ns.forEach(function (node) {
 		var data = node.data;
+		var isProducer = isProducerOnASelectedNetwork(data, model.selectedNetworks, model.parameters);
 		jsons.push(
 			{
 				group: "nodes",
-				data: { id: data.id, parent: data.parent, name: data.name, highLighted: data.highLighted, nodeType: data.nodeType, blow: data.blow, state: data.state }
+				data: {
+					id: data.id,
+					parent: data.parent,
+					name: data.name,
+					highLighted: data.highLighted,
+					isProducer: isProducer ? "true" : "false",
+					blow: data.blow,
+					state: data.state
+				}
 				, position: { x: data.position.x, y: data.position.y }
 			}
 		);
@@ -364,7 +396,7 @@ function _sendDataModel_(model) {
 			}
 		);
 	});
-
+	console.log(jsons);
 	cy.add(jsons);
 }
 
@@ -392,7 +424,7 @@ function _layout_preset_with_bbox() {
 	cy.layout(preset_layout_with_bbox);
 }
 
-function _updateBullesLayoutAndPos(obj) {
+function _updateBubblesLayoutAndPos(obj) {
 	_sendDataSimpleModel_(obj);
 	_layout_dagre();
 	_setNodesPositionsToElm_();
@@ -442,4 +474,47 @@ function layoutElementsNoPosition() {
 	catch (err) {
 		console.log("err: " + err);
 	}
+}
+
+function formatModel(model) {
+	if (model["mustLayout"] == true) {
+		_sendDataSimpleModel_(model);
+	}
+	else {
+		_sendDataModel_(model);
+	}
+
+	var img = model["geometryImage"];
+
+	if (img != null) {
+		_loadImage(img);
+	}
+	else {
+		_unLoadImage();
+	}
+
+	if (model["mustLayout"] == true) {
+		_layout_dagre();
+	}
+	else {
+		//_layout_preset();
+		_layout_preset_with_bbox();
+	}
+
+	if (model["mustLayout"] == true) {
+		layoutElementsNoPosition();
+		_setNodesPositionsToElm_();
+	}
+}
+
+function displayModel(data) {
+	options.drawImage = false;
+	formatModel(data);
+}
+
+function displayPbs(data) {
+	options.drawImage = false;
+	_sendDataSimpleModel_(data);
+	setPBSStyle();
+	_layout_dagre();
 }

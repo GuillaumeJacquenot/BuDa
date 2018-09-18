@@ -13,6 +13,7 @@ import DataModel
 import DataModelEncoders
 import Dom exposing (focus)
 import Export
+import ElementAttributes
 import Geometries
 import LayoutMenuActions
 import LinkToJS
@@ -29,6 +30,7 @@ import Selection
 import SpecialKey
 import Task
 import Verification
+import Propagation
 
 
 upView : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
@@ -238,6 +240,24 @@ prepareNotification_ cmd model =
         ( m1, Cmd.batch cmds )
 
 
+initModelHighlights : Model.Model -> Model.Model
+initModelHighlights model =
+    let
+        dataModel =
+            model.dataModel
+
+        initNodes =
+            List.map (\x -> { x | highLighted = 0 }) dataModel.nodes
+
+        initEdges =
+            List.map (\x -> { x | highLighted = 0 }) dataModel.edges
+
+        dm1 =
+            { dataModel | nodes = initNodes, edges = initEdges }
+    in
+        { model | dataModel = dm1, propagationDone = False }
+
+
 update : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
 update msg model =
     let
@@ -301,6 +321,12 @@ update msg model =
                     model
 
                 SwitchToView _ ->
+                    model
+
+                SwitchElemType _ ->
+                    model
+
+                SwitchElemState _ ->
                     model
 
                 KeyUps s ->
@@ -427,6 +453,9 @@ update msg model =
                     model
 
                 Verification ->
+                    model
+
+                Propagation ->
                     model
 
                 OnNotificationClick ->
@@ -667,6 +696,20 @@ globalUpdate msg model =
             in
                 -- showView msg m1
                 ( m1, Cmd.batch [ LinkToJS.setLayoutNameThenLayout s ] )
+
+        SwitchElemType elemType ->
+            let
+                m1 =
+                    initModelHighlights model
+            in
+                showView msg (ModelActions.updateNodeType m1 elemType)
+
+        SwitchElemState elemState ->
+            let
+                m1 =
+                    initModelHighlights model
+            in
+                showView msg (ModelActions.updateState m1 elemState)
 
         CreateNode ->
             let
@@ -925,6 +968,9 @@ globalUpdate msg model =
 
         Verification ->
             let
+                _ =
+                    Debug.log "verif" model.dataModel
+
                 dm =
                     Verification.verificationBlocs model.dataModel
 
@@ -935,6 +981,16 @@ globalUpdate msg model =
                     { model | dataModel = dm2 }
             in
                 ( m1, Cmd.none )
+
+        Propagation ->
+            if (model.propagationDone == False) then
+                let
+                    newModel =
+                        { model | propagationDone = True }
+                in
+                    showView msg (ModelActions.updateOutpowered newModel)
+            else
+                showView msg (initModelHighlights model)
 
         UserChange s ->
             ( { model | mqtt = Mqtt.setClientId s model.mqtt }, Cmd.none )

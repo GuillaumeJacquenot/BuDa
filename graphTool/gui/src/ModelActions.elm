@@ -17,6 +17,8 @@ module ModelActions
         , createParameter
         , deleteParameter
         , updateAttribute
+        , updateNodeType
+        , updateState
         , updateProperty
         , undo
         , redo
@@ -31,6 +33,7 @@ module ModelActions
         , updateNodesPosition
         , updateLightLayout
         , updateGeometryLayout
+        , updateOutpowered
         , triNodes
         , getAscendantName
         , searchElement
@@ -55,6 +58,7 @@ import DataModel
 import Model exposing (Model)
 import LinkParameters
 import Set exposing (Set)
+import ElementAttributes exposing (..)
 import LinkParameters
 import DataModelActions
 import Scenario
@@ -68,6 +72,7 @@ import Geometries
 import Csv
 import Csv2
 import Search
+import Propagation
 
 
 {--
@@ -563,6 +568,106 @@ updateAttribute model s =
 
         newUndo =
             Scenario.addMsg (Scenario.UpdateAttribute s m_id) model.undo
+    in
+        { model
+            | dataModel = newDataModel
+            , undo = newUndo
+        }
+
+
+
+{--
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+updateOutpowered:
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+--}
+
+
+updateOutpowered : Model.Model -> Model.Model
+updateOutpowered model =
+    let
+        newDataModel =
+            DataModelActions.updateOutpowered model.dataModel
+
+        newUndo =
+            Scenario.addMsg (Scenario.UpdateOutpowered) model.undo
+    in
+        { model
+            | dataModel = newDataModel
+            , undo = newUndo
+        }
+
+
+
+{--
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+updateNodeType
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+--}
+
+
+updateNodeType : Model.Model -> ElementType -> Model.Model
+updateNodeType model elemType =
+    let
+        m_id =
+            case model.selection of
+                x :: xs ->
+                    Just x
+
+                [] ->
+                    Nothing
+
+        newDataModel =
+            DataModelActions.updateNodeType m_id elemType model.dataModel
+
+        newUndo =
+            Scenario.addMsg (Scenario.UpdateNodeType elemType m_id) model.undo
+    in
+        { model
+            | dataModel = newDataModel
+            , undo = newUndo
+        }
+
+
+
+{--
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+updateNodeType
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+--}
+
+
+updateState : Model.Model -> ElementState -> Model.Model
+updateState model elemState =
+    let
+        m_id =
+            case model.selection of
+                x :: xs ->
+                    Just x
+
+                [] ->
+                    Nothing
+
+        newDataModel =
+            DataModelActions.updateState m_id elemState model.dataModel
+
+        newUndo =
+            Scenario.addMsg (Scenario.UpdateState elemState m_id) model.undo
     in
         { model
             | dataModel = newDataModel
