@@ -5,11 +5,7 @@ node {
   border-color: #555;
 }
 
-node[highLighted = 1] {
-  shape: ellipse;
-  background-color: #F2A5A9;
-}
-node[highLighted = 0] {
+node[highLighted = 0], node[highLighted = 1] {
   shape: rectangle;
   background-color: #64B5F6;
 }
@@ -70,6 +66,30 @@ edge[highLighted = 3] {
 edge:selected {
   line-color: #FE2E2E;
   width: 4;
+}
+
+edge[network=0] {
+  line-color: LightGreen;
+}
+
+edge[network=1] {
+  line-color: DarkCyan;
+}
+
+edge[network=2] {
+  line-color: DeepSkyBlue;
+}
+
+edge[network=3] {
+  line-color: RosyBrown;
+}
+
+edge[network=4] {
+  line-color: DarkMagenta;
+}
+
+edge[multipleNetworks="true"] {
+  line-style: dotted;
 }
 
 node:parent
