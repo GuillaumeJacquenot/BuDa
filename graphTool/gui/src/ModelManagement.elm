@@ -1,9 +1,9 @@
 module ModelManagement
     exposing
-        ( subBullesModelFromId
-        , subBullesModelFromName
-        , subBullesModelFromNode
-        , subBullesFromUniverse
+        ( subBubblesModelFromId
+        , subBubblesModelFromName
+        , subBubblesModelFromNode
+        , subBubblesFromUniverse
         , listNodeToPBS
         , listNodeToPBSFromNodeName
         , listNodeToPBSFromNodeId
@@ -40,7 +40,7 @@ filterSameParentWithoutN list n =
 
 
 {--
-filterEdgeN renvoie la selection des liens pour affichage Bulle
+filterEdgeN renvoie la selection des liens pour affichage Bubble
 
   [ x | (
        (isNodeIdPresent x.source nodes)
@@ -49,12 +49,12 @@ filterEdgeN renvoie la selection des liens pour affichage Bulle
       )
   ]
 
-      avec nodes = filterBullesNodesN model.nodes n
+      avec nodes = filterBubblesNodesN model.nodes n
 --}
 
 
-filterBullesEdgeN : List Edge -> Node -> List Node -> List Edge
-filterBullesEdgeN list n nodes =
+filterBubblesEdgeN : List Edge -> Node -> List Node -> List Edge
+filterBubblesEdgeN list n nodes =
     List.filter
         (\x ->
             (DataModel.isNodeIdPresent x.source nodes)
@@ -75,8 +75,8 @@ existLinkTo list n edges =
         list
 
 
-subBullesFromUniverse : DataModel.Model -> DataModel.Model
-subBullesFromUniverse model =
+subBubblesFromUniverse : DataModel.Model -> DataModel.Model
+subBubblesFromUniverse model =
     let
         newNodes0 =
             List.filter (\x -> (x.parent == Nothing)) model.nodes
@@ -160,8 +160,8 @@ mainFilter_ x n model childNodes edges =
         True
 
 
-subBullesModelFromNode : DataModel.Model -> Node -> DataModel.Model
-subBullesModelFromNode model n =
+subBubblesModelFromNode : DataModel.Model -> Node -> DataModel.Model
+subBubblesModelFromNode model n =
     let
         childNodes =
             getChildren model.nodes n
@@ -220,14 +220,14 @@ subBullesModelFromNode model n =
         }
 
 
-subBullesModelFromNode0 : DataModel.Model -> Node -> DataModel.Model
-subBullesModelFromNode0 model n =
+subBubblesModelFromNode0 : DataModel.Model -> Node -> DataModel.Model
+subBubblesModelFromNode0 model n =
     let
         childNodes =
             getChildren model.nodes n
 
         childEdges =
-            filterBullesEdgeN model.edges n childNodes
+            filterBubblesEdgeN model.edges n childNodes
 
         brosN =
             DataModel.bros n model.nodes
@@ -287,24 +287,24 @@ subBullesModelFromNode0 model n =
         }
 
 
-subBullesModelFromId : DataModel.Model -> Identifier -> DataModel.Model
-subBullesModelFromId model id =
+subBubblesModelFromId : DataModel.Model -> Identifier -> DataModel.Model
+subBubblesModelFromId model id =
     case DataModel.getNodeFromId id model.nodes of
         Nothing ->
             DataModel.defaultModel
 
         Just n ->
-            subBullesModelFromNode model n
+            subBubblesModelFromNode model n
 
 
-subBullesModelFromName : DataModel.Model -> String -> DataModel.Model
-subBullesModelFromName model s =
+subBubblesModelFromName : DataModel.Model -> String -> DataModel.Model
+subBubblesModelFromName model s =
     case DataModel.getNodeFromName s model.nodes of
         Nothing ->
             DataModel.defaultModel
 
         Just n ->
-            subBullesModelFromNode model n
+            subBubblesModelFromNode model n
 
 
 parentFromNode : List Node -> Node -> Maybe Node

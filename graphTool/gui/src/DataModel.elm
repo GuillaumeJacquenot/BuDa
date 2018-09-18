@@ -62,8 +62,6 @@ import Set exposing (Set)
 import TightnessActions
 import Layout exposing (Layout, NodeLayout, GeometryLayout)
 import Mask
-import Notification
-import Notifications
 import Geometries
 
 
@@ -83,9 +81,7 @@ type alias Model =
     , lightLayout : Maybe Layout
     , rootBubbleLayout : Maybe Layout
     , mask : Mask.Model
-    , notifications : Notifications.Model
     , geometryImage : Maybe String
-    , receivedNotifications : Notifications.Model
     }
 
 
@@ -144,9 +140,7 @@ defaultModel =
     , lightLayout = Nothing
     , rootBubbleLayout = Nothing
     , mask = Mask.defaultModel
-    , notifications = Notifications.init
     , geometryImage = Nothing
-    , receivedNotifications = Notifications.init
     }
 
 
@@ -217,9 +211,7 @@ dataModelToModel dm model =
         , lightLayout = dm.lightLayout
         , rootBubbleLayout = dm.rootBubbleLayout
         , mask = dm.mask
-        , notifications = Notifications.init
         , geometryImage = Nothing
-        , receivedNotifications = Notifications.init
         }
 
 
@@ -440,11 +432,8 @@ createProperty_ s model =
 
         newParameters =
             parameter :: m1.parameters
-
-        newNotifications =
-            { header = "parameter.create", data = (Notification.PARAMETER parameter) } :: m1.notifications
     in
-        { m1 | parameters = newParameters, notifications = newNotifications }
+        { m1 | parameters = newParameters }
 
 
 deleteProperty : String -> Model -> Model
@@ -462,11 +451,8 @@ deleteProperty s model =
                     let
                         newParameters =
                             List.filter (\x -> not (x == p)) model.parameters
-
-                        newNotifications =
-                            { header = "parameter.delete", data = (Notification.PARAMETER p) } :: model.notifications
                     in
-                        { model | parameters = newParameters, notifications = newNotifications }
+                        { model | parameters = newParameters }
     in
         newModel
 
@@ -482,11 +468,8 @@ createGroupProperty s model =
 
         newGroups =
             fc :: m1.groups
-
-        newNotifications =
-            { header = "functionalChain.create", data = (Notification.FUNCIONAL_CHAIN fc) } :: m1.notifications
     in
-        { m1 | groups = newGroups, notifications = newNotifications }
+        { m1 | groups = newGroups }
 
 
 deleteGroupProperty : String -> Model -> Model
@@ -510,11 +493,8 @@ deleteGroupProperty s model =
 
                         newEdges =
                             TightnessActions.removeAllTightness p.id model.edges
-
-                        newNotifications =
-                            { header = "functionalChain.delete", data = (Notification.FUNCIONAL_CHAIN p) } :: model.notifications
                     in
-                        { model | groups = newGroups, nodes = newNodes, edges = newEdges, notifications = newNotifications }
+                        { model | groups = newGroups, nodes = newNodes, edges = newEdges }
     in
         newModel
 

@@ -5,7 +5,6 @@ module DataModelDecoders
         , decodeIdentifier
         , decodeDataModel
         , decodeNodesPosition
-        , decodeNotification
         , decodeGeometryProperty
         )
 
@@ -23,7 +22,6 @@ import Groups
 import Set
 import Position exposing (Position)
 import Layout exposing (NodeLayout)
-import Notification
 import Geometries
 
 
@@ -243,18 +241,3 @@ decodeNodePosition =
 decodeNodesPosition : Json.Decode.Decoder (List Position.NodePosition)
 decodeNodesPosition =
     Json.Decode.list decodeNodePosition
-
-
-decodeNotificationData_ : Json.Decode.Decoder Notification.NotificationData
-decodeNotificationData_ =
-    Json.Decode.oneOf
-        [ Json.Decode.map Notification.BLOC decodeNode
-        , Json.Decode.map Notification.LIEN decodeEdge
-        ]
-
-
-decodeNotification : Json.Decode.Decoder Notification.Model
-decodeNotification =
-    Json.Decode.Pipeline.decode Notification.Model
-        |> required "header" Json.Decode.string
-        |> required "data" decodeNotificationData_

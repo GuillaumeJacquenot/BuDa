@@ -17,15 +17,14 @@ import Scenario
 import SpecialKey
 import LayoutMenu
 import Search
-import Mqtt
 
 
 type ViewType
-    = BULL
-    | PBS
-    | ALL
-    | ALL_LIGHT
-    | GEOMETRY
+    = Bubble
+    | Pbs
+    | All
+    | Flat
+    | Geometry
 
 
 type SelectionType
@@ -67,7 +66,6 @@ type alias Model =
     , showParameters : Bool
     , propagationDone : Bool
     , searchModel : Search.Model
-    , mqtt : Mqtt.Model
     }
 
 
@@ -80,7 +78,7 @@ defaultModel =
     , inputFile = "undefined"
     , selection = []
     , loadModelId = "loadModel"
-    , viewType = BULL
+    , viewType = Bubble
     , nodeViewId = Nothing
     , parameters = LinkParameters.defaultModel
     , exportFlux = Set.empty
@@ -97,5 +95,4 @@ defaultModel =
     , showParameters = False
     , propagationDone = False
     , searchModel = Search.defaultModel
-    , mqtt = Mqtt.init "mqtt://130.66.124.234:15675/ws"
     }

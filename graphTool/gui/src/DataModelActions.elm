@@ -54,7 +54,6 @@ import TightnessActions
 import Layout exposing (Layout, NodeLayout)
 import Mask
 import TranslateTmpDataModel
-import Notification
 import Geometries
 import GeometryActions
 import Propagation
@@ -79,11 +78,8 @@ createNode s m_parent model =
 
         newNodes =
             n :: newDataModel.nodes
-
-        newNotifications =
-            { header = "node.create", data = (Notification.BLOC n) } :: newDataModel.notifications
     in
-        { newDataModel | nodes = newNodes, notifications = newNotifications }
+        { newDataModel | nodes = newNodes }
 
 
 
@@ -168,11 +164,8 @@ createAtomicEdge_ src dest model =
 
                         newEdges =
                             e1 :: m1.edges
-
-                        newNotifications =
-                            { header = "edge.create", data = (Notification.LIEN e1) } :: m1.notifications
                     in
-                        { m1 | edges = newEdges, notifications = newNotifications }
+                        { m1 | edges = newEdges }
     in
         dataModelNewId
 
@@ -244,28 +237,8 @@ renameNode s m_nId model =
     let
         newNodes =
             (renameNodeInList_ s m_nId model.nodes)
-
-        newNotifications =
-            case m_nId of
-                Nothing ->
-                    model.notifications
-
-                Just nId ->
-                    let
-                        m_n =
-                            DataModel.getNodeFromId nId newNodes
-
-                        newNotifications2 =
-                            case m_n of
-                                Nothing ->
-                                    model.notifications
-
-                                Just n ->
-                                    { header = "node.rename", data = (Notification.BLOC n) } :: model.notifications
-                    in
-                        newNotifications2
     in
-        { model | nodes = newNodes, notifications = newNotifications }
+        { model | nodes = newNodes }
 
 
 
@@ -455,11 +428,8 @@ delJustEdge edge model =
     let
         newEdges =
             (delEdge edge model.edges)
-
-        newNotifications =
-            { header = "edge.delete", data = Notification.LIEN edge } :: model.notifications
     in
-        { model | edges = newEdges, notifications = newNotifications }
+        { model | edges = newEdges }
 
 
 deleteAsc : List Node -> List Node -> Model -> Model
@@ -572,11 +542,8 @@ delJustNode n model =
     let
         newNodes =
             (delNode n model.nodes)
-
-        newNotifications =
-            { header = "node.delete", data = Notification.BLOC n } :: model.notifications
     in
-        { model | nodes = newNodes, notifications = newNotifications }
+        { model | nodes = newNodes }
 
 
 delNode : Node -> List Node -> List Node

@@ -1,36 +1,21 @@
-module Actions
-    exposing
-        ( deleteElement
-        , showAllData
-        , showBulles
-        , showPBS
-        , showView
-        , upView
-        , update
-        )
+module Actions exposing (update)
 
 import DataModel
 import DataModelEncoders
 import Dom exposing (focus)
 import Export
-import ElementAttributes
 import Geometries
 import LayoutMenuActions
 import LinkToJS
 import Messages exposing (Msg(..))
 import Model
 import ModelActions
-import ModelViews
-import Mqtt
-import Notification
-import Notifications
-import NotificationActions
+import Board
 import Search
 import Selection
 import SpecialKey
 import Task
 import Verification
-import Propagation
 
 
 upView : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
@@ -50,20 +35,20 @@ showView msg model =
     let
         ( m1, cmd ) =
             case model.viewType of
-                Model.ALL ->
-                    showAllData msg model
+                Model.All ->
+                    displayAll model
 
-                Model.PBS ->
-                    showPBS msg model
+                Model.Pbs ->
+                    displayPbs model
 
-                Model.BULL ->
-                    showBulles msg model
+                Model.Bubble ->
+                    displayBubble model
 
-                Model.ALL_LIGHT ->
-                    showAllDataLight msg model
+                Model.Flat ->
+                    displayFlat model
 
-                Model.GEOMETRY ->
-                    showGeometry msg model
+                Model.Geometry ->
+                    displayGeometry model
 
         m2 =
             { m1 | selection = [], selectionType = Model.PARENT }
@@ -91,43 +76,29 @@ showView msg model =
         )
 
 
-showAllData : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
-showAllData msg model =
-    ( model
-    , LinkToJS.sendDataAllModel (DataModelEncoders.encodeModel (ModelViews.showAllData model).dataModel)
-    )
+displayAll : Model.Model -> ( Model.Model, Cmd Msg )
+displayAll model =
+    ( model, Board.displayAll model )
 
 
-showAllDataLight : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
-showAllDataLight msg model =
-    ( model
-    , LinkToJS.sendDataFlatModel (DataModelEncoders.encodeModel (ModelViews.showAllDataLight model).dataModel)
-    )
+displayFlat : Model.Model -> ( Model.Model, Cmd Msg )
+displayFlat model =
+    ( model, Board.displayFlat model )
 
 
-showPBS : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
-showPBS msg model =
-    ( model
-    , LinkToJS.sendDataPBSModel (DataModelEncoders.encodeModel (ModelViews.showPBS model))
-    )
+displayPbs : Model.Model -> ( Model.Model, Cmd Msg )
+displayPbs model =
+    ( model, Board.displayPbs model )
 
 
-showBulles : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
-showBulles msg model =
-    let
-        m1 =
-            ModelViews.showAllDataLight (ModelViews.showBulles model)
-    in
-        ( model
-        , LinkToJS.sendDataBullesModel (DataModelEncoders.encodeModel m1.dataModel)
-        )
+displayBubble : Model.Model -> ( Model.Model, Cmd Msg )
+displayBubble model =
+    ( model, Board.displayBubble model )
 
 
-showGeometry : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
-showGeometry msg model =
-    ( model
-    , LinkToJS.sendDataGeometryModel (DataModelEncoders.encodeModel (ModelViews.showGeometry model).dataModel)
-    )
+displayGeometry : Model.Model -> ( Model.Model, Cmd Msg )
+displayGeometry model =
+    ( model, Board.displayGeometry model )
 
 
 deleteElement : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
@@ -149,36 +120,8 @@ deleteElement msg model =
 
                 _ ->
                     model
-
-        ( m2, cmd ) =
-            showView msg m1
     in
-        prepareNotification_ cmd m2
-
-
-sendNotification : String -> Model.Model -> Notification.NotificationData -> Cmd Msg
-sendNotification s model notifyData =
-    let
-        model_mqtt =
-            model.mqtt
-
-        newMqtt =
-            { model_mqtt | topic = "architecture." ++ s }
-
-        m1 =
-            { model | mqtt = newMqtt }
-    in
-        Mqtt.send
-            { tag = "MqttNotify", data = DataModelEncoders.encodeMqttMessageNotification_ m1.mqtt (Notification.notification s notifyData) }
-
-
-askForMessages : Model.Model -> ( Model.Model, Cmd Msg )
-askForMessages model =
-    let
-        z =
-            "Call askForMessages"
-    in
-        ( model, Cmd.none )
+        showView msg m1
 
 
 processFocus : Msg -> List (Cmd Msg) -> List (Cmd Msg)
@@ -203,41 +146,6 @@ processFocus msg list =
 
             _ ->
                 List.concat [ list, [ taskFocus ] ]
-
-
-prepareNotifications_ : List (Cmd Msg) -> Notifications.Model -> Model.Model -> List (Cmd Msg)
-prepareNotifications_ cmds notifications model =
-    case notifications of
-        [] ->
-            cmds
-
-        x :: xs ->
-            let
-                notification =
-                    { x | header = model.mqtt.clientId ++ "." ++ x.header }
-
-                newCmds =
-                    (sendNotification notification.header model notification.data) :: cmds
-            in
-                prepareNotifications_ newCmds xs model
-
-
-prepareNotification_ : Cmd Msg -> Model.Model -> ( Model.Model, Cmd Msg )
-prepareNotification_ cmd model =
-    let
-        cmds =
-            prepareNotifications_ [ cmd ] model.dataModel.notifications model
-
-        dataModel =
-            model.dataModel
-
-        newDataModel =
-            { dataModel | notifications = [] }
-
-        m1 =
-            { model | dataModel = newDataModel }
-    in
-        ( m1, Cmd.batch cmds )
 
 
 initModelHighlights : Model.Model -> Model.Model
@@ -410,12 +318,6 @@ update msg model =
                     -- envoie message importModel vers javascript
                     model
 
-                AskForMessages ->
-                    model
-
-                NewMessage _ ->
-                    model
-
                 SaveToImage ->
                     model
 
@@ -458,78 +360,10 @@ update msg model =
                 Propagation ->
                     model
 
-                OnNotificationClick ->
-                    model
-
-                UserChange _ ->
-                    model
-
-                UrlChange _ ->
-                    model
-
-                MqttConnect ->
-                    model
-
-                MqttDisconnect ->
-                    model
-
                 NoOp ->
                     model
-
-        ( m2, cmd ) =
-            (globalUpdate msg m1)
     in
-        prepareAndSendNotification msg m2 cmd
-
-
-prepareAndSendNotification : Msg -> Model.Model -> Cmd Msg -> ( Model.Model, Cmd Msg )
-prepareAndSendNotification msg model cmd =
-    case msg of
-        CreateNode ->
-            prepareNotification_ cmd model
-
-        CreateLink ->
-            prepareNotification_ cmd model
-
-        RenameNode ->
-            prepareNotification_ cmd model
-
-        Undo ->
-            prepareNotification_ cmd model
-
-        Redo ->
-            prepareNotification_ cmd model
-
-        CreateParameter ->
-            prepareNotification_ cmd model
-
-        DeleteParameter ->
-            prepareNotification_ cmd model
-
-        CheckProperty edge s ->
-            prepareNotification_ cmd model
-
-        CreateGroup ->
-            prepareNotification_ cmd model
-
-        DeleteGroup ->
-            prepareNotification_ cmd model
-
-        CheckNodeGroupProperty node s ->
-            prepareNotification_ cmd model
-
-        KeyUps k ->
-            prepareNotification_ cmd model
-
-        _ ->
-            let
-                data_model =
-                    model.dataModel
-
-                newDataModel =
-                    { data_model | notifications = [] }
-            in
-                ( { model | dataModel = newDataModel }, cmd )
+        globalUpdate msg m1
 
 
 globalUpdate : Msg -> Model.Model -> ( Model.Model, Cmd Msg )
@@ -554,10 +388,10 @@ globalUpdate msg model =
         NodesPositionRequest s ->
             ( model
             , case model.viewType of
-                Model.ALL_LIGHT ->
+                Model.Flat ->
                     LinkToJS.requestpositions ""
 
-                Model.BULL ->
+                Model.Bubble ->
                     LinkToJS.requestpositions ""
 
                 _ ->
@@ -712,36 +546,15 @@ globalUpdate msg model =
                 showView msg (ModelActions.updateState m1 elemState)
 
         CreateNode ->
-            let
-                m1 =
-                    ModelActions.createNode model
-
-                ( m2, cmd ) =
-                    showView msg m1
-            in
-                prepareNotification_ cmd m2
+            showView msg <| ModelActions.createNode model
 
         RenameNode ->
-            let
-                m1 =
-                    ModelActions.renameNode model
-
-                ( m2, cmd ) =
-                    showView msg m1
-            in
-                prepareNotification_ cmd m2
+            showView msg <| ModelActions.renameNode model
 
         CreateLink ->
             case model.selection of
                 x1 :: x2 :: [] ->
-                    let
-                        m1 =
-                            ModelActions.createLink x1 x2 model
-
-                        ( m2, cmd ) =
-                            showView msg m1
-                    in
-                        prepareNotification_ cmd m2
+                    showView msg <| ModelActions.createLink x1 x2 model
 
                 _ ->
                     ( model, Cmd.none )
@@ -808,10 +621,10 @@ globalUpdate msg model =
             let
                 m1 =
                     case model.viewType of
-                        Model.ALL_LIGHT ->
+                        Model.Flat ->
                             ModelActions.updateLightLayout s model
 
-                        Model.GEOMETRY ->
+                        Model.Geometry ->
                             ModelActions.updateGeometryLayout s model
 
                         _ ->
@@ -916,44 +729,6 @@ globalUpdate msg model =
         OnImport ->
             ( model, LinkToJS.onImport "" )
 
-        AskForMessages ->
-            askForMessages model
-
-        NewMessage str ->
-            let
-                newNotifications =
-                    NotificationActions.updateNotificationModel str model.dataModel.receivedNotifications
-
-                model_dataModel =
-                    model.dataModel
-
-                newDataModel =
-                    { model_dataModel | receivedNotifications = newNotifications }
-
-                m1 =
-                    { model | dataModel = newDataModel }
-
-                z =
-                    Debug.log "Notifications: " (List.length m1.dataModel.receivedNotifications)
-            in
-                ( m1, Cmd.none )
-
-        OnNotificationClick ->
-            let
-                model_dataModel =
-                    model.dataModel
-
-                newDataModel =
-                    { model_dataModel | receivedNotifications = [] }
-
-                m1 =
-                    { model | dataModel = newDataModel }
-
-                z =
-                    Debug.log "Notifications: " (List.length m1.dataModel.receivedNotifications)
-            in
-                ( m1, Cmd.none )
-
         ImportModel ->
             ( model, LinkToJS.importModel "importModel" )
 
@@ -991,15 +766,3 @@ globalUpdate msg model =
                     showView msg (ModelActions.updateOutpowered newModel)
             else
                 showView msg (initModelHighlights model)
-
-        UserChange s ->
-            ( { model | mqtt = Mqtt.setClientId s model.mqtt }, Cmd.none )
-
-        UrlChange s ->
-            ( { model | mqtt = Mqtt.setUrl s model.mqtt }, Cmd.none )
-
-        MqttConnect ->
-            model ! [ Mqtt.send { tag = "MqttConnect", data = DataModelEncoders.encodeMqttMessage_ model.mqtt Notification.NULLNOTIFICATION } ]
-
-        MqttDisconnect ->
-            model ! [ Mqtt.send { tag = "MqttDisconnect", data = DataModelEncoders.encodeMqttMessage_ model.mqtt Notification.NULLNOTIFICATION } ]
