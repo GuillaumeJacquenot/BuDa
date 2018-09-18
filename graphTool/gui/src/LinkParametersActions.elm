@@ -6,7 +6,6 @@ import Link exposing (Edge)
 import DataModel exposing (Model)
 import ModelManagement
 import Set exposing (Set)
-import Notification
 
 
 {--
@@ -167,16 +166,8 @@ unActivateParameterUpEdge_ idx mId nId model =
 
         m_e =
             DataModel.getEdgeFromNodesId mId nId newEdges
-
-        newNotifications =
-            case m_e of
-                Nothing ->
-                    model.notifications
-
-                Just edge1 ->
-                    { header = "edge.update", data = Notification.LIEN edge1 } :: model.notifications
     in
-        { model | edges = newEdges, notifications = newNotifications }
+        { model | edges = newEdges }
 
 
 unActivateParameterDown_ : Identifier -> Node -> Node -> Model -> Model
@@ -229,16 +220,8 @@ unActivateParameterDownForEdge_ idx mId nId model =
 
         m_e =
             DataModel.getEdgeFromNodesId mId nId newEdges
-
-        newNotifications =
-            case m_e of
-                Nothing ->
-                    model.notifications
-
-                Just edge1 ->
-                    { header = "edge.update", data = Notification.LIEN edge1 } :: model.notifications
     in
-        { model | edges = newEdges, notifications = newNotifications }
+        { model | edges = newEdges }
 
 
 
@@ -357,16 +340,8 @@ activateParameterForEdge_ idx mId nId model =
 
         m_e =
             DataModel.getEdgeFromNodesId mId nId newEdges
-
-        newNotifications =
-            case m_e of
-                Nothing ->
-                    model.notifications
-
-                Just edge1 ->
-                    { header = "edge.update", data = Notification.LIEN edge1 } :: model.notifications
     in
-        { model | edges = newEdges, notifications = newNotifications }
+        { model | edges = newEdges }
 
 
 updatePropertyInEdgeList_ : Edge -> Identifier -> List Edge -> (Identifier -> Edge -> Edge) -> List Edge

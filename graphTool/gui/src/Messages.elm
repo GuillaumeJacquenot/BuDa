@@ -50,8 +50,6 @@ type Msg
     | OnOpen
     | OnImport
     | ImportModel
-    | AskForMessages
-    | NewMessage String
     | SaveToImage
     | CreateGeometry
     | DeleteGeometry
@@ -68,9 +66,4 @@ type Msg
     | ShowHideParameters
     | Verification
     | Propagation
-    | OnNotificationClick
-    | UserChange String
-    | UrlChange String
-    | MqttConnect
-    | MqttDisconnect
     | NoOp

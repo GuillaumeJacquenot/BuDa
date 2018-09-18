@@ -6,10 +6,6 @@ module DataModelEncoders
         , encodeModel
         , encodeMetaModel
         , encodeExport
-        , encodeMqttMessage
-        , encodeMqttMessageNotification
-        , encodeMqttMessage_
-        , encodeMqttMessageNotification_
         )
 
 import ElementAttributes exposing (..)
@@ -24,9 +20,7 @@ import Set exposing (Set)
 import LinkParameters
 import Groups
 import Layout exposing (NodeLayout, GeometryLayout)
-import Notification
 import Geometries
-import Mqtt
 
 
 encodeMaybeIdentifier : Maybe Identifier -> String
@@ -252,17 +246,23 @@ encodeGeometryLayout nl =
 
 encodeGeometryLayouts : List GeometryLayout -> Value
 encodeGeometryLayouts list =
-    (Json.Encode.list <| List.map encodeGeometryLayout list)
+    Json.Encode.list <| List.map encodeGeometryLayout list
 
 
-encodeModel_ : DataModel.Model -> Value
-encodeModel_ jsmodel =
+encodeSelectedNetworks : Set Identifier -> Value
+encodeSelectedNetworks parameters =
+    Json.Encode.list <| List.map encodeIdentifier <| Set.toList parameters
+
+
+encodeModel : DataModel.Model -> Value
+encodeModel jsmodel =
     object
         [ ( "nodes", encodeNodes jsmodel.nodes )
         , ( "edges", encodeEdges jsmodel.edges )
         , ( "parameters", encodeParameters jsmodel.parameters )
         , ( "groups", encodeGroups jsmodel.groups )
         , ( "geometries", encodeGeometries jsmodel.geometries )
+        , ( "selectedNetworks", encodeSelectedNetworks jsmodel.selectedParameters )
         , ( "mustLayout", Json.Encode.bool jsmodel.mustLayout )
         , ( "layouts", encodeLayouts jsmodel.layouts )
         , ( "geometryLayouts", encodeGeometryLayouts jsmodel.geometryLayouts )
@@ -272,16 +272,11 @@ encodeModel_ jsmodel =
         ]
 
 
-encodeModel : DataModel.Model -> String
-encodeModel =
-    encode 0 << encodeModel_
-
-
 encodeMetaModel_ : DataModel.MetaModel -> Value
 encodeMetaModel_ meta =
     object
         [ ( "filename", string meta.filename )
-        , ( "model", encodeModel_ meta.model )
+        , ( "model", encodeModel meta.model )
         ]
 
 
@@ -301,71 +296,3 @@ encodeExport_ meta =
 encodeExport : DataModel.ExportLink -> String
 encodeExport =
     encode 0 << encodeExport_
-
-
-encodeNotificationData_ : Notification.NotificationData -> Json.Encode.Value
-encodeNotificationData_ notifdata =
-    case notifdata of
-        Notification.BLOC n ->
-            encodeNode_ n
-
-        Notification.LIEN e ->
-            encodeEdge_ e
-
-        Notification.PARAMETER p ->
-            encodeProperty p
-
-        Notification.FUNCIONAL_CHAIN fc ->
-            encodeGroupProperty fc
-
-        Notification.NULLNOTIFICATION ->
-            Json.Encode.null
-
-
-encodeNotificationModel_ : Notification.Model -> Json.Encode.Value
-encodeNotificationModel_ model =
-    object
-        [ ( "header", Json.Encode.string model.header )
-        , ( "data", encodeNotificationData_ model.data )
-        ]
-
-
-encodeConnectionType_ : Mqtt.ConnectionType -> Value
-encodeConnectionType_ connectionType =
-    Json.Encode.string (Mqtt.connectionType2String connectionType)
-
-
-encodeMqtt_ : Mqtt.Model -> Value
-encodeMqtt_ model =
-    object
-        [ ( "url", Json.Encode.string model.url )
-        , ( "topic", Json.Encode.string model.topic )
-        , ( "clientId", Json.Encode.string model.clientId )
-        , ( "connectionType", encodeConnectionType_ model.connectionType )
-        ]
-
-
-encodeMqttMessage_ : Mqtt.Model -> Notification.NotificationData -> Value
-encodeMqttMessage_ model notifyData =
-    object
-        [ ( "mqtt", encodeMqtt_ model )
-        , ( "message", encodeNotificationData_ notifyData )
-        ]
-
-
-encodeMqttMessageNotification_ : Mqtt.Model -> Notification.Model -> Value
-encodeMqttMessageNotification_ mqtt notif =
-    object
-        [ ( "mqtt", encodeMqtt_ mqtt )
-        , ( "message", encodeNotificationModel_ notif )
-        ]
-
-
-encodeMqttMessage : Mqtt.Model -> Notification.NotificationData -> String
-encodeMqttMessage model notifyData =
-    encode 0 (encodeMqttMessage_ model notifyData)
-
-
-encodeMqttMessageNotification : Mqtt.Model -> Notification.Model -> String
-encodeMqttMessageNotification model notif =
-    encode 0 (encodeMqttMessageNotification_ model notif)

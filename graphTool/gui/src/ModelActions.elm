@@ -936,16 +936,16 @@ updateGeometryNodesPosition model =
 updateNodesPosition : Model.Model -> Model.Model
 updateNodesPosition model =
     case model.viewType of
-        Model.ALL ->
+        Model.All ->
             updateLightNodesPosition model
 
-        Model.ALL_LIGHT ->
+        Model.Flat ->
             updateLightNodesPosition model
 
-        Model.BULL ->
+        Model.Bubble ->
             updateBullNodesPosition model
 
-        Model.GEOMETRY ->
+        Model.Geometry ->
             updateGeometryNodesPosition model
 
         _ ->

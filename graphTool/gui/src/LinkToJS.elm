@@ -1,6 +1,9 @@
 port module LinkToJS
     exposing
-        ( exportLNK
+        ( msg2js
+        , makeJsData
+        , JsData
+        , exportLNK
         , layout
         , loadModel
         , importModel
@@ -11,11 +14,6 @@ port module LinkToJS
         , importCsvModeltoelm
         , doubleclick
         , saveModel
-        , sendDataPBSModel
-        , sendDataBullesModel
-        , sendDataFlatModel
-        , sendDataAllModel
-        , sendDataGeometryModel
         , sendParentSelection
         , selection
         , nodesPositionToElm
@@ -32,34 +30,23 @@ port module LinkToJS
         )
 
 import Identifier exposing (Identifier)
-import Json.Decode
+import Json.Encode exposing (Value)
 
 
-{--
-//////////////////////////////////////////////////////////////////////////////
--- communication Elm -> JS
-//////////////////////////////////////////////////////////////////////////////
---}
--- sendDataPBSModel: envoi du modele PBS vers javascript
+type alias JsData =
+    { tag : String
+    , data : Json.Encode.Value
+    }
 
 
-port sendDataPBSModel : String -> Cmd msg
+makeJsData : String -> Json.Encode.Value -> JsData
+makeJsData tag data =
+    { tag = tag
+    , data = data
+    }
 
 
-
--- sendDataBullesModel: envoi du modele Bulles vers javascript
-
-
-port sendDataBullesModel : String -> Cmd msg
-
-
-port sendDataGeometryModel : String -> Cmd msg
-
-
-port sendDataFlatModel : String -> Cmd msg
-
-
-port sendDataAllModel : String -> Cmd msg
+port msg2js : JsData -> Cmd msg
 
 
 

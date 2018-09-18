@@ -13,7 +13,6 @@ import GroupsView
 import ModelActions
 import GeometriesView
 import LayoutView
-import Mqtt
 
 
 init : ( Model.Model, Cmd Messages.Msg )
@@ -43,11 +42,11 @@ view model =
     div []
         [ div []
             [ fieldset [ id "fieldset" ]
-                [ radio "viewType" (Messages.SwitchToView Model.BULL) "Bubble Diagram" (model.viewType == Model.BULL)
-                , radio "viewType" (Messages.SwitchToView Model.PBS) "PBS" (model.viewType == Model.PBS)
-                , radio "viewType" (Messages.SwitchToView Model.ALL) "All" (model.viewType == Model.ALL)
-                , radio "viewType" (Messages.SwitchToView Model.ALL_LIGHT) "Flat" (model.viewType == Model.ALL_LIGHT)
-                , radio "viewType" (Messages.SwitchToView Model.GEOMETRY) "Geometry" (model.viewType == Model.GEOMETRY)
+                [ radio "viewType" (Messages.SwitchToView Model.Bubble) "Bubble Diagram" (model.viewType == Model.Bubble)
+                , radio "viewType" (Messages.SwitchToView Model.Pbs) "PBS" (model.viewType == Model.Pbs)
+                , radio "viewType" (Messages.SwitchToView Model.All) "All" (model.viewType == Model.All)
+                , radio "viewType" (Messages.SwitchToView Model.Flat) "Flat" (model.viewType == Model.Flat)
+                , radio "viewType" (Messages.SwitchToView Model.Geometry) "Geometry" (model.viewType == Model.Geometry)
                 ]
             ]
         , button [ onClick Messages.CreateNode, id "new", value "new element" ] [ text "Block" ]
@@ -61,7 +60,6 @@ view model =
             , GroupsView.view model
             , GeometriesView.view model
             ]
-          -- , button [ onClick Actions.ParametersDialog, id "dialog", value "dialog" ] [ text "dialog" ]
         , button [ onClick Messages.ExportLink, id "export", value "export" ] [ text "Export" ]
         , input [ onInput Messages.InputChange, id "input", placeholder "undefined" ] []
         , input [ onInput Messages.InputFileChange, id "inputFile", placeholder "undefined" ] []
@@ -72,36 +70,13 @@ view model =
         , button [ onClick Messages.SaveToImage, id "png", value "png" ] [ text "Print" ]
         , button [ onClick Messages.OnOpen, id "open", value "open" ] [ text "Open" ]
         , button [ onClick Messages.OnImport, id "import", value "import" ] [ text "Import" ]
-        , button [ onClick Messages.AskForMessages, id "ask", value "ask" ] [ text "GetMsg" ]
         , button [ onClick Messages.Undo, id "undo", value "undo" ] [ text "Undo" ]
         , button [ onClick Messages.GroupNodes, id "group", value "group" ] [ text "Group" ]
         , button [ onClick Messages.UpdateTightness, id "Tight", value "Tight" ] [ text "Tight" ]
-        , button [ onClick Messages.Layout, id "layout", value "layout" ] [ text "Layout" ]
         , button [ onClick Messages.GetPositions, id "pos", value "pos" ] [ text "Pos" ]
         , button [ onClick Messages.Redo, id "redo", value "redo" ] [ text "Redo" ]
-        , button [ onClick Messages.Verification, id "verification", value "verification" ] [ text "Verif" ]
         , button [ onClick Messages.Propagation, id "propagation", value "propagation" ] [ text "Propagation" ]
         , img [ id "logo", src "LogoSirehna_DC.png", title "logo sirehna" ] []
         , div [ id "label" ] [ text (ModelActions.getNodeViewLabel model) ]
         , div [ id "counter" ] [ text (ModelActions.getCounterViewLabel model) ]
-        , button
-            [ onClick Messages.OnNotificationClick
-            , id "notification"
-            , value "notification"
-            , style
-                [ ( "visibility"
-                  , case (List.isEmpty model.dataModel.receivedNotifications) of
-                        True ->
-                            "hidden"
-
-                        False ->
-                            "visible"
-                  )
-                ]
-            ]
-            [ text "Notifications" ]
-        , input [ onInput Messages.UserChange, id "userInput", placeholder model.mqtt.clientId ] []
-        , input [ onInput Messages.UrlChange, id "urlInput", placeholder model.mqtt.url ] []
-        , button [ onClick Messages.MqttConnect, id "mqttConnect", value "mqttConnect" ] [ text "Connect" ]
-        , button [ onClick Messages.MqttDisconnect, id "mqttDisconnect", value "mqttDisconnect" ] [ text "Disconnect" ]
         ]

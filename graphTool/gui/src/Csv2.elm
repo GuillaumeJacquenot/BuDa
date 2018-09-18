@@ -204,6 +204,9 @@ addBlocToModel_ x model =
 
         attribute =
             x.denomination
+
+        _ =
+            Debug.log "addBlocToModel_ parent " sparent
     in
         case String.isEmpty sparent of
             True ->
@@ -238,7 +241,8 @@ addBlocToModel_ x model =
 
 addSecondBlocToModel_ : Maybe Identifier -> String -> String -> DataModel.Model -> DataModel.Model
 addSecondBlocToModel_ m_p s attribute model =
-    case (DataModel.getNodeFromNameAndParent s m_p model.nodes) of
+    case (DataModel.getNodeFromName s model.nodes) of
+        -- on recherche le bloc s sans tenir compte du parent
         Nothing ->
             let
                 m1 =
@@ -253,4 +257,18 @@ addSecondBlocToModel_ m_p s attribute model =
                 m2
 
         Just n ->
-            model
+            -- on met a jour le parent
+            let
+                newNodes =
+                    List.map
+                        (\x ->
+                            case x == n of
+                                True ->
+                                    { x | parent = m_p }
+
+                                False ->
+                                    x
+                        )
+                        model.nodes
+            in
+                { model | nodes = newNodes }

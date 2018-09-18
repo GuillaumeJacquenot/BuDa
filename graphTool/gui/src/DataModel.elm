@@ -62,10 +62,9 @@ import Set exposing (Set)
 import TightnessActions
 import Layout exposing (Layout, NodeLayout, GeometryLayout)
 import Mask
-import Notification
-import Notifications
 import Geometries
 import ElementAttributes
+
 
 type alias Model =
     { nodes : List Node
@@ -83,9 +82,7 @@ type alias Model =
     , lightLayout : Maybe Layout
     , rootBubbleLayout : Maybe Layout
     , mask : Mask.Model
-    , notifications : Notifications.Model
     , geometryImage : Maybe String
-    , receivedNotifications : Notifications.Model
     }
 
 
@@ -144,9 +141,7 @@ defaultModel =
     , lightLayout = Nothing
     , rootBubbleLayout = Nothing
     , mask = Mask.defaultModel
-    , notifications = Notifications.init
     , geometryImage = Nothing
-    , receivedNotifications = Notifications.init
     }
 
 
@@ -189,23 +184,36 @@ maximumParameterId list =
         Just m ->
             m
 
+
 updateRoles : LinkParameters.Model -> Node -> Node
 updateRoles parameters node =
-    let 
-        currentNetworks = List.map .network node.roles
-        parameterIds = List.map .id parameters
+    let
+        currentNetworks =
+            List.map .network node.roles
+
+        parameterIds =
+            List.map .id parameters
 
         -- Compare parameters and roles to define which one should be added/removed
-        roleIdsToAdd = List.filter (\parameterId -> not (List.member parameterId currentNetworks)) parameterIds
-        roleIdsToRemove = List.filter (\network -> not (List.member network parameterIds)) currentNetworks
+        roleIdsToAdd =
+            List.filter (\parameterId -> not (List.member parameterId currentNetworks)) parameterIds
+
+        roleIdsToRemove =
+            List.filter (\network -> not (List.member network parameterIds)) currentNetworks
 
         -- Remove outdated roles
-        rolesWithoutRemoved = List.filter (\role -> not (List.member role.network roleIdsToRemove)) node.roles
+        rolesWithoutRemoved =
+            List.filter (\role -> not (List.member role.network roleIdsToRemove)) node.roles
+
         -- Add the missing roles
-        rolesToAdd = List.map (\parameterId -> {network = parameterId, role = ElementAttributes.RoleUnknown}) roleIdsToAdd
-        roles = rolesWithoutRemoved ++ rolesToAdd
+        rolesToAdd =
+            List.map (\parameterId -> { network = parameterId, role = ElementAttributes.RoleUnknown }) roleIdsToAdd
+
+        roles =
+            rolesWithoutRemoved ++ rolesToAdd
     in
         { node | roles = roles }
+
 
 dataModelToModel : DataModel -> Model -> Model
 dataModelToModel dm model =
@@ -234,9 +242,7 @@ dataModelToModel dm model =
         , lightLayout = dm.lightLayout
         , rootBubbleLayout = dm.rootBubbleLayout
         , mask = dm.mask
-        , notifications = Notifications.init
         , geometryImage = Nothing
-        , receivedNotifications = Notifications.init
         }
 
 
@@ -445,15 +451,20 @@ createProperty s model =
         Just id ->
             model
 
+
 addNetworkToRoles : LinkParameters.Property -> Node -> Node
 addNetworkToRoles parameter node =
     let
-        newRole = { network = parameter.id
+        newRole =
+            { network = parameter.id
             , role = ElementAttributes.RoleUnknown
             }
-        roles =  node.roles ++ [ newRole ]
+
+        roles =
+            node.roles ++ [ newRole ]
     in
         { node | roles = roles }
+
 
 createProperty_ : String -> Model -> Model
 createProperty_ s model =
@@ -467,18 +478,17 @@ createProperty_ s model =
         newParameters =
             parameter :: m1.parameters
 
-        nodes = List.map (addNetworkToRoles parameter) m1.nodes
-
-        newNotifications =
-            { header = "parameter.create", data = (Notification.PARAMETER parameter) } :: m1.notifications
+        nodes =
+            List.map (addNetworkToRoles parameter) m1.nodes
     in
-        { m1 | parameters = newParameters, notifications = newNotifications, nodes = nodes }
+        { m1 | parameters = newParameters, nodes = nodes }
 
 
 removeNetworkFromRoles : LinkParameters.Property -> Node -> Node
 removeNetworkFromRoles parameter node =
     let
-        roles = List.filter (\role -> ( role.network /= parameter.id)) node.roles
+        roles =
+            List.filter (\role -> (role.network /= parameter.id)) node.roles
     in
         { node | roles = roles }
 
@@ -498,13 +508,11 @@ deleteProperty s model =
                     let
                         newParameters =
                             List.filter (\x -> not (x == p)) model.parameters
-                        
-                        nodes = List.map (removeNetworkFromRoles p) model.nodes
 
-                        newNotifications =
-                            { header = "parameter.delete", data = (Notification.PARAMETER p) } :: model.notifications
+                        nodes =
+                            List.map (removeNetworkFromRoles p) model.nodes
                     in
-                        { model | parameters = newParameters, notifications = newNotifications, nodes = nodes }
+                        { model | parameters = newParameters, nodes = nodes }
     in
         newModel
 
@@ -520,11 +528,8 @@ createGroupProperty s model =
 
         newGroups =
             fc :: m1.groups
-
-        newNotifications =
-            { header = "functionalChain.create", data = (Notification.FUNCIONAL_CHAIN fc) } :: m1.notifications
     in
-        { m1 | groups = newGroups, notifications = newNotifications }
+        { m1 | groups = newGroups }
 
 
 deleteGroupProperty : String -> Model -> Model
@@ -548,11 +553,8 @@ deleteGroupProperty s model =
 
                         newEdges =
                             TightnessActions.removeAllTightness p.id model.edges
-
-                        newNotifications =
-                            { header = "functionalChain.delete", data = (Notification.FUNCIONAL_CHAIN p) } :: model.notifications
                     in
-                        { model | groups = newGroups, nodes = newNodes, edges = newEdges, notifications = newNotifications }
+                        { model | groups = newGroups, nodes = newNodes, edges = newEdges }
     in
         newModel
 
