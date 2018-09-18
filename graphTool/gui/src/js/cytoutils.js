@@ -140,7 +140,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 	cy.on('doubleTap', 'node', function (event) {
-
 		var selected = getSelectedEls();
 
 		if (selected.length > 0) {
@@ -302,36 +301,102 @@ function _sendDataSimpleModel_(obj) {
 	cy.add(obj);
 }
 
+function getSelectedNetworkIndex(objectNetworks, networks, selectedNetworks) {
+	let selected = [];
 
-function _sendDataModel_(obj) {
+	if (selectedNetworks) {
+		// get the id of the most recent selected network on the edge
+		for (let index = selectedNetworks.length - 1; index >= 0; index--) {
+			const currentNetwork = selectedNetworks[index];
+			if (objectNetworks.includes(currentNetwork)) {
+				selected.push(currentNetwork);
+			}
+		}
+	}
+	// returns the index of the network in the networks array
+	// => the color stays the same for a given network as long as the array doesn't change
+	return {
+		highlight: selected.length ? networks.indexOf(selected[0]) : -1,
+		multiple: selected.length > 1
+	};
+}
+
+function isProducerOnASelectedNetwork(node, selectedNetworks, allNetworks) {
+	let isProducer = false;
+
+	let networkRefence = selectedNetworks;
+	if (selectedNetworks.length === 0) {
+		networkRefence = allNetworks.map(function (network) {
+			return network.id;
+		})
+	}
+	if (node.roles.length > 0) {
+		const producerOnNetworkIds = node.roles.filter(function (networkRole) {
+			return networkRole.role === "producer"
+		}).map(function (networkRole) {
+			return networkRole.network;
+		})
+
+		for (let index = 0; index < producerOnNetworkIds.length && !isProducer; index++) {
+			isProducer = networkRefence.includes(producerOnNetworkIds[index]);
+		}
+	}
+	return isProducer;
+}
+
+function _sendDataModel_(model) {
 	var cy = getCyReference();
 	cy.remove(cy.elements());
 
 	var jsons = [];
+	var ns = model.nodes;
 
-	var ns = obj.nodes;
-	ns.forEach(function (s) {
-
+	var ns = model.nodes;
+	ns.forEach(function (node) {
+		var data = node.data;
+		var isProducer = isProducerOnASelectedNetwork(data, model.selectedNetworks, model.parameters);
 		jsons.push(
 			{
 				group: "nodes",
-				data: { id: s.data.id, parent: s.data.parent, name: s.data.name, highLighted: s.data.highLighted, nodeType: s.data.nodeType, blow: s.data.blow, state: s.data.state }
-				, position: { x: s.data.position.x, y: s.data.position.y }
+				data: {
+					id: data.id,
+					parent: data.parent,
+					name: data.name,
+					highLighted: data.highLighted,
+					isProducer: isProducer ? "true" : "false",
+					blow: data.blow,
+					state: data.state
+				}
+				, position: { x: data.position.x, y: data.position.y }
 			}
 		);
 	});
 
-	var eds = obj.edges;
-	eds.forEach(function (s) {
+	var eds = model.edges;
+	eds.forEach(function (edge) {
+		var data = edge.data;
+		var networksFormat = getSelectedNetworkIndex(
+			data.parameters,
+			model.parameters.map(network => network.id),
+			model.selectedNetworks
+		);
+
 		jsons.push(
 			{
 				group: "edges",
-				data: { id: s.data.id, source: s.data.source, target: s.data.target, highLighted: s.data.highLighted, state: s.data.state }
+				data: {
+					id: data.id,
+					source: data.source,
+					target: data.target,
+					highLighted: data.highLighted,
+					network: networksFormat.highlight,
+					multipleNetworks: networksFormat.multiple ? "true" : "false",
+					state: data.state
+				}
 			}
 		);
-
 	});
-
+	console.log(jsons);
 	cy.add(jsons);
 }
 
@@ -441,7 +506,6 @@ function formatModel(model) {
 		_setNodesPositionsToElm_();
 	}
 }
-
 
 function displayModel(data) {
 	options.drawImage = false;

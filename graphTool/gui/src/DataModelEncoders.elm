@@ -233,7 +233,12 @@ encodeGeometryLayout nl =
 
 encodeGeometryLayouts : List GeometryLayout -> Value
 encodeGeometryLayouts list =
-    (Json.Encode.list <| List.map encodeGeometryLayout list)
+    Json.Encode.list <| List.map encodeGeometryLayout list
+
+
+encodeSelectedNetworks : Set Identifier -> Value
+encodeSelectedNetworks parameters =
+    Json.Encode.list <| List.map encodeIdentifier <| Set.toList parameters
 
 
 encodeModel : DataModel.Model -> Value
@@ -244,6 +249,7 @@ encodeModel jsmodel =
         , ( "parameters", encodeParameters jsmodel.parameters )
         , ( "groups", encodeGroups jsmodel.groups )
         , ( "geometries", encodeGeometries jsmodel.geometries )
+        , ( "selectedNetworks", encodeSelectedNetworks jsmodel.selectedParameters )
         , ( "mustLayout", Json.Encode.bool jsmodel.mustLayout )
         , ( "layouts", encodeLayouts jsmodel.layouts )
         , ( "geometryLayouts", encodeGeometryLayouts jsmodel.geometryLayouts )
