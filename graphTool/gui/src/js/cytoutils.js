@@ -321,29 +321,6 @@ function getSelectedNetworkIndex(objectNetworks, networks, selectedNetworks) {
 	};
 }
 
-function isProducerOnASelectedNetwork(node, selectedNetworks, allNetworks) {
-	let isProducer = false;
-
-	let networkRefence = selectedNetworks;
-	if (selectedNetworks.length === 0) {
-		networkRefence = allNetworks.map(function (network) {
-			return network.id;
-		})
-	}
-	if (node.roles.length > 0) {
-		const producerOnNetworkIds = node.roles.filter(function (networkRole) {
-			return networkRole.role === "producer"
-		}).map(function (networkRole) {
-			return networkRole.network;
-		})
-
-		for (let index = 0; index < producerOnNetworkIds.length && !isProducer; index++) {
-			isProducer = networkRefence.includes(producerOnNetworkIds[index]);
-		}
-	}
-	return isProducer;
-}
-
 function _sendDataModel_(model) {
 	var cy = getCyReference();
 	cy.remove(cy.elements());
@@ -354,19 +331,10 @@ function _sendDataModel_(model) {
 	var ns = model.nodes;
 	ns.forEach(function (node) {
 		var data = node.data;
-		var isProducer = isProducerOnASelectedNetwork(data, model.selectedNetworks, model.parameters);
 		jsons.push(
 			{
 				group: "nodes",
-				data: {
-					id: data.id,
-					parent: data.parent,
-					name: data.name,
-					highLighted: data.highLighted,
-					isProducer: isProducer ? "true" : "false",
-					blow: data.blow,
-					state: data.state
-				}
+				data: { id: data.id, parent: data.parent, name: data.name, highLighted: data.highLighted, nodeType: data.nodeType, blow: data.blow, state: data.state }
 				, position: { x: data.position.x, y: data.position.y }
 			}
 		);
@@ -396,7 +364,7 @@ function _sendDataModel_(model) {
 			}
 		);
 	});
-	console.log(jsons);
+
 	cy.add(jsons);
 }
 

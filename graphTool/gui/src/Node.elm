@@ -1,10 +1,11 @@
-module Node exposing (Node, node, inGroup, hasGeometry, removeGeometry, blow)
+module Node exposing (Node, node, inGroup, hasGeometry, removeGeometry, blow, initRoles)
 
 import Identifier exposing (Identifier)
 import Position exposing (Position)
 import Attribut exposing (Attribut)
 import ElementAttributes exposing (..)
 import Set exposing (Set)
+import LinkParameters
 
 
 type alias Node =
@@ -12,8 +13,8 @@ type alias Node =
     , name : String
     , parent : Maybe Identifier
     , attribut : Maybe Attribut
-    , nodeType : ElementType
     , state : ElementState
+    , roles : Roles
     , geometry : Maybe Identifier
     , group : Set Identifier
     , highLighted : Int
@@ -23,13 +24,13 @@ type alias Node =
 
 
 node : Identifier -> String -> Maybe Identifier -> Node
-node i s p =
-    { id = i
-    , name = s
-    , parent = p
+node id name parent =
+    { id = id
+    , name = name
+    , parent = parent
     , attribut = Nothing
-    , nodeType = TypeUnknown
     , state = RAS
+    , roles = []
     , geometry = Nothing
     , group = Set.empty
     , highLighted = 0
@@ -61,3 +62,15 @@ removeGeometry s n =
 blow : Node -> Node
 blow n =
     { n | blow = not n.blow }
+
+
+initRoles : Node -> LinkParameters.Model -> Node
+initRoles node parameters =
+    let
+        parameterIds =
+            List.map .id parameters
+
+        roles =
+            List.map (\parameterId -> { network = parameterId, role = RoleUnknown }) parameterIds
+    in
+        { node | roles = roles }

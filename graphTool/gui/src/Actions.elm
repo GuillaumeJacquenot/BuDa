@@ -231,7 +231,7 @@ update msg model =
                 SwitchToView _ ->
                     model
 
-                SwitchElemType _ ->
+                SwitchElemRole _ _ ->
                     model
 
                 SwitchElemState _ ->
@@ -531,12 +531,12 @@ globalUpdate msg model =
                 -- showView msg m1
                 ( m1, Cmd.batch [ LinkToJS.setLayoutNameThenLayout s ] )
 
-        SwitchElemType elemType ->
+        SwitchElemRole network role ->
             let
                 m1 =
                     initModelHighlights model
             in
-                showView msg (ModelActions.updateNodeType m1 elemType)
+                showView msg (ModelActions.updateNodeRole m1 network role)
 
         SwitchElemState elemState ->
             let

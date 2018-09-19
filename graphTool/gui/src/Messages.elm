@@ -6,7 +6,7 @@ import Link exposing (Edge)
 import Dom exposing (focus)
 import Node exposing (Node)
 import ElementAttributes exposing (..)
-
+import Identifier exposing (Identifier)
 
 type Msg
     = FocusOn String
@@ -59,7 +59,7 @@ type Msg
     | LoadGeometryButton String
     | SendGeometryToElm String
     | SwitchToLayout String
-    | SwitchElemType ElementType
+    | SwitchElemRole Identifier Role
     | SwitchElemState ElementState
     | ShowHideFunctionalChain
     | ShowHideGeometries

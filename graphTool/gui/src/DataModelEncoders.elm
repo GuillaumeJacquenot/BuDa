@@ -56,9 +56,9 @@ encodePosition_ position =
         ]
 
 
-encodeElementType : ElementType -> Value
-encodeElementType nodeType =
-    case nodeType of
+encodeRole : Role -> Value
+encodeRole role =
+    case role of
         Producer ->
             Json.Encode.string "producer"
 
@@ -68,8 +68,21 @@ encodeElementType nodeType =
         ProducerConsumer ->
             Json.Encode.string "producer_consumer"
 
-        TypeUnknown ->
+        RoleUnknown ->
             Json.Encode.string "unknown"
+
+
+encodeNetworkRole : NetworkRole -> Value
+encodeNetworkRole networkRole =
+        object
+        [ ( "network", encodeIdentifier networkRole.network )
+        , ( "role", encodeRole networkRole.role )
+        ]
+
+
+encodeRoles : Roles -> Value
+encodeRoles roles =
+    (Json.Encode.list <| List.map encodeNetworkRole roles)
 
 
 encodeElementState : ElementState -> Value
@@ -92,8 +105,8 @@ encodeNode_ n =
         , ( "name", Json.Encode.string n.name )
         , ( "parent", maybe encodeIdentifier n.parent )
         , ( "attribut", maybe encodeAttribut n.attribut )
-        , ( "nodeType", encodeElementType n.nodeType )
         , ( "state", encodeElementState n.state )
+        , ( "roles", encodeRoles n.roles )
         , ( "geometry", maybe encodeIdentifier n.geometry )
         , ( "group", (Json.Encode.list <| List.map encodeIdentifier (Set.toList n.group)) )
         , ( "highLighted", Json.Encode.int n.highLighted )

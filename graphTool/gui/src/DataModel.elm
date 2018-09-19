@@ -55,7 +55,7 @@ module DataModel
 
 import Identifier exposing (Identifier)
 import Link exposing (Edge)
-import Node exposing (Node)
+import Node exposing (Node, initRoles)
 import LinkParameters
 import Groups
 import Set exposing (Set)
@@ -63,6 +63,7 @@ import TightnessActions
 import Layout exposing (Layout, NodeLayout, GeometryLayout)
 import Mask
 import Geometries
+import ElementAttributes
 
 
 type alias Model =
@@ -184,11 +185,41 @@ maximumParameterId list =
             m
 
 
+updateRoles : LinkParameters.Model -> Node -> Node
+updateRoles parameters node =
+    let
+        currentNetworks =
+            List.map .network node.roles
+
+        parameterIds =
+            List.map .id parameters
+
+        -- Compare parameters and roles to define which one should be added/removed
+        roleIdsToAdd =
+            List.filter (\parameterId -> not (List.member parameterId currentNetworks)) parameterIds
+
+        roleIdsToRemove =
+            List.filter (\network -> not (List.member network parameterIds)) currentNetworks
+
+        -- Remove outdated roles
+        rolesWithoutRemoved =
+            List.filter (\role -> not (List.member role.network roleIdsToRemove)) node.roles
+
+        -- Add the missing roles
+        rolesToAdd =
+            List.map (\parameterId -> { network = parameterId, role = ElementAttributes.RoleUnknown }) roleIdsToAdd
+
+        roles =
+            rolesWithoutRemoved ++ rolesToAdd
+    in
+        { node | roles = roles }
+
+
 dataModelToModel : DataModel -> Model -> Model
 dataModelToModel dm model =
     let
         ln =
-            List.map dataNodeToNode dm.nodes
+            List.map (updateRoles dm.parameters) (List.map dataNodeToNode dm.nodes)
 
         le =
             List.map dataEdgeToEdge dm.edges
@@ -421,6 +452,20 @@ createProperty s model =
             model
 
 
+addNetworkToRoles : LinkParameters.Property -> Node -> Node
+addNetworkToRoles parameter node =
+    let
+        newRole =
+            { network = parameter.id
+            , role = ElementAttributes.RoleUnknown
+            }
+
+        roles =
+            node.roles ++ [ newRole ]
+    in
+        { node | roles = roles }
+
+
 createProperty_ : String -> Model -> Model
 createProperty_ s model =
     let
@@ -432,8 +477,20 @@ createProperty_ s model =
 
         newParameters =
             parameter :: m1.parameters
+
+        nodes =
+            List.map (addNetworkToRoles parameter) m1.nodes
     in
-        { m1 | parameters = newParameters }
+        { m1 | parameters = newParameters, nodes = nodes }
+
+
+removeNetworkFromRoles : LinkParameters.Property -> Node -> Node
+removeNetworkFromRoles parameter node =
+    let
+        roles =
+            List.filter (\role -> (role.network /= parameter.id)) node.roles
+    in
+        { node | roles = roles }
 
 
 deleteProperty : String -> Model -> Model
@@ -451,8 +508,11 @@ deleteProperty s model =
                     let
                         newParameters =
                             List.filter (\x -> not (x == p)) model.parameters
+
+                        nodes =
+                            List.map (removeNetworkFromRoles p) model.nodes
                     in
-                        { model | parameters = newParameters }
+                        { model | parameters = newParameters, nodes = nodes }
     in
         newModel
 
