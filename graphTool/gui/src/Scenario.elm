@@ -21,7 +21,7 @@ type Msg
     | DeleteParameter String
     | UpdateProperty Edge String
     | UpdateAttribute String (Maybe Identifier)
-    | UpdateNodeRoles Identifier Role (Maybe Identifier)
+    | UpdateNodeRoles Identifier Role Identifier
     | UpdateState ElementState Identifier
     | LoadModel DataModel.DataModel
     | GroupNodes (List Node) String

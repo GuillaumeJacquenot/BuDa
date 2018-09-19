@@ -745,38 +745,49 @@ updateRoles roles network newRole =
         List.map updateRoleInNetwork roles
 
 
-replaceNodeRoles : Identifier -> Identifier -> Role -> Node -> Node
-replaceNodeRoles id networkId role node =
-    case node.id == id of
-        True ->
-            { node | roles = updateRoles node.roles networkId role }
-
-        False ->
-            node
+replaceNodeRoles : Set Identifier -> Identifier -> Role -> Node -> Node
+replaceNodeRoles nodeIdsToUpdate networkId role node =
+    if Set.member node.id nodeIdsToUpdate then
+        { node | roles = updateRoles node.roles networkId role }
+    else
+        node
 
 
-updateNodeRoles : Maybe Identifier -> Identifier -> Role -> Model -> Model
-updateNodeRoles id networkId role dataModel =
-    case id of
+updateNodeAndDescendantsRoles : Identifier -> Role -> Identifier -> List Node -> List Node
+updateNodeAndDescendantsRoles id role networkId nodes =
+    case DataModel.getNodeFromId id nodes of
         Nothing ->
-            dataModel
+            nodes
 
-        Just id ->
+        Just node ->
             let
-                newNodes =
-                    List.map (\x -> (replaceNodeRoles id networkId role x)) dataModel.nodes
+                descendants : List Node
+                descendants =
+                    ModelManagement.getDescendantsFromN nodes node
+
+                nodeIdsToUpdate : Set Identifier
+                nodeIdsToUpdate =
+                    Set.fromList <| node.id :: (List.map .id descendants)
             in
-                { dataModel | nodes = newNodes }
+                List.map (replaceNodeRoles nodeIdsToUpdate networkId role) nodes
+
+
+updateNodeRoles : Identifier -> Identifier -> Role -> Model -> Model
+updateNodeRoles id networkId role dataModel =
+    let
+        newNodes : List Node
+        newNodes =
+            updateNodeAndDescendantsRoles id role networkId dataModel.nodes
+    in
+        { dataModel | nodes = newNodes }
 
 
 replaceNodeState : Set Identifier -> ElementState -> Node -> Node
 replaceNodeState nodeIdsToUpdate elementState node =
-    case Set.member node.id nodeIdsToUpdate of
-        True ->
-            { node | state = elementState }
-
-        False ->
-            node
+    if Set.member node.id nodeIdsToUpdate then
+        { node | state = elementState }
+    else
+        node
 
 
 updateNodeAndDescendantsStates : Identifier -> ElementState -> List Node -> List Node
@@ -800,12 +811,10 @@ updateNodeAndDescendantsStates id elemState nodes =
 
 replaceEdgeState : Identifier -> ElementState -> Edge -> Edge
 replaceEdgeState id elemState edge =
-    case edge.id == id of
-        True ->
-            { edge | state = elemState }
-
-        False ->
-            edge
+    if edge.id == id then
+        { edge | state = elemState }
+    else
+        edge
 
 
 updateState : Identifier -> ElementState -> Model -> Model
