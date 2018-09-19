@@ -72,7 +72,6 @@ import Geometries
 import Csv
 import Csv2
 import Search
-import Propagation
 
 
 {--

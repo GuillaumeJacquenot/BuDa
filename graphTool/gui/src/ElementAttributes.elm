@@ -1,7 +1,6 @@
 module ElementAttributes exposing (..)
 
 import Identifier exposing (Identifier)
-import LinkParameters
 
 
 type alias Roles =

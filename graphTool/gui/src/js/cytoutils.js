@@ -328,6 +328,7 @@ function _sendDataModel_(model) {
 	var jsons = [];
 	var ns = model.nodes;
 
+	var ns = model.nodes;
 	ns.forEach(function (node) {
 		var data = node.data;
 		jsons.push(
