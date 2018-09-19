@@ -6,7 +6,6 @@ import Link exposing (Edge)
 import Node exposing (Node)
 import ElementAttributes exposing (..)
 import Set exposing (..)
-import LinkParameters exposing (Property)
 import Debug
 
 
@@ -32,7 +31,7 @@ getEdgesToNodeId edges nodeId =
     List.filter (\x -> x.target == nodeId) edges
 
 
-getConnectedNodeIds : List Edge -> Identifier -> Set Identifier
+getConnectedNodeIds : List Edge -> Identifier -> List Identifier
 getConnectedNodeIds edges nodeId =
     let
         sourceEdges =
@@ -44,7 +43,35 @@ getConnectedNodeIds edges nodeId =
         connectedNodeIds =
             List.map (\x -> x.target) sourceEdges ++ List.map (\x -> x.source) targetEdges
     in
-        Set.fromList connectedNodeIds
+        connectedNodeIds
+
+
+getAllConnectedNodeIds : List Edge -> Identifier -> Set Identifier
+getAllConnectedNodeIds edges nodeId =
+    Debug.log (toString nodeId) <| Set.fromList <| getConnectedNodeIdsRecursively [ nodeId ] [] edges
+
+
+getConnectedNodeIdsRecursively : List Identifier -> List Identifier -> List Edge -> List Identifier
+getConnectedNodeIdsRecursively nextNodeIds doneNodeIds edges =
+    case nextNodeIds of
+        [] ->
+            doneNodeIds
+
+        nodeId :: nodeIds ->
+            let
+                connectedNodes =
+                    getConnectedNodeIds edges nodeId
+
+                extendedToDoList =
+                    nodeIds ++ connectedNodes
+
+                newDoneNodeList =
+                    nodeId :: doneNodeIds
+
+                newToDoNodesList =
+                    removeListFromAnother extendedToDoList newDoneNodeList
+            in
+                getConnectedNodeIdsRecursively newToDoNodesList newDoneNodeList edges
 
 
 getSubGraphForNetwork : Identifier -> Graph -> Graph
@@ -65,14 +92,11 @@ getConnectedProducerIds producerIds connectedIds =
 isNodeNotConnectedToAProducer : List Edge -> Set Identifier -> Identifier -> Bool
 isNodeNotConnectedToAProducer edges producerIds nodeId =
     let
-        _ =
-            Debug.log "node" nodeId
-
         connectedNodeIds =
-            Debug.log "connectedNodeIds" <| getConnectedNodeIds edges nodeId
+            getAllConnectedNodeIds edges nodeId
 
         connectedProducerIds =
-            Debug.log "connectedProducerIds" <| getConnectedProducerIds producerIds connectedNodeIds
+            getConnectedProducerIds producerIds connectedNodeIds
     in
         Set.isEmpty connectedProducerIds
 
@@ -127,6 +151,16 @@ findAffectedEdgesFromAffectedNodes edges affectedNodeIds =
         Set.fromList <| List.map .id <| List.filter (isAffected affectedNodeIds) edges
 
 
+isConnectedToAKoNode : Set Identifier -> Edge -> Bool
+isConnectedToAKoNode koNodeIds edge =
+    (Set.member edge.target koNodeIds) || (Set.member edge.source koNodeIds)
+
+
+removeDisconnectedLinks : Set Identifier -> List Edge -> List Edge
+removeDisconnectedLinks koNodeIds edges =
+    List.filter (\edge -> not (isConnectedToAKoNode koNodeIds edge)) edges
+
+
 getStateSummary : Model -> { ko : Set Identifier, affected : Set Identifier }
 getStateSummary model =
     let
@@ -141,18 +175,15 @@ getStateSummary model =
         remainingGraph : Graph
         remainingGraph =
             { nodes = extractOK model.nodes
-            , edges = extractOK model.edges
+            , edges = removeDisconnectedLinks koNodeIds (extractOK model.edges)
             }
 
         affectedNodeIds : Set Identifier
         affectedNodeIds =
             List.foldl Set.union Set.empty <|
                 List.map (getAffectedNodeIdsForNetwork remainingGraph) <|
-                    -- check all networks
-                    List.map .id model.parameters
+                    Set.toList model.selectedParameters
 
-        -- check only selected networks
-        -- Set.toList model.selectedParameters
         affectedEdgeIds : Set Identifier
         affectedEdgeIds =
             findAffectedEdgesFromAffectedNodes model.edges (Set.union koNodeIds affectedNodeIds)
