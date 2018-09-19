@@ -38,8 +38,8 @@ playOne msg model =
                 UpdateAttribute s m_id ->
                     DataModelActions.updateAttribute m_id s model
 
-                UpdateNodeRoles networkId role m_id ->
-                    DataModelActions.updateNodeRoles m_id networkId role model
+                UpdateNodeRoles networkId role id ->
+                    DataModelActions.updateNodeRoles id networkId role model
 
                 UpdateState state id ->
                     DataModelActions.updateState id state model

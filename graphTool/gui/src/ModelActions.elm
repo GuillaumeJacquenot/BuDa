@@ -617,25 +617,22 @@ updateNodeRole
 
 updateNodeRole : Model.Model -> Identifier -> Role -> Model.Model
 updateNodeRole model networkId role =
-    let
-        m_id =
-            case model.selection of
-                x :: xs ->
-                    Just x
+    case model.selection of
+        selectedId :: xs ->
+            let
+                newDataModel =
+                    DataModelActions.updateNodeRoles selectedId networkId role model.dataModel
 
-                [] ->
-                    Nothing
+                newUndo =
+                    Scenario.addMsg (Scenario.UpdateNodeRoles networkId role selectedId) model.undo
+            in
+                { model
+                    | dataModel = newDataModel
+                    , undo = newUndo
+                }
 
-        newDataModel =
-            DataModelActions.updateNodeRoles m_id networkId role model.dataModel
-
-        newUndo =
-            Scenario.addMsg (Scenario.UpdateNodeRoles networkId role m_id) model.undo
-    in
-        { model
-            | dataModel = newDataModel
-            , undo = newUndo
-        }
+        [] ->
+            model
 
 
 
@@ -665,9 +662,11 @@ updateState model elemState =
                 { model
                     | dataModel = newDataModel
                     , undo = newUndo
-                    }
+                }
+
         [] ->
             model
+
 
 
 {--
