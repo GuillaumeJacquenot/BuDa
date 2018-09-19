@@ -138,7 +138,7 @@ view model =
             , id "btnParameters"
             , onClick Messages.ShowHideParameters
             ]
-            [ text "Link Parameters" ]
+            [ text "Networks" ]
           --text "Geometries"
         , viewDetail_ model
         ]
