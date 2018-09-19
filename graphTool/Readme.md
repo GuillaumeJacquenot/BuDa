@@ -1,5 +1,8 @@
-
 # BuDa user manual
+
+The latest version of BuDa is available online on SIREHNA's network: [https://projets.gitlab-pages.sirehna.com/holiship](https://projets.gitlab-pages.sirehna.com/holiship)
+An offline version can also be downloaded here: [https://gitlab.sirehna.com/projets/holiship/-/jobs/artifacts/master/download?job=build](https://gitlab.sirehna.com/projets/holiship/-/jobs/artifacts/master/download?job=build)
+
 
 ## Description
 
