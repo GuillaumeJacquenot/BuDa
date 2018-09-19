@@ -67,6 +67,30 @@ edge[highLighted = 1] {
   width: 5;
 }
 
+edge[network=0] {
+  line-color: LightGreen;
+}
+
+edge[network=1] {
+  line-color: DarkCyan;
+}
+
+edge[network=2] {
+  line-color: DeepSkyBlue;
+}
+
+edge[network=3] {
+  line-color: RosyBrown;
+}
+
+edge[network=4] {
+  line-color: DarkMagenta;
+}
+
+edge[multipleNetworks="true"] {
+  line-style: dotted;
+}
+
 /*interface etanche*/
 edge[highLighted = 2] {
   line-color: #A2A5F9;
@@ -97,30 +121,6 @@ edge[state = "HS"] {
 edge:selected {
   line-color: #FE2E2E;
   width: 4;
-}
-
-edge[network=0] {
-  line-color: LightGreen;
-}
-
-edge[network=1] {
-  line-color: DarkCyan;
-}
-
-edge[network=2] {
-  line-color: DeepSkyBlue;
-}
-
-edge[network=3] {
-  line-color: RosyBrown;
-}
-
-edge[network=4] {
-  line-color: DarkMagenta;
-}
-
-edge[multipleNetworks="true"] {
-  line-style: dotted;
 }
 
 node:parent
