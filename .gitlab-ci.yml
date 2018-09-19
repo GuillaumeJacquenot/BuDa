@@ -20,6 +20,7 @@ pages:
   dependencies:
      - build
   script:
+       - mkdir public
        - mv graphTool/gui/src/*.css public/
        - mv graphTool/gui/src/js public/
        - mv graphTool/gui/src/*.js public/
