@@ -1,0 +1,36 @@
+stages:
+    - build
+    - deploy
+
+build:
+    stage: build
+    script:
+     - cd graphTool/gui && make
+    artifacts:
+      paths:
+        - graphTool/gui/src/*.css
+        - graphTool/gui/src/*.js
+        - graphTool/gui/src/js
+        - graphTool/gui/src/*.html
+        - graphTool/gui/src/*.svg
+        - graphTool/gui/src/*.png
+
+pages:
+  stage: deploy
+  dependencies:
+     - build
+  script:
+       - mv graphTool/gui/src/*.css public/
+       - mv graphTool/gui/src/js public/
+       - mv graphTool/gui/src/*.js public/
+       - mv graphTool/gui/src/*.html public/
+       - mv graphTool/gui/src/*.svg public/
+       - mv graphTool/gui/src/*.png public/
+       - mv public/graphTool.html public/index.html
+       - rm -rf public/graphTool.html
+  artifacts:
+        when: on_success
+        paths:
+        - public
+          #  only:
+          #      - master
