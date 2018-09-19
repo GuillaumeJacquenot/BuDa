@@ -34,9 +34,9 @@ node[state = "HS"] {
   border-width: 1;
 }
 
-node[highLighted = 1][nodeType = "producer"] {
-  border-style: double;
-  border-width: 2;
+
+node[isProducer="true"] {
+  shape: roundrectangle;
 }
 
 edge {
