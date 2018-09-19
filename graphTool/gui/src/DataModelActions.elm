@@ -781,8 +781,8 @@ updateNodeState :
 --}
 
 
-f_replaceNodeState : Identifier -> ElementState -> Node -> Node
-f_replaceNodeState id elemState node =
+replaceNodeState : Identifier -> ElementState -> Node -> Node
+replaceNodeState id elemState node =
     let
         newNode =
             case node.id == id of
@@ -795,8 +795,8 @@ f_replaceNodeState id elemState node =
         newNode
 
 
-f_replaceEdgeState : Identifier -> ElementState -> Edge -> Edge
-f_replaceEdgeState id elemState edge =
+replaceEdgeState : Identifier -> ElementState -> Edge -> Edge
+replaceEdgeState id elemState edge =
     let
         newEdge =
             case edge.id == id of
@@ -809,21 +809,16 @@ f_replaceEdgeState id elemState edge =
         newEdge
 
 
-updateState : Maybe Identifier -> ElementState -> Model -> Model
-updateState m_id elemState dataModel =
-    case m_id of
-        Nothing ->
-            dataModel
+updateState : Identifier -> ElementState -> Model -> Model
+updateState id elemState dataModel =
+    let
+        newNodes =
+            List.map (\x -> (replaceNodeState id elemState x)) dataModel.nodes
 
-        Just id ->
-            let
-                newNodes =
-                    List.map (\x -> (f_replaceNodeState id elemState x)) dataModel.nodes
-
-                newEdges =
-                    List.map (\x -> (f_replaceEdgeState id elemState x)) dataModel.edges
-            in
-                { dataModel | nodes = newNodes, edges = newEdges }
+        newEdges =
+            List.map (\x -> (replaceEdgeState id elemState x)) dataModel.edges
+    in
+        { dataModel | nodes = newNodes, edges = newEdges }
 
 
 

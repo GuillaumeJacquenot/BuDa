@@ -41,8 +41,8 @@ playOne msg model =
                 UpdateNodeRoles networkId role m_id ->
                     DataModelActions.updateNodeRoles m_id networkId role model
 
-                UpdateState state m_id ->
-                    DataModelActions.updateState m_id state model
+                UpdateState state id ->
+                    DataModelActions.updateState id state model
 
                 LoadModel elements ->
                     DataModel.dataModelToModel elements model

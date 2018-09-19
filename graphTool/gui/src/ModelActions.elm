@@ -653,26 +653,21 @@ updateState
 
 updateState : Model.Model -> ElementState -> Model.Model
 updateState model elemState =
-    let
-        m_id =
-            case model.selection of
-                x :: xs ->
-                    Just x
+    case model.selection of
+        selectedId :: xs ->
+            let
+                newDataModel =
+                    DataModelActions.updateState selectedId elemState model.dataModel
 
-                [] ->
-                    Nothing
-
-        newDataModel =
-            DataModelActions.updateState m_id elemState model.dataModel
-
-        newUndo =
-            Scenario.addMsg (Scenario.UpdateState elemState m_id) model.undo
-    in
-        { model
-            | dataModel = newDataModel
-            , undo = newUndo
-        }
-
+                newUndo =
+                    Scenario.addMsg (Scenario.UpdateState elemState selectedId) model.undo
+            in
+                { model
+                    | dataModel = newDataModel
+                    , undo = newUndo
+                    }
+        [] ->
+            model
 
 
 {--
