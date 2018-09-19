@@ -22,7 +22,7 @@ type Msg
     | UpdateProperty Edge String
     | UpdateAttribute String (Maybe Identifier)
     | UpdateNodeRoles Identifier Role (Maybe Identifier)
-    | UpdateState ElementState (Maybe Identifier)
+    | UpdateState ElementState Identifier
     | LoadModel DataModel.DataModel
     | GroupNodes (List Node) String
     | UpdateOutpowered

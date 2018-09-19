@@ -47,7 +47,7 @@ import ModelManagement
 import LinkParametersActions
 import LinkParameters
 import Groups
-import Set
+import Set exposing (Set)
 import GroupsActions
 import Tightness
 import TightnessActions
@@ -769,61 +769,55 @@ updateNodeRoles id networkId role dataModel =
                 { dataModel | nodes = newNodes }
 
 
+replaceNodeState : Set Identifier -> ElementState -> Node -> Node
+replaceNodeState nodeIdsToUpdate elementState node =
+    case Set.member node.id nodeIdsToUpdate of
+        True ->
+            { node | state = elementState }
 
-{--
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-updateNodeState :
-
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
---}
+        False ->
+            node
 
 
-f_replaceNodeState : Identifier -> ElementState -> Node -> Node
-f_replaceNodeState id elemState node =
-    let
-        newNode =
-            case node.id == id of
-                True ->
-                    { node | state = elemState }
-
-                False ->
-                    node
-    in
-        newNode
-
-
-f_replaceEdgeState : Identifier -> ElementState -> Edge -> Edge
-f_replaceEdgeState id elemState edge =
-    let
-        newEdge =
-            case edge.id == id of
-                True ->
-                    { edge | state = elemState }
-
-                False ->
-                    edge
-    in
-        newEdge
-
-
-updateState : Maybe Identifier -> ElementState -> Model -> Model
-updateState m_id elemState dataModel =
-    case m_id of
+updateNodeAndDescendantsStates : Identifier -> ElementState -> List Node -> List Node
+updateNodeAndDescendantsStates id elemState nodes =
+    case DataModel.getNodeFromId id nodes of
         Nothing ->
-            dataModel
+            nodes
 
-        Just id ->
+        Just node ->
             let
-                newNodes =
-                    List.map (\x -> (f_replaceNodeState id elemState x)) dataModel.nodes
+                descendants : List Node
+                descendants =
+                    ModelManagement.getDescendantsFromN nodes node
 
-                newEdges =
-                    List.map (\x -> (f_replaceEdgeState id elemState x)) dataModel.edges
+                nodeIdsToUpdate : Set Identifier
+                nodeIdsToUpdate =
+                    Set.fromList <| node.id :: (List.map .id descendants)
             in
-                { dataModel | nodes = newNodes, edges = newEdges }
+                List.map (replaceNodeState nodeIdsToUpdate elemState) nodes
+
+
+replaceEdgeState : Identifier -> ElementState -> Edge -> Edge
+replaceEdgeState id elemState edge =
+    case edge.id == id of
+        True ->
+            { edge | state = elemState }
+
+        False ->
+            edge
+
+
+updateState : Identifier -> ElementState -> Model -> Model
+updateState id elemState dataModel =
+    let
+        newNodes =
+            updateNodeAndDescendantsStates id elemState dataModel.nodes
+
+        newEdges =
+            List.map (\x -> (replaceEdgeState id elemState x)) dataModel.edges
+    in
+        { dataModel | nodes = newNodes, edges = newEdges }
 
 
 
