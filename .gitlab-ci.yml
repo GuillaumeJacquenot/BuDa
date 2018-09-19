@@ -9,7 +9,6 @@ build:
     artifacts:
       paths:
         - graphTool/gui/src/*.css
-        - graphTool/gui/src/*.js
         - graphTool/gui/src/js
         - graphTool/gui/src/*.html
         - graphTool/gui/src/*.svg
@@ -23,7 +22,6 @@ pages:
        - mkdir public
        - mv graphTool/gui/src/*.css public/
        - mv graphTool/gui/src/js public/
-       - mv graphTool/gui/src/*.js public/
        - mv graphTool/gui/src/*.html public/
        - mv graphTool/gui/src/*.svg public/
        - mv graphTool/gui/src/*.png public/
