@@ -15,7 +15,7 @@ The GUI is organized as follows :
 -	A series of click buttons is available above the workspace, beside the two rows we just described. These click buttons are used to choose between one view of the model or another. 
 -	On the right of the workspace the user will find a column with advanced model properties that he/she is free to set :
 	One text box to set specific (text) attributes to model objects
- - 	the list of “parameters” that links might support, for instance fuel, water, aire or electrical power
+ - 	the list of "Networks" that links might support, for instance fuel, water, aire or electrical power
  - 	the list of “functional chains” that objects might be involved in, for instance “minimal functions for start-up” or “cruise mode operation”
  - 	the list of geometric views, set by the user, against which the components within the model might be projected.
 The following sections provide more details on how to use the tool.
@@ -58,6 +58,13 @@ This function is used to introduce an intermediate level in the PBS, when the nu
 ####	Set / update attribute
 Select block.
 Fill in / modify text box “attribute” on the right of the workspace.
+#### Set / update state
+Select block.
+
+Check the box "RAS" to declare that the block is OK or the box "HS" to declare the block KO.
+
+The update will be applied to the block's children : they will all become OK or KO, overwriting their previous state.
+
 ####	Copy
 Select block.
 Press ctrl+c. The block, its children, its inner and outer links have all been saved in a temporary buffer for further use.
@@ -87,6 +94,28 @@ Press ctrl+shift+suppr; the selected link and all the links that had been genera
 ####	Set / update attribute
 Select link.
 Fill in / modify text box “attribute” on the right of the workspace.
+
+#### Set / update state
+Select link.
+
+Check the box "RAS" to declare that the link is OK or the box "HS" to declare the link KO.
+
+### Advanced block features - networks
+
+Blocks can have different roles on a set of networks. They can either produce (their role is "Producer") or consume (their role is "Consumer") on a network.
+
+#### Updating the roles of a block
+Select a block.
+
+Each network is listed on the right side of the screen under the state of the block. For each one, click on the radio button on the left of "Producer" to define the block **and all its children as producers**, or one the one on the left of "Consumer" to define the block **and all its children as consumers** on the given network.
+
+#### Visualizing the role of a block
+Unselect all blocks by clicking on the backgroung of the workspace.
+
+On the right side, the "Networks" area, when unfolded, lists all the networks. When none are selected, the blocks that have the role of "Producer" on at least one network will have rounded corners. Those that are not "Producer"s on any network will be perfect squares.
+
+When one or more networks are selected, only the producers on those networks will have rounded corners.
+
 ###	Advanced block features – functional chains
 Blocks can be assigned to functional chains, to allow the mapping of all the blocks that contribute to specific functions or operational modes.
 To manipulate functional chains, press the blue rectangle reading “functional chain” on the right of the workspace. The “functional chain” area unfolds.
@@ -137,27 +166,29 @@ To assign an additional geometric view to the block, click the white box on the 
 To cancel, click on the box once again.
 Note: a geometric view can be assigned to an individual block without being assigned to either its parents or its children.
 
-###	Advanced link features – link parameters
-Links can be assigned parameters. This feature is useful to assign and display networks and circuits of any given kind.
-To manipulate link parameters, press the blue rectangle reading “link parameter” on the right of the workspace. The “link parameter” area unfolds.
-####	Creating a link parameter
-Fill in the new name of the link parameter in the “objectname” text box, then click on the “+” button at the bottom of the “link parameter” area.
-A new field with the name of the link parameter has been created in the “link parameter” area, with a tick box on the left. 
-####	Deleting a link parameter
-Fill in the new name of the link parameter in the “objectname” text box, then click on the “-” button at the bottom of the “link parameter” area.
-The field with the name of the link parameter has disappeared. All the links to which the link parameter had been assigned have been updated (the link parameter is not assigned to them anymore). 
-#### Assigning a link parameter to a link
+###	Advanced link features – Networks
+Links can be assigned networks and circuits of any given kind.
+To manipulate networks, press the blue rectangle reading “Networks” on the right of the workspace. The “Networks” area unfolds.
+####	Creating a network
+Fill in the new name of the network in the “objectname” text box, then click on the “+” button at the bottom of the “Networks” area.
+A new field with the name of the network has been created in the “Networks” area, with a tick box on the left. 
+####	Deleting a network
+Fill in the new name of the network in the “objectname” text box, then click on the “-” button at the bottom of the “Networks” area.
+The field with the name of the network has disappeared. All the links to which the network had been assigned have been updated (the network is not assigned to them anymore).
+#### Assigning a network to a link
 Select a link by clicking on it.
-All the link parameters whose names appear to have been selected in the “link parameter” area (white box ticked) have already been assigned to the link.
-To assign an additional link parameter to the link, click the white box on the left of the name of the link parameter.
+All the networks whose names appear to have been selected in the “Networks” area (white box ticked) have already been assigned to the link.
+To assign an additional network to the link, click the white box on the left of the name of the network.
 To cancel, click on the box once again.
-Note 1: when a link parameter is assigned to a link, it is automatically assigned to all the parents of the link. When the assignment to a link is cancelled, it is automatically cancelled from all the children of the link ; it is also cancelled from all the parents of the link unless the link parameter is still assigned to a sibling of the link (in which case the parents inherit the assignment from the sibling of the link, if not from the link itself).
-Note 2 : the assignment of a link parameter to a link can be cancelled only if no child of the link has been assigned the link parameter.
+Note 1: when a network is assigned to a link, it is automatically assigned to all the parents of the link. When the assignment to a link is cancelled, it is automatically cancelled from all the children of the link ; it is also cancelled from all the parents of the link unless the network is still assigned to a sibling of the link (in which case the parents inherit the assignment from the sibling of the link, if not from the link itself).
+Note 2 : the assignment of a network to a link can be cancelled only if no child of the link has been assigned the network.
 
-####	Highlighting link parameters
+#### Highlighting networks
 Unselect all links by clicking on the backgroung of the workspace.
-To highlight one or more link parameters, select them from the “link parameter” area by clicking on the boxes on the left of their names. All the links that the selected link parameters have been assigned to are displayed in thick lines; all the blocks that are connected with these links are displayed in pink circles.
-To cancel highlight, unselect link parameters by clicking on ticked boxes. Note : you should make sure no link has been selected before, otherwise you will assign the link parameter to the selected link instead of cancelling the highlight.
+
+To highlight one or more networks, select them from the “Networks” area by clicking on the boxes on the left of their names. All the links that the selected networks have been assigned to are displayed in thick lines. The first 5 networks have each a different color automatically assigned to them. If a link is dashed, it means it belongs to more than one highlighted networks.
+
+To cancel highlight, unselect networks by clicking on ticked boxes. Note : you should make sure no link has been selected before, otherwise you will assign the network to the selected link instead of cancelling the highlight.
 
 
 ### Advanced link features – tightness
@@ -165,6 +196,14 @@ To cancel highlight, unselect link parameters by clicking on ticked boxes. Note 
 Highlight functional chain F (see section 5.2.5.4). Links at the “frontier” of F are displayed in thick, dashed grey lines. 
 Type name of functional chain in “objectname” text box. Select dashed link L, press “Tight”. Link L has been declared “tight” to anything coming from outside functional chain F (data, energy, etc). If functional chain highlight is refreshed, link L is displayed as a light blue, thick dashed line.
 Note: “tightness” is declared with reference to a specific functional chain. Link L might be “tight” for functional chain F1, and “untight” for functional chain F2.
+
+### Advanced feature - State propagation
+The second row of buttons at the top of the page ends with a button labeled "Propagation". By clicking on this button, the graph is updated to show the impact on the highlighted networks of one or more blocks and links being KO.
+
+After clicking on the background of the workspace, one or more networks must be selected in the "Networks" area.
+
+Clicking once on the "Propagation" button will display in orange the links and the blocks that might be impacted by a Producer block or a link being KO on one of the networks they share. Clicking again will deactivate the highlight on those blocks.
+
 ##	Displaying architecture diagrams 
 ###	Multi-level model representation
 Architecture models can be extremely complex, with thousands of blocks and thousands of links. Several views are proposed in the architecture tool, in order to ease architecture understanding through ad hoc visualization.
@@ -212,7 +251,32 @@ Press “Open”; a window pops up, allowing you to browse for the json file to 
 It is possible to import a model from a csv table.
 To import a csv file, press “Open”; a window pops up, allowing you to browse for the csv file to be downloaded. 
 Once you have selected the csv file to be downloaded, a new model is generated from the data held by the csv file. The generated model has the same structure as any other architecture model; it can be saved in the standard json format.
-The csv shall have the following structure :
+
+#### Recommended format 
+The recommended format of the CSV file is the following :
+
+|ID        |Description (option) | Parent ID (option)	|Link source ID (option)	|Link target ID (option)	| Network (option)
+|--------- |---------------------|---------------------|---------------------------|---------------------------|-----------------
+|A1	       |Machine Y	         |       	           |                           |                           |
+|AA1	   |Motor J	             |A1    	           |                           |                           |
+|B1 	   |Pump K	             |      	           |                           |                           |
+|L1  	   |      	             |      	           |AA1                        |B1                         |water
+
+ Where :
+- _ID_ is a uniquely identifying character string that will be used as name for blocks;
+- _Description_ is a description that will fill the "Attribute" field of the element;
+- _Parent ID_ (optionnal) is the ID of another block in which to include the current block. If it is empty, the block will be a root block;
+- _Link source ID_ (optionnal) is the ID of a block that will be on one end of the link to create;
+- _Link target ID_ (optionnal) is the ID of a block that will be on the other end of the link to create;
+- _Network_ (optional) is the name of a network the link belongs to. This network will then appear in the "Networks" area.
+
+The first line shows how to create a root node.\
+The second line shows how to create a child node.\
+The fourth line shows how to create a link between two nodes.\
+
+#### Legacy format 
+
+The csv might also have the following format :
 
 |ID	             |Label 	                         |Link source 1 ID (option)	|Link source 2 ID (option)	|Link parameter (option)
 |------------- |----------------------------|---------------------------------|----------------------------------|------
@@ -236,15 +300,19 @@ Exports can be generated for further use outside the architecture modeling tool.
 Operations on model files (save, import, export, etc) are performed by using the uppermost buttons in the feature bar at the top of the application. File names are filled in the uppermost text box in the upper left corner of the browser’s window. This textbox is called the “filename” box in the following.
 ###	Exporting data – csv, txt
 Fill in the name of the export file in the “filename” text box.
-Press “Export”; two export files have been generated:
--	“filename.txt” provides the names of all blocks in the model, structured according to the PBS. Under each block one finds :
- -	the “attribute” of the block
- -	the names of every functional chain the block has been assigned.
--	“filename.csv” provides the list of all the links that have been specified or generated in the model. Each link is described in a specific line of the csv file, with :
- -	Col 1: Source of the link (a block in the PBS)
- -	Col 2: target of the link (a block in the PBS)
- -	Col 3 – n+2: each column is assigned to one of the n link parameters in the model. Default value is 0; if link in line L has been assigned link parameter in column C, cell at location (C;L) has value 1.
- -	Col n+3: attributes of links. 
+Press “Export”; tthree export files have been generated:
+-	“filenameNodes.txt” provides the names of all blocks in the model, structured according to the PBS. Under each block one finds :
+	-	the “attribute” of the block
+ 	-	the names of every functional chain the block has been assigned.
+-	“filenameLinks.csv” provides the list of all the links that have been specified or generated in the model. Each link is described in a specific line of the csv file, with :
+ 	-	Col 1: Source of the link (a block in the PBS)
+ 	-	Col 2: target of the link (a block in the PBS)
+ 	-	Col 3 – n+2: each column is assigned to one of the n link parameters in the model. Default value is 0; if link in line L has been assigned link parameter in column C, cell at location (C;L) has value 1.
+ 	-	Col n+3: attributes of links. 
+- "filenamePropagation.csv" provides the list of all the blocks, structured according to the PBS, and their inferred state. Each line of the CSV file follows the following format : `PBS/Path/to/the/block;state` where the state can be either :
+ 	- "KO", the node has been declared "HS",
+ 	- "Impacted", the issues propagation has identified the block as being possibly impacted by the failure of another block declared "KO" on one of the networks it operates on,
+ 	- "OK", the node is neither "HS" nor impacted by another "HS" block.
 
 ###	Screenshots
 Fill in the name of the export file in the “filename” text box.
