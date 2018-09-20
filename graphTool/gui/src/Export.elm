@@ -11,7 +11,7 @@ import Set exposing (Set)
 import LinkParameters
 import String
 import Groups
-import Propagation exposing (getStateSummary)
+import Propagation exposing (getStateSummary, StateSummary)
 
 
 separator : String
@@ -90,13 +90,14 @@ encodeNodes model =
         nodeListEncode_ list model
 
 
-propagationNodeEncode : Node -> { ko : Set Identifier, affected : Set Identifier } -> Model -> String
+propagationNodeEncode : Node -> StateSummary -> Model -> String
 propagationNodeEncode node stateSummary model =
     let
         state =
             if Set.member node.id stateSummary.ko then
                 "KO"
             else if Set.member node.id stateSummary.affected then
+                --|| (Set.member node.id stateSummary.outpowered) ???
                 "Impacted"
             else
                 "OK"
@@ -105,7 +106,7 @@ propagationNodeEncode node stateSummary model =
         (getAscendantName node model) ++ separator ++ state
 
 
-propagationEncode : List Node -> { ko : Set Identifier, affected : Set Identifier } -> Model -> String
+propagationEncode : List Node -> StateSummary -> Model -> String
 propagationEncode list stateSummary model =
     case list of
         [] ->
