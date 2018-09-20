@@ -196,6 +196,14 @@ To cancel highlight, unselect networks by clicking on ticked boxes. Note : you s
 Highlight functional chain F (see section 5.2.5.4). Links at the “frontier” of F are displayed in thick, dashed grey lines. 
 Type name of functional chain in “objectname” text box. Select dashed link L, press “Tight”. Link L has been declared “tight” to anything coming from outside functional chain F (data, energy, etc). If functional chain highlight is refreshed, link L is displayed as a light blue, thick dashed line.
 Note: “tightness” is declared with reference to a specific functional chain. Link L might be “tight” for functional chain F1, and “untight” for functional chain F2.
+
+### Advanced feature - State propagation
+The second row of buttons at the top of the page ends with a button labeled "Propagation". By clicking on this button, the graph is updated to show the impact on the highlighted networks of one or more blocks and links being KO.
+
+After clicking on the background of the workspace, one or more networks must be selected in the "Networks" area.
+
+Clicking once on the "Propagation" button will display in orange the links and the blocks that might be impacted by a Producer block or a link being KO on one of the networks they share. Clicking again will deactivate the highlight on those blocks.
+
 ##	Displaying architecture diagrams 
 ###	Multi-level model representation
 Architecture models can be extremely complex, with thousands of blocks and thousands of links. Several views are proposed in the architecture tool, in order to ease architecture understanding through ad hoc visualization.
