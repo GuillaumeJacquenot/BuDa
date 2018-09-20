@@ -1,4 +1,4 @@
-module Propagation exposing (propagation)
+module Propagation exposing (propagation, getStateSummary)
 
 import Identifier exposing (Identifier)
 import DataModel exposing (Model)
@@ -161,32 +161,31 @@ removeDisconnectedLinks koNodeIds edges =
     List.filter (\edge -> not (isConnectedToAKoNode koNodeIds edge)) edges
 
 
-getStateSummary : Model -> { ko : Set Identifier, affected : Set Identifier }
-getStateSummary model =
+getStateSummary : List Node -> List Edge -> List Identifier -> { ko : Set Identifier, affected : Set Identifier }
+getStateSummary nodes edges networkIds =
     let
         koNodeIds : Set Identifier
         koNodeIds =
-            extractKoIds model.nodes
+            extractKoIds nodes
 
         koEdgeIds : Set Identifier
         koEdgeIds =
-            extractKoIds model.edges
+            extractKoIds edges
 
         remainingGraph : Graph
         remainingGraph =
-            { nodes = extractOK model.nodes
-            , edges = removeDisconnectedLinks koNodeIds (extractOK model.edges)
+            { nodes = extractOK nodes
+            , edges = removeDisconnectedLinks koNodeIds (extractOK edges)
             }
 
         affectedNodeIds : Set Identifier
         affectedNodeIds =
             List.foldl Set.union Set.empty <|
-                List.map (getAffectedNodeIdsForNetwork remainingGraph) <|
-                    Set.toList model.selectedParameters
+                List.map (getAffectedNodeIdsForNetwork remainingGraph) networkIds
 
         affectedEdgeIds : Set Identifier
         affectedEdgeIds =
-            findAffectedEdgesFromAffectedNodes model.edges (Set.union koNodeIds affectedNodeIds)
+            findAffectedEdgesFromAffectedNodes edges (Set.union koNodeIds affectedNodeIds)
     in
         { ko = (Set.union koNodeIds koEdgeIds)
         , affected = (Set.union affectedNodeIds affectedEdgeIds)
@@ -211,14 +210,14 @@ setNodeHighLight stateSummary node =
 
 propagation : Model -> Model
 propagation model =
-    propagationWithNetwork model
+    propagationWithNetwork model <| Set.toList model.selectedParameters
 
 
-propagationWithNetwork : Model -> Model
-propagationWithNetwork model =
+propagationWithNetwork : Model -> List Identifier -> Model
+propagationWithNetwork model parameterIds =
     let
         stateSummary =
-            getStateSummary model
+            getStateSummary model.nodes model.edges parameterIds
 
         edges =
             List.map (setEdgeHighLight stateSummary) model.edges
