@@ -71,10 +71,50 @@ getSubGraphForNetwork : Identifier -> Graph -> Graph
 getSubGraphForNetwork parameterId graph =
     let
         -- Keep edges in network
+        edges : List Edge
         edges =
             List.filter (\edge -> Set.member parameterId edge.parameters) graph.edges
     in
         { graph | edges = edges }
+
+
+isParentOf : Node -> Node -> Bool
+isParentOf node maybeParent =
+    case maybeParent.parent of
+        Nothing ->
+            False
+
+        Just parentId ->
+            parentId == node.id
+
+
+isParent : List Node -> Node -> Bool
+isParent nodes node =
+    List.any (isParentOf node) nodes
+
+
+isLowestLevelNode : List Node -> Node -> Bool
+isLowestLevelNode nodes node =
+    not (isParent nodes node)
+
+
+getLowestLevelGraph : Graph -> Graph
+getLowestLevelGraph graph =
+    let
+        lowestLevelNodes : List Node
+        lowestLevelNodes =
+            List.filter (isLowestLevelNode graph.nodes) graph.nodes
+
+        lowestLevelEdges : List Edge
+        lowestLevelEdges =
+            List.filter (isEdgeOnlyConnectedToOneOf (Set.fromList (List.map .id lowestLevelNodes))) graph.edges
+    in
+        { graph | nodes = lowestLevelNodes, edges = lowestLevelEdges }
+
+
+isEdgeOnlyConnectedToOneOf : Set Identifier -> Edge -> Bool
+isEdgeOnlyConnectedToOneOf nodeIds edge =
+    (Set.member edge.source nodeIds) && (Set.member edge.target nodeIds)
 
 
 getConnectedProducerIds : Set Identifier -> Set Identifier -> Set Identifier
@@ -195,14 +235,14 @@ findAffectedEdgesFromAffectedNodes edges affectedNodeIds =
         Set.fromList <| List.map .id <| List.filter (isAffected affectedNodeIds) edges
 
 
-isConnectedToAKoNode : Set Identifier -> Edge -> Bool
-isConnectedToAKoNode koNodeIds edge =
-    (Set.member edge.target koNodeIds) || (Set.member edge.source koNodeIds)
+isConnectedToOneOf : Set Identifier -> Edge -> Bool
+isConnectedToOneOf nodeIds edge =
+    (Set.member edge.target nodeIds) || (Set.member edge.source nodeIds)
 
 
-removeDisconnectedLinks : Set Identifier -> List Edge -> List Edge
-removeDisconnectedLinks koNodeIds edges =
-    List.filter (\edge -> not (isConnectedToAKoNode koNodeIds edge)) edges
+removeEdgesConnectedTo : Set Identifier -> List Edge -> List Edge
+removeEdgesConnectedTo koNodeIds edges =
+    List.filter (\edge -> not (isConnectedToOneOf koNodeIds edge)) edges
 
 
 type alias StateSummary =
@@ -223,7 +263,7 @@ getStateSummary nodes edges networkIds =
         remainingGraph : Graph
         remainingGraph =
             { nodes = extractNotKO nodes
-            , edges = removeDisconnectedLinks koNodeIds (extractNotKO edges)
+            , edges = removeEdgesConnectedTo koNodeIds (extractNotKO edges)
             }
 
         affectionSummary : AffectionSummary
@@ -275,8 +315,11 @@ propagation model =
 propagationWithNetwork : Model -> List Identifier -> Model
 propagationWithNetwork model parameterIds =
     let
+        lowestLevelGraph =
+            getLowestLevelGraph { nodes = model.nodes, edges = model.edges }
+
         stateSummary =
-            getStateSummary model.nodes model.edges parameterIds
+            getStateSummary lowestLevelGraph.nodes lowestLevelGraph.edges parameterIds
 
         edges =
             List.map (setEdgeHighLight stateSummary) model.edges
