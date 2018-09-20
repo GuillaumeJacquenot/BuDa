@@ -1,4 +1,4 @@
-module Propagation exposing (propagation, getStateSummary)
+module Propagation exposing (propagation, getStateSummary, StateSummary)
 
 import Identifier exposing (Identifier)
 import DataModel exposing (Model)
@@ -6,18 +6,11 @@ import Link exposing (Edge)
 import Node exposing (Node)
 import ElementAttributes exposing (..)
 import Set exposing (..)
-import Debug
 
 
 type alias Graph =
     { nodes : List Node
     , edges : List Edge
-    }
-
-
-type alias StateSummary =
-    { ko : Set Identifier
-    , affected : Set Identifier
     }
 
 
@@ -48,7 +41,7 @@ getConnectedNodeIds edges nodeId =
 
 getAllConnectedNodeIds : List Edge -> Identifier -> Set Identifier
 getAllConnectedNodeIds edges nodeId =
-    Debug.log (toString nodeId) <| Set.fromList <| getConnectedNodeIdsRecursively [ nodeId ] [] edges
+    Set.fromList <| getConnectedNodeIdsRecursively [ nodeId ] [] edges
 
 
 getConnectedNodeIdsRecursively : List Identifier -> List Identifier -> List Edge -> List Identifier
@@ -78,10 +71,50 @@ getSubGraphForNetwork : Identifier -> Graph -> Graph
 getSubGraphForNetwork parameterId graph =
     let
         -- Keep edges in network
+        edges : List Edge
         edges =
             List.filter (\edge -> Set.member parameterId edge.parameters) graph.edges
     in
         { graph | edges = edges }
+
+
+isParentOf : Node -> Node -> Bool
+isParentOf node maybeParent =
+    case maybeParent.parent of
+        Nothing ->
+            False
+
+        Just parentId ->
+            parentId == node.id
+
+
+isParent : List Node -> Node -> Bool
+isParent nodes node =
+    List.any (isParentOf node) nodes
+
+
+isLowestLevelNode : List Node -> Node -> Bool
+isLowestLevelNode nodes node =
+    not (isParent nodes node)
+
+
+getLowestLevelGraph : Graph -> Graph
+getLowestLevelGraph graph =
+    let
+        lowestLevelNodes : List Node
+        lowestLevelNodes =
+            List.filter (isLowestLevelNode graph.nodes) graph.nodes
+
+        lowestLevelEdges : List Edge
+        lowestLevelEdges =
+            List.filter (isEdgeOnlyConnectedToOneOf (Set.fromList (List.map .id lowestLevelNodes))) graph.edges
+    in
+        { graph | nodes = lowestLevelNodes, edges = lowestLevelEdges }
+
+
+isEdgeOnlyConnectedToOneOf : Set Identifier -> Edge -> Bool
+isEdgeOnlyConnectedToOneOf nodeIds edge =
+    (Set.member edge.source nodeIds) && (Set.member edge.target nodeIds)
 
 
 getConnectedProducerIds : Set Identifier -> Set Identifier -> Set Identifier
@@ -89,37 +122,88 @@ getConnectedProducerIds producerIds connectedIds =
     Set.intersect producerIds connectedIds
 
 
-isNodeNotConnectedToAProducer : List Edge -> Set Identifier -> Identifier -> Bool
+type alias AffectionReport =
+    { isAffected : Bool, nodeId : Identifier, connectedNodeIds : Set Identifier }
+
+
+type alias AffectionSummary =
+    { affected : Set Identifier, onPath : Set Identifier }
+
+
+isNodeNotConnectedToAProducer : List Edge -> Set Identifier -> Identifier -> AffectionReport
 isNodeNotConnectedToAProducer edges producerIds nodeId =
     let
+        connectedNodeIds : Set Identifier
         connectedNodeIds =
             getAllConnectedNodeIds edges nodeId
 
+        connectedProducerIds : Set Identifier
         connectedProducerIds =
             getConnectedProducerIds producerIds connectedNodeIds
     in
-        Set.isEmpty connectedProducerIds
+        { isAffected = Set.isEmpty connectedProducerIds
+        , nodeId = nodeId
+        , connectedNodeIds = Set.remove nodeId connectedNodeIds
+        }
 
 
-getAffectedNodeIdsForNetwork : Graph -> Identifier -> Set Identifier
+getAffectedNodeIdsForNetwork : Graph -> Identifier -> AffectionSummary
 getAffectedNodeIdsForNetwork graph parameterId =
     let
+        consumerRole : NetworkRole
         consumerRole =
             { network = parameterId, role = Consumer }
 
+        producerRole : NetworkRole
         producerRole =
             { network = parameterId, role = Producer }
 
+        consumerIds : List Identifier
         consumerIds =
-            Set.fromList <| List.map .id <| List.filter (\node -> List.member consumerRole node.roles) graph.nodes
+            List.map .id <| List.filter (\node -> List.member consumerRole node.roles) graph.nodes
 
+        producerIds : Set Identifier
         producerIds =
             Set.fromList <| List.map .id <| List.filter (\node -> List.member producerRole node.roles) graph.nodes
 
+        subgraph : Graph
         subgraph =
             getSubGraphForNetwork parameterId graph
     in
-        Set.filter (isNodeNotConnectedToAProducer subgraph.edges producerIds) consumerIds
+        List.map (isNodeNotConnectedToAProducer subgraph.edges producerIds) consumerIds
+            |> keepAffectedNodes
+            |> affectionSummary
+
+
+mergeAffectionSummary : AffectionSummary -> AffectionSummary -> AffectionSummary
+mergeAffectionSummary reportA reportB =
+    let
+        affected : Set Identifier
+        affected =
+            (Set.union reportA.affected reportB.affected)
+
+        onPath : Set Identifier
+        onPath =
+            -- Remove affected nodeIds from "onPath"
+            Set.diff (Set.union reportA.onPath reportB.onPath) affected
+    in
+        { affected = affected, onPath = onPath }
+
+
+convertAffectionReportToSummary : AffectionReport -> AffectionSummary
+convertAffectionReportToSummary report =
+    { affected = (Set.fromList [ report.nodeId ]), onPath = report.connectedNodeIds }
+
+
+affectionSummary : List AffectionReport -> AffectionSummary
+affectionSummary affectionReports =
+    List.foldl mergeAffectionSummary { affected = Set.empty, onPath = Set.empty } <|
+        List.map convertAffectionReportToSummary affectionReports
+
+
+keepAffectedNodes : List AffectionReport -> List AffectionReport
+keepAffectedNodes affectionReports =
+    List.filter (\result -> result.isAffected) affectionReports
 
 
 type alias ElementWithState a =
@@ -151,17 +235,21 @@ findAffectedEdgesFromAffectedNodes edges affectedNodeIds =
         Set.fromList <| List.map .id <| List.filter (isAffected affectedNodeIds) edges
 
 
-isConnectedToAKoNode : Set Identifier -> Edge -> Bool
-isConnectedToAKoNode koNodeIds edge =
-    (Set.member edge.target koNodeIds) || (Set.member edge.source koNodeIds)
+isConnectedToOneOf : Set Identifier -> Edge -> Bool
+isConnectedToOneOf nodeIds edge =
+    (Set.member edge.target nodeIds) || (Set.member edge.source nodeIds)
 
 
-removeDisconnectedLinks : Set Identifier -> List Edge -> List Edge
-removeDisconnectedLinks koNodeIds edges =
-    List.filter (\edge -> not (isConnectedToAKoNode koNodeIds edge)) edges
+removeEdgesConnectedTo : Set Identifier -> List Edge -> List Edge
+removeEdgesConnectedTo koNodeIds edges =
+    List.filter (\edge -> not (isConnectedToOneOf koNodeIds edge)) edges
 
 
-getStateSummary : List Node -> List Edge -> List Identifier -> { ko : Set Identifier, affected : Set Identifier }
+type alias StateSummary =
+    { ko : Set Identifier, affected : Set Identifier, outpowered : Set Identifier }
+
+
+getStateSummary : List Node -> List Edge -> List Identifier -> StateSummary
 getStateSummary nodes edges networkIds =
     let
         koNodeIds : Set Identifier
@@ -175,24 +263,33 @@ getStateSummary nodes edges networkIds =
         remainingGraph : Graph
         remainingGraph =
             { nodes = extractNotKO nodes
-            , edges = removeDisconnectedLinks koNodeIds (extractNotKO edges)
+            , edges = removeEdgesConnectedTo koNodeIds (extractNotKO edges)
             }
+
+        affectionSummary : AffectionSummary
+        affectionSummary =
+            List.foldl mergeAffectionSummary { affected = Set.empty, onPath = Set.empty } <|
+                List.map (getAffectedNodeIdsForNetwork remainingGraph) networkIds
 
         affectedNodeIds : Set Identifier
         affectedNodeIds =
-            List.foldl Set.union Set.empty <|
-                List.map (getAffectedNodeIdsForNetwork remainingGraph) networkIds
+            affectionSummary.affected
+
+        outpoweredNodeIds : Set Identifier
+        outpoweredNodeIds =
+            affectionSummary.onPath
 
         affectedEdgeIds : Set Identifier
         affectedEdgeIds =
-            findAffectedEdgesFromAffectedNodes edges (Set.union koNodeIds affectedNodeIds)
+            findAffectedEdgesFromAffectedNodes edges <| Set.union koNodeIds <| Set.union affectedNodeIds outpoweredNodeIds
     in
         { ko = (Set.union koNodeIds koEdgeIds)
         , affected = (Set.union affectedNodeIds affectedEdgeIds)
+        , outpowered = outpoweredNodeIds
         }
 
 
-setEdgeHighLight : { ko : Set Identifier, affected : Set Identifier } -> Edge -> Edge
+setEdgeHighLight : StateSummary -> Edge -> Edge
 setEdgeHighLight stateSummary edge =
     if Set.member edge.id stateSummary.affected then
         { edge | highLighted = 4 }
@@ -200,10 +297,12 @@ setEdgeHighLight stateSummary edge =
         { edge | highLighted = 0 }
 
 
-setNodeHighLight : { ko : Set Identifier, affected : Set Identifier } -> Node -> Node
+setNodeHighLight : StateSummary -> Node -> Node
 setNodeHighLight stateSummary node =
     if Set.member node.id stateSummary.affected then
         { node | highLighted = 3 }
+    else if Set.member node.id stateSummary.outpowered then
+        { node | highLighted = 2 }
     else
         { node | highLighted = 0 }
 
@@ -216,8 +315,11 @@ propagation model =
 propagationWithNetwork : Model -> List Identifier -> Model
 propagationWithNetwork model parameterIds =
     let
+        lowestLevelGraph =
+            getLowestLevelGraph { nodes = model.nodes, edges = model.edges }
+
         stateSummary =
-            getStateSummary model.nodes model.edges parameterIds
+            getStateSummary lowestLevelGraph.nodes lowestLevelGraph.edges parameterIds
 
         edges =
             List.map (setEdgeHighLight stateSummary) model.edges
