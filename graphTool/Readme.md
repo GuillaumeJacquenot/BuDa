@@ -95,6 +95,11 @@ Press ctrl+shift+suppr; the selected link and all the links that had been genera
 Select link.
 Fill in / modify text box “attribute” on the right of the workspace.
 
+#### Set / update state
+Select link.
+
+Check the box "RAS" to declare that the link is OK or the box "HS" to declare the link KO.
+
 ### Advanced block features - networks
 
 Blocks can have different roles on a set of networks. They can either produce (their role is "Producer") or consume (their role is "Consumer") on a network.
