@@ -131,9 +131,9 @@ extractKoIds elements =
     Set.fromList <| List.map .id (List.filter (\element -> element.state == HS) elements)
 
 
-extractOK : List (ElementWithState a) -> List (ElementWithState a)
-extractOK elements =
-    List.filter (\element -> element.state == RAS) elements
+extractNotKO : List (ElementWithState a) -> List (ElementWithState a)
+extractNotKO elements =
+    List.filter (\element -> element.state /= HS) elements
 
 
 getKoElementIds : List Node -> List Edge -> Set Identifier
@@ -174,8 +174,8 @@ getStateSummary nodes edges networkIds =
 
         remainingGraph : Graph
         remainingGraph =
-            { nodes = extractOK nodes
-            , edges = removeDisconnectedLinks koNodeIds (extractOK edges)
+            { nodes = extractNotKO nodes
+            , edges = removeDisconnectedLinks koNodeIds (extractNotKO edges)
             }
 
         affectedNodeIds : Set Identifier
