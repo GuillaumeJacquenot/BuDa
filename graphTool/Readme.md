@@ -58,6 +58,13 @@ This function is used to introduce an intermediate level in the PBS, when the nu
 ####	Set / update attribute
 Select block.
 Fill in / modify text box “attribute” on the right of the workspace.
+#### Set / update state
+Select block.
+
+Check the box "RAS" to declare that the block is OK or the box "HS" to declare the block KO.
+
+The update will be applied to the block's children : they will all become OK or KO, overwriting their previous state.
+
 ####	Copy
 Select block.
 Press ctrl+c. The block, its children, its inner and outer links have all been saved in a temporary buffer for further use.
@@ -87,6 +94,23 @@ Press ctrl+shift+suppr; the selected link and all the links that had been genera
 ####	Set / update attribute
 Select link.
 Fill in / modify text box “attribute” on the right of the workspace.
+
+### Advanced block features - networks
+
+Blocks can have different roles on a set of networks. They can either produce (their role is "Producer") or consume (their role is "Consumer") on a network.
+
+#### Updating the roles of a block
+Select a block.
+
+Each network is listed on the right side of the screen under the state of the block. For each one, click on the radio button on the left of "Producer" to define the block **and all its children as producers**, or one the one on the left of "Consumer" to define the block **and all its children as consumers** on the given network.
+
+#### Visualizing the role of a block
+Unselect all blocks by clicking on the backgroung of the workspace.
+
+On the right side, the "Networks" area, when unfolded, lists all the networks. When none are selected, the blocks that have the role of "Producer" on at least one network will have rounded corners. Those that are not "Producer"s on any network will be perfect squares.
+
+When one or more networks are selected, only the producers on those networks will have rounded corners.
+
 ###	Advanced block features – functional chains
 Blocks can be assigned to functional chains, to allow the mapping of all the blocks that contribute to specific functions or operational modes.
 To manipulate functional chains, press the blue rectangle reading “functional chain” on the right of the workspace. The “functional chain” area unfolds.
