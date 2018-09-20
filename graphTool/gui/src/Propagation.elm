@@ -6,7 +6,6 @@ import Link exposing (Edge)
 import Node exposing (Node)
 import ElementAttributes exposing (..)
 import Set exposing (..)
-import Debug
 
 
 type alias Graph =
@@ -48,7 +47,7 @@ getConnectedNodeIds edges nodeId =
 
 getAllConnectedNodeIds : List Edge -> Identifier -> Set Identifier
 getAllConnectedNodeIds edges nodeId =
-    Debug.log (toString nodeId) <| Set.fromList <| getConnectedNodeIdsRecursively [ nodeId ] [] edges
+    Set.fromList <| getConnectedNodeIdsRecursively [ nodeId ] [] edges
 
 
 getConnectedNodeIdsRecursively : List Identifier -> List Identifier -> List Edge -> List Identifier
@@ -89,37 +88,47 @@ getConnectedProducerIds producerIds connectedIds =
     Set.intersect producerIds connectedIds
 
 
-isNodeNotConnectedToAProducer : List Edge -> Set Identifier -> Identifier -> Bool
+isNodeNotConnectedToAProducer : List Edge -> Set Identifier -> Identifier -> ( Bool, Set Identifier )
 isNodeNotConnectedToAProducer edges producerIds nodeId =
     let
+        connectedNodeIds : Set Identifier
         connectedNodeIds =
             getAllConnectedNodeIds edges nodeId
 
+        connectedProducerIds : Set Identifier
         connectedProducerIds =
             getConnectedProducerIds producerIds connectedNodeIds
     in
-        Set.isEmpty connectedProducerIds
+        ( (Set.isEmpty connectedProducerIds), connectedNodeIds )
 
 
 getAffectedNodeIdsForNetwork : Graph -> Identifier -> Set Identifier
 getAffectedNodeIdsForNetwork graph parameterId =
     let
+        consumerRole : NetworkRole
         consumerRole =
             { network = parameterId, role = Consumer }
 
+        producerRole : NetworkRole
         producerRole =
             { network = parameterId, role = Producer }
 
+        consumerIds : List Identifier
         consumerIds =
-            Set.fromList <| List.map .id <| List.filter (\node -> List.member consumerRole node.roles) graph.nodes
+            List.map .id <| List.filter (\node -> List.member consumerRole node.roles) graph.nodes
 
+        producerIds : Set Identifier
         producerIds =
             Set.fromList <| List.map .id <| List.filter (\node -> List.member producerRole node.roles) graph.nodes
 
+        subgraph : Graph
         subgraph =
             getSubGraphForNetwork parameterId graph
     in
-        Set.filter (isNodeNotConnectedToAProducer subgraph.edges producerIds) consumerIds
+        List.foldl Set.union Set.empty <|
+            List.map (\( isNodeNotConnected, connectedNodeIds ) -> connectedNodeIds) <|
+                List.filter (\( isNodeNotConnected, connectedNodeIds ) -> isNodeNotConnected) <|
+                    List.map (isNodeNotConnectedToAProducer subgraph.edges producerIds) consumerIds
 
 
 type alias ElementWithState a =
