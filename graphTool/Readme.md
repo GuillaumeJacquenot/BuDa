@@ -300,15 +300,19 @@ Exports can be generated for further use outside the architecture modeling tool.
 Operations on model files (save, import, export, etc) are performed by using the uppermost buttons in the feature bar at the top of the application. File names are filled in the uppermost text box in the upper left corner of the browser’s window. This textbox is called the “filename” box in the following.
 ###	Exporting data – csv, txt
 Fill in the name of the export file in the “filename” text box.
-Press “Export”; two export files have been generated:
--	“filename.txt” provides the names of all blocks in the model, structured according to the PBS. Under each block one finds :
- -	the “attribute” of the block
- -	the names of every functional chain the block has been assigned.
--	“filename.csv” provides the list of all the links that have been specified or generated in the model. Each link is described in a specific line of the csv file, with :
- -	Col 1: Source of the link (a block in the PBS)
- -	Col 2: target of the link (a block in the PBS)
- -	Col 3 – n+2: each column is assigned to one of the n link parameters in the model. Default value is 0; if link in line L has been assigned link parameter in column C, cell at location (C;L) has value 1.
- -	Col n+3: attributes of links. 
+Press “Export”; tthree export files have been generated:
+-	“filenameNodes.txt” provides the names of all blocks in the model, structured according to the PBS. Under each block one finds :
+	-	the “attribute” of the block
+ 	-	the names of every functional chain the block has been assigned.
+-	“filenameLinks.csv” provides the list of all the links that have been specified or generated in the model. Each link is described in a specific line of the csv file, with :
+ 	-	Col 1: Source of the link (a block in the PBS)
+ 	-	Col 2: target of the link (a block in the PBS)
+ 	-	Col 3 – n+2: each column is assigned to one of the n link parameters in the model. Default value is 0; if link in line L has been assigned link parameter in column C, cell at location (C;L) has value 1.
+ 	-	Col n+3: attributes of links. 
+- "filenamePropagation.csv" provides the list of all the blocks, structured according to the PBS, and their inferred state. Each line of the CSV file follows the following format : `PBS/Path/to/the/block;state` where the state can be either :
+ 	- "KO", the node has been declared "HS",
+ 	- "Impacted", the issues propagation has identified the block as being possibly impacted by the failure of another block declared "KO" on one of the networks it operates on,
+ 	- "OK", the node is neither "HS" nor impacted by another "HS" block.
 
 ###	Screenshots
 Fill in the name of the export file in the “filename” text box.
