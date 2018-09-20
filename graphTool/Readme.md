@@ -137,27 +137,29 @@ To assign an additional geometric view to the block, click the white box on the 
 To cancel, click on the box once again.
 Note: a geometric view can be assigned to an individual block without being assigned to either its parents or its children.
 
-###	Advanced link features – link parameters
-Links can be assigned parameters. This feature is useful to assign and display networks and circuits of any given kind.
-To manipulate link parameters, press the blue rectangle reading “link parameter” on the right of the workspace. The “link parameter” area unfolds.
-####	Creating a link parameter
-Fill in the new name of the link parameter in the “objectname” text box, then click on the “+” button at the bottom of the “link parameter” area.
-A new field with the name of the link parameter has been created in the “link parameter” area, with a tick box on the left. 
-####	Deleting a link parameter
-Fill in the new name of the link parameter in the “objectname” text box, then click on the “-” button at the bottom of the “link parameter” area.
-The field with the name of the link parameter has disappeared. All the links to which the link parameter had been assigned have been updated (the link parameter is not assigned to them anymore). 
-#### Assigning a link parameter to a link
+###	Advanced link features – Networks
+Links can be assigned networks and circuits of any given kind.
+To manipulate networks, press the blue rectangle reading “Networks” on the right of the workspace. The “Networks” area unfolds.
+####	Creating a network
+Fill in the new name of the network in the “objectname” text box, then click on the “+” button at the bottom of the “Networks” area.
+A new field with the name of the network has been created in the “Networks” area, with a tick box on the left. 
+####	Deleting a network
+Fill in the new name of the network in the “objectname” text box, then click on the “-” button at the bottom of the “Networks” area.
+The field with the name of the network has disappeared. All the links to which the network had been assigned have been updated (the network is not assigned to them anymore).
+#### Assigning a network to a link
 Select a link by clicking on it.
-All the link parameters whose names appear to have been selected in the “link parameter” area (white box ticked) have already been assigned to the link.
-To assign an additional link parameter to the link, click the white box on the left of the name of the link parameter.
+All the networks whose names appear to have been selected in the “Networks” area (white box ticked) have already been assigned to the link.
+To assign an additional network to the link, click the white box on the left of the name of the network.
 To cancel, click on the box once again.
-Note 1: when a link parameter is assigned to a link, it is automatically assigned to all the parents of the link. When the assignment to a link is cancelled, it is automatically cancelled from all the children of the link ; it is also cancelled from all the parents of the link unless the link parameter is still assigned to a sibling of the link (in which case the parents inherit the assignment from the sibling of the link, if not from the link itself).
-Note 2 : the assignment of a link parameter to a link can be cancelled only if no child of the link has been assigned the link parameter.
+Note 1: when a network is assigned to a link, it is automatically assigned to all the parents of the link. When the assignment to a link is cancelled, it is automatically cancelled from all the children of the link ; it is also cancelled from all the parents of the link unless the network is still assigned to a sibling of the link (in which case the parents inherit the assignment from the sibling of the link, if not from the link itself).
+Note 2 : the assignment of a network to a link can be cancelled only if no child of the link has been assigned the network.
 
-####	Highlighting link parameters
+#### Highlighting networks
 Unselect all links by clicking on the backgroung of the workspace.
-To highlight one or more link parameters, select them from the “link parameter” area by clicking on the boxes on the left of their names. All the links that the selected link parameters have been assigned to are displayed in thick lines; all the blocks that are connected with these links are displayed in pink circles.
-To cancel highlight, unselect link parameters by clicking on ticked boxes. Note : you should make sure no link has been selected before, otherwise you will assign the link parameter to the selected link instead of cancelling the highlight.
+
+To highlight one or more networks, select them from the “Networks” area by clicking on the boxes on the left of their names. All the links that the selected networks have been assigned to are displayed in thick lines. The first 5 networks have each a different color automatically assigned to them. If a link is dashed, it means it belongs to more than one highlighted networks.
+
+To cancel highlight, unselect networks by clicking on ticked boxes. Note : you should make sure no link has been selected before, otherwise you will assign the network to the selected link instead of cancelling the highlight.
 
 
 ### Advanced link features – tightness
