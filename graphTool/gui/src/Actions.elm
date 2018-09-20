@@ -444,6 +444,7 @@ globalUpdate msg model =
 
         ExportLink ->
             let
+                saveName : String
                 saveName =
                     case String.isEmpty model.inputFile of
                         True ->
@@ -452,13 +453,19 @@ globalUpdate msg model =
                         False ->
                             model.inputFile
 
+                expNodes : String
                 expNodes =
                     DataModelEncoders.encodeExport { filename = saveName ++ "Nodes.txt", model = Export.encodeNodes model.dataModel }
 
+                expEdges : String
                 expEdges =
                     DataModelEncoders.encodeExport { filename = saveName ++ "Links.csv", model = Export.encodeLinks model.dataModel }
+
+                expPropagationOnNodes : String
+                expPropagationOnNodes =
+                    DataModelEncoders.encodeExport { filename = saveName ++ "Propagation.csv", model = Export.encodePropagation model.dataModel }
             in
-                ( model, Cmd.batch [ LinkToJS.exportLNK expNodes, LinkToJS.exportLNK expEdges ] )
+                ( model, Cmd.batch [ LinkToJS.exportLNK expNodes, LinkToJS.exportLNK expEdges, LinkToJS.exportLNK expPropagationOnNodes ] )
 
         CheckFlux s ->
             ( ModelActions.updateSelectedFlux s model, Cmd.none )

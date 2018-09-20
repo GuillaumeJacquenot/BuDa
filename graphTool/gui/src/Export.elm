@@ -1,4 +1,4 @@
-module Export exposing (encodeNodes, encodeLinks)
+module Export exposing (encodeNodes, encodeLinks, encodePropagation)
 
 import Identifier exposing (Identifier)
 import DataModel exposing (Model)
@@ -7,10 +7,11 @@ import Link exposing (Edge, ActivePoperties)
 import Attribut exposing (Attribut)
 import DataModelActions exposing (getAscendantName)
 import ModelManagement
-import Set
+import Set exposing (Set)
 import LinkParameters
 import String
 import Groups
+import Propagation exposing (getStateSummary)
 
 
 separator : String
@@ -87,6 +88,45 @@ encodeNodes model =
             ModelManagement.orderingNodesToPBS model
     in
         nodeListEncode_ list model
+
+
+propagationNodeEncode : Node -> { ko : Set Identifier, affected : Set Identifier } -> Model -> String
+propagationNodeEncode node stateSummary model =
+    let
+        state =
+            if Set.member node.id stateSummary.ko then
+                "KO"
+            else if Set.member node.id stateSummary.affected then
+                "Impacted"
+            else
+                "OK"
+    in
+        -- Build : PBS/Path/to/node;state
+        (getAscendantName node model) ++ separator ++ state
+
+
+propagationEncode : List Node -> { ko : Set Identifier, affected : Set Identifier } -> Model -> String
+propagationEncode list stateSummary model =
+    case list of
+        [] ->
+            ""
+
+        firstNode :: nextNodes ->
+            (propagationNodeEncode firstNode stateSummary model) ++ cr ++ (propagationEncode nextNodes stateSummary model)
+
+
+encodePropagation : Model -> String
+encodePropagation model =
+    let
+        -- on ordonne la liste des nodes en mode PBS
+        orderedNodes : List Node
+        orderedNodes =
+            ModelManagement.orderingNodesToPBS model
+
+        stateSummary =
+            getStateSummary model.nodes model.edges <| List.map .id model.parameters
+    in
+        propagationEncode orderedNodes stateSummary model
 
 
 isActiveProperty : ActivePoperties -> LinkParameters.Property -> Bool
