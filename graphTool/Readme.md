@@ -251,7 +251,32 @@ Press “Open”; a window pops up, allowing you to browse for the json file to 
 It is possible to import a model from a csv table.
 To import a csv file, press “Open”; a window pops up, allowing you to browse for the csv file to be downloaded. 
 Once you have selected the csv file to be downloaded, a new model is generated from the data held by the csv file. The generated model has the same structure as any other architecture model; it can be saved in the standard json format.
-The csv shall have the following structure :
+
+#### Recommended format 
+The recommended format of the CSV file is the following :
+
+|ID        |Description (option) | Parent ID (option)	|Link source ID (option)	|Link target ID (option)	| Network (option)
+|--------- |---------------------|---------------------|---------------------------|---------------------------|-----------------
+|A1	       |Machine Y	         |       	           |                           |                           |
+|AA1	   |Motor J	             |A1    	           |                           |                           |
+|B1 	   |Pump K	             |      	           |                           |                           |
+|L1  	   |      	             |      	           |AA1                        |B1                         |water
+
+ Where :
+- _ID_ is a uniquely identifying character string that will be used as name for blocks;
+- _Description_ is a description that will fill the "Attribute" field of the element;
+- _Parent ID_ (optionnal) is the ID of another block in which to include the current block. If it is empty, the block will be a root block;
+- _Link source ID_ (optionnal) is the ID of a block that will be on one end of the link to create;
+- _Link target ID_ (optionnal) is the ID of a block that will be on the other end of the link to create;
+- _Network_ (optional) is the name of a network the link belongs to. This network will then appear in the "Networks" area.
+
+The first line shows how to create a root node.\
+The second line shows how to create a child node.\
+The fourth line shows how to create a link between two nodes.\
+
+#### Legacy format 
+
+The csv might also have the following format :
 
 |ID	             |Label 	                         |Link source 1 ID (option)	|Link source 2 ID (option)	|Link parameter (option)
 |------------- |----------------------------|---------------------------------|----------------------------------|------
