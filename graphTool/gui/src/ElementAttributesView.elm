@@ -53,14 +53,15 @@ roleFieldset parameters networkRole =
     in
         fieldset [ id fieldsetName ]
             [ legend [] [ text legendLabel ]
-            , radio radioName (Messages.SwitchElemRole networkRole.network Producer) "Producer" (networkRole.role == Producer)
-            , radio radioName (Messages.SwitchElemRole networkRole.network Consumer) "Consumer" (networkRole.role == Consumer)
+            , radio radioName (Messages.SwitchElemRole networkRole.network Producer) "Prod." (networkRole.role == Producer)
+            , radio radioName (Messages.SwitchElemRole networkRole.network Consumer) "Consum." (networkRole.role == Consumer)
+            , radio radioName (Messages.SwitchElemRole networkRole.network RoleUnknown) "None" (networkRole.role == RoleUnknown)
             ]
 
 
 rolesFieldset : Roles -> LinkParameters.Model -> Html Messages.Msg
 rolesFieldset roles parameters =
-    div [] <|
+    div [ class "roles-fieldsets" ] <|
         List.map (roleFieldset parameters) roles
 
 

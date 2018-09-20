@@ -1,3 +1,16 @@
+input[type="radio"].role-network {
+    padding: 5px;
+}
+
+fieldset[id^="role-network"] {
+    border-top: 1px solid #E6E6E6;
+}
+
+.roles-fieldsets {
+  overflow-y: auto;
+  height: 14em;
+}
+
 .vLayout {
   display: flex;
   flex-direction: column;
@@ -16,7 +29,7 @@
     top: 9em;
     left: 0.4em;
     bottom: 0.4em;
-    right: 20em;
+    right: 22em;
     border : 0.1em solid #555;
 }
 
@@ -236,7 +249,7 @@
 }
 
 #leftLayout {
-  width: 16em;
+  width: 20em;
   height: 70em;
   position: absolute;
   top: 8em;
@@ -262,7 +275,7 @@
 
 #functionalChainView {
   /*width: 16em;*/
-  height: 19em;
+  height: 12.5em;
   /*position: absolute;*/
   overflow-x: hidden;
   overflow-y: visible;
@@ -271,7 +284,7 @@
 
 #geometryView {
   /*width: 16em;*/
-  height: 19em;
+  height: 12.5em;
   /*position: absolute;*/
   overflow-x: hidden;
   overflow-y: visible;
