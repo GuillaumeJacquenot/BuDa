@@ -15,7 +15,7 @@ The GUI is organized as follows :
 -	A series of click buttons is available above the workspace, beside the two rows we just described. These click buttons are used to choose between one view of the model or another. 
 -	On the right of the workspace the user will find a column with advanced model properties that he/she is free to set :
 	One text box to set specific (text) attributes to model objects
- - 	the list of “parameters” that links might support, for instance fuel, water, aire or electrical power
+ - 	the list of "Networks" that links might support, for instance fuel, water, aire or electrical power
  - 	the list of “functional chains” that objects might be involved in, for instance “minimal functions for start-up” or “cruise mode operation”
  - 	the list of geometric views, set by the user, against which the components within the model might be projected.
 The following sections provide more details on how to use the tool.
