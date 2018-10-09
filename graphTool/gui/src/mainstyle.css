@@ -18,6 +18,10 @@ node[highLighted = 0], node[highLighted = 1] {
   background-color: #64B5F6;
 }
 
+node[highLighted = 1] {
+  background-color: #F2A5A9;
+}
+
 node[blow = 1] {
   border-width: 4;
   border-color: #0E2E2E;
