@@ -1,0 +1,12 @@
+{
+  "name": "shipbuilder",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "babel graphTool/gui/src/js/cytoutils.js --out-file graphTool/gui/src/js/cytoutils.babel.js"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.5",
+    "@babel/preset-env": "^7.1.5"
+  }
+}
