@@ -1,5 +1,6 @@
 stages:
     - build
+    - babel
     - deploy
 
 build:
@@ -14,10 +15,30 @@ build:
         - graphTool/gui/src/*.svg
         - graphTool/gui/src/*.png
 
+build-babel:
+    stage: build
+    script:
+    - cd graphTool/babel && make
+
+babel:
+    stage: babel
+    dependencies:
+    - build
+    script:
+    - docker run -t --rm -v `pwd`:/work -w /work -u $(id -u):$(id -g) babel
+    - mv graphTool/gui/src/js/cytoutils.babel.js graphTool/gui/src/js/cytoutils.js
+    artifacts:
+      paths:
+        - graphTool/gui/src/*.css
+        - graphTool/gui/src/js
+        - graphTool/gui/src/*.html
+        - graphTool/gui/src/*.svg
+        - graphTool/gui/src/*.png
+
 pages:
   stage: deploy
   dependencies:
-     - build
+     - babel
   script:
        - mkdir public
        - mv graphTool/gui/src/*.css public/
