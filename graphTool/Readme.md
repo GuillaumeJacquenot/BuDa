@@ -1,7 +1,69 @@
+# BuDa: System Mapping - *Zenified*
+
+## General purpose
+
+BuDa is a tool dedicated to system architecture. It is a Proof-Of-Concept for generic systems-mapping tools. BuDa is the contraction of **Bu**bble **D**i**a**gram, after the ellipsoïdal shape of the block objects in the first draft of the tool.
+
+In BuDa, a system is modelled as a set of blocks and links between these blocks. BuDa supports multi-level system modelling: blocks can have "parent" or "children" blocks, thus forming a hierarchical structure of blocks identical to standard breakdown structures (PBS, WBS, and the like).
+
+The major advantage of BuDa lies in the management of links within multi-level architectures. Links are supported at any levels in the blocks' hierarchy; links between blocks at different levels are supported; links that have been specified at lower levels in the model trigger the automatic generation of links at higher levels.
+
+The blocks and the links taken together form two entangled graphs that share the same nodes:
+- one graph is the blocks' "**Breakdown Structure**"; its nodes are the blocks, and its edges are the parent-children relationships between the blocks,
+- one graph is the **multi-level connectivity graph** of the system; its nodes are the blocks, and its edges are the "links" specified by the User or generated automatically by BuDa. 
+
+Both graphs evolve together - for instance, moving one block will have an impact on the links of the block. Don't worry, though ! the overall consistency of the multi-level connectivity graph is taken care of by BuDa, thanks to the carefully crafted procedures that are used to generate, delete, move, copy / paste blocks and links.
+
+## What BuDa may be used for
+
+The multi-level connectivity graphs that are supported by BuDa are extremely generic. These are some of the use cases we have come across some far:
+- **industrial system mapping**: industrial systems are made of many, many parts organized as subsystems embedded in larger subsystems and eventually forming the system itself. These parts are connected one to the other with cables, piping, shafts, etc. BuDa offers reliable support in the management of all these system interfaces.
+- **fault propagation analysis**: BuDa offers some features to track fault propagation through the connectivity graph of industrial systems, for safety, dependability, cyber-security robustness analyses.
+- **interface management during system assembly**: the basic parts of the system may also be viewed as low-level manufacturing blocks in the manufacturing breakdown structure (MBS). In one glimpse, BuDa provides the exhaustive list of the interfaces between any assembly at any level in the MBS, and the rest of the world.
+- **enhanced system modularity**: with BuDa, it is easy to asses the impact of adding, removing or replacing any portion of a system.
+- **business environments** might also be mapped with BuDa, with links between people being aggregated at higher levels (entity, organization, company, etc.).
+
+We can't wait to hear from your experience with multi-level connectivity graphs !
+
+## Where do I start from ?
+
+The "getting started" section herebelow will help you in your first steps with BuDa.
+
+## Copyright
+
+The tool has been developed by Sirehna (www.sirehna.com), in collaboration with Naval Group, IRT Systemx and Bureau Veritas. Sirehna owns the copyright for all the developments related to BuDa at the date of its first public release on GitHub.
+
+The original development team comprised Michel Picard (dev) & Alan Guegan (product lead), both working at Sirehna. The development was fuelled by contributions from Benoît Rafine & Romain Le Nena (Naval Group) and Laurent Descombes and Hanane Fadiaw (IRT Systemx). We have a special thought for the late Philippe Corrignan (Bureau Veritas) who provided constant and cheerful support to the project.
+
+## License
+
+BuDa is published under the Eclipse 2.0 public license. For further information, please refer to the License file in this repository.
+
+## Contributions
+
+All contributions and feedback are warmly welcome ! Please refer to the "governance" file in the repository to maximize feedback & contribution efficiency.
+
+## Funding
+
+BuDa has been developed within a project called HOLISHIP. The HOLISHIP project has received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement n° 689074.
+
+# BuDa - getting started
+
+TO BE CONTINUED
+
+
+
+
+
+
+
+
 # BuDa user manual
 
-The latest version of BuDa is available online on SIREHNA's network: [https://projets.gitlab-pages.sirehna.com/holiship](https://projets.gitlab-pages.sirehna.com/holiship)
-An offline version can also be downloaded here: [https://gitlab.sirehna.com/projets/holiship/-/jobs/artifacts/master/download?job=build](https://gitlab.sirehna.com/projets/holiship/-/jobs/artifacts/master/download?job=build)
+The following sections provide an overview of the basic features of BuDa, including :
+- a general description of the tool and its GUI
+- a description of operations on models with BuDa
+- a description of the various visualization options with BuDa.
 
 
 ## Description
