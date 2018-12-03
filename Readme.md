@@ -90,8 +90,9 @@ Philippe Corrignan (Bureau Veritas) was greatly appreciated.
 
 ## License
 
-BuDa is published under the Eclipse 2.0 public license. For further
-information, please refer to the License file in this repository.
+BuDa is published under the [Eclipse 2.0 public
+license]((https://opensource.org/licenses/EPL-2.0)). For further information,
+please refer to the [License file](LICENCE.md) in this repository.
 
 ## Funding
 
