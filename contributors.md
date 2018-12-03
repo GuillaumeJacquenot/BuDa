@@ -1,6 +1,10 @@
+# Contributors
+
 Using:
 
-    git shortlog -s -n
+```{.bash}
+git shortlog -s -n
+```
 
 we can get the list of contributors to this project.
 

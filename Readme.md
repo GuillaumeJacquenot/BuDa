@@ -87,7 +87,7 @@ The original development team comprised Michel Picard (dev) & Alan Guegan
 from Benoît Rafine & Romain Le Nena (Naval Group) and Laurent Descombes and
 Hanane Fadiaw (IRT Systemx). The constant and cheerful support from the late
 Philippe Corrignan (Bureau Veritas) was greatly appreciated. Please refer to
-[the full contributors list](contributors).
+[the full contributors list](contributors.md).
 
 ## License
 
