@@ -1,10 +1,13 @@
 stages:
-    - build
+    - build-prerequisite-containers
+    - build-code
     - babel
     - deploy
 
-build:
-    stage: build
+build-code:
+    stage: build-code
+    dependencies:
+    - build-elm
     script:
      - cd code && make
     artifacts:
@@ -16,14 +19,20 @@ build:
         - code/src/*.png
 
 build-babel:
-    stage: build
+    stage: build-prerequisite-containers
     script:
     - cd babel && make
+
+build-elm:
+    stage: build-prerequisite-containers
+    script:
+    - cd elm && make
 
 babel:
     stage: babel
     dependencies:
-    - build
+    - build-code
+    - build-babel
     script:
     - docker run -t --rm -v `pwd`:/work -w /work -u $(id -u):$(id -g) babel
     - mv code/src/js/cytoutils.babel.js code/src/js/cytoutils.js

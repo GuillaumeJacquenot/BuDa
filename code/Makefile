@@ -4,8 +4,7 @@ all: src/js/elm.js
 
 src/js/elm.js: src/*
 	rm -rf elm-stuff/generated-code || true
-	docker build -t graphtool-build .
-	docker run -t --rm --name graphtool-build -v `pwd`:/work -u $(shell id -u):$(shell id -g) -w /work graphtool-build
+	docker run -t --rm -v $(shell pwd):/work -u $(shell id -u):$(shell id -g) -w /work elm make --yes --warn src/Main.elm --output src/js/elm.js
 
 artifacts: graphTool.zip
 
