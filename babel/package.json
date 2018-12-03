@@ -1,8 +1,8 @@
 {
-  "name": "shipbuilder",
+  "name": "BuDa",
   "version": "1.0.0",
   "scripts": {
-    "build": "babel graphTool/gui/src/js/cytoutils.js --out-file graphTool/gui/src/js/cytoutils.babel.js"
+    "build": "babel gui/src/js/cytoutils.js --out-file gui/src/js/cytoutils.babel.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.5",
