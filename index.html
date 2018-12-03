@@ -1,0 +1,191 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Supervision</title>
+  <link rel="stylesheet" href="graphTool.css">
+  <link rel="stylesheet" href="maia.css">
+  <link rel="stylesheet" href="cytostylesheet.css">
+
+  <script src="./js/jquery-2.2.4.min.js"></script>
+  <script src="./js/polyfill.js"></script>
+  <script src="./js/cytoscape.js"></script>
+  <script src="./js/cytoutils.js"></script>
+  <script src="./js/dagre.js"></script>
+  <script src="./js/cytoscape-dagre.js"></script>
+  <script src="./js/cytoscape-canvas.js"></script>
+  <script src="./js/download.js"></script>
+  <script src="./js/loadFile.js"></script>
+  <script src="./js/importFile.js"></script>
+  <script src="./js/loadGeometry.js"></script>
+  <script src="./js/FileSaver.js"></script>
+  <script src="./js/base64ToBlob.js"></script>
+  <script src="./js/cytoscape-svg-convertor.js"></script>
+  <script src="./js/svg.js"></script>
+  <script type="text/javascript" src="./js/elm.js"></script>
+</head>
+
+<body>
+  <div id="elm-app"></div>
+  <div id="cy"></div>
+  <div id="create" style="visibility:hidden;"></div>
+  <script type="text/javascript">
+    var div = document.getElementById('elm-app');
+    var app = Elm.Main.embed(div);
+
+
+    /**
+   * Elm to JS
+   */
+
+    app.ports.msg2js.subscribe(function (msg) {
+      console.log(msg);
+
+      switch (msg.tag) {
+        case 'display-bubble':
+          displayModel(msg.data);
+          break;
+
+        case 'display-all':
+          displayModel(msg.data);
+          break;
+
+        case 'display-flat':
+          displayModel(msg.data);
+          break;
+
+        case 'display-geometry':
+          displayModel(msg.data);
+          break;
+
+        case 'display-pbs':
+          displayPbs(msg.data);
+          break;
+
+        default:
+          break;
+      }
+    })
+
+    app.ports.layout.subscribe(function (word) {
+      _layout_main();
+    });
+
+    app.ports.requestpositions.subscribe(function (word) {
+      _setNodesPositionsToElm_();
+    });
+
+    app.ports.setLayoutName.subscribe(function (word) {
+      options.layoutName = word;
+    });
+
+    app.ports.setLayoutNameThenLayout.subscribe(function (word) {
+      options.layoutName = word;
+      _layout_main();
+    });
+
+    app.ports.sendParentSelection.subscribe(function (word) {
+      var obj = JSON.parse(word);
+      if (obj != null) {
+        cy.$('#' + obj).select();
+      }
+    });
+
+    app.ports.saveModel.subscribe(function (word) {
+      var obj = JSON.parse(word);
+      var filename = obj.filename;
+      var model = obj.model;
+      download(JSON.stringify(model, null, '\t'), filename, "text/plain");
+    });
+
+    app.ports.exportLNK.subscribe(function (word) {
+      var obj = JSON.parse(word);
+      var filename = obj.filename;
+      var model = obj.model;
+      //console.log (model);
+      download(model, filename, "text/plain");
+    });
+
+    app.ports.loadModel.subscribe(function (word) {
+      var msg = loadModelFromFile(word);
+      // console.log('loadmodel:' + msg);
+    });
+
+    app.ports.importModel.subscribe(function (word) {
+      var msg = importModelFromFile(word);
+      // console.log('importModel:' + msg);
+    });
+
+    app.ports.loadGeometryRequest.subscribe(function (word) {
+      //console.log ("loadGeometryRequest: " + word);
+      if (word.length == 0)
+        return;
+      var id = word[0];
+      loadGeometry("loadGeometry", id);
+    });
+
+    app.ports.loadGeometryButton.subscribe(function (word) {
+      var fileinput = document.getElementById("loadGeometry");
+      fileinput.click();
+    });
+
+    app.ports.onOpen.subscribe(function (word) {
+      var fileinput = document.getElementById("loadModel");
+      fileinput.click();
+
+    });
+
+
+    app.ports.onImport.subscribe(function (word) {
+      var fileinput = document.getElementById("importModel");
+      fileinput.click();
+
+    });
+
+    app.ports.saveToImage.subscribe(function (imgName) {
+      saveToImage(imgName);
+    });
+
+
+    /**
+     * JS to Elm
+     */
+
+    function app_port_sendSelectionToElm(msg) {
+      app.ports.selection.send(msg);
+    }
+
+    function app_port_sendModelToElm(msg) {
+      app.ports.modeltoelm.send(msg);
+    }
+    function app_port_sendCsvModelToElm(msg) {
+      app.ports.csvmodeltoelm.send(msg);
+    }
+    function app_port_sendCsv2ModelToElm(msg) {
+      app.ports.csv2modeltoelm.send(msg);
+    }
+    function app_port_sendImportModelToElm(msg) {
+      app.ports.importModeltoelm.send(msg);
+    }
+
+    function app_port_sendImportCsvModelToElm(msg) {
+      app.ports.importCsvModeltoelm.send(msg);
+    }
+
+    function app_port_sendDoubleClickToElm(msg) {
+      app.ports.doubleclick.send(msg);
+    }
+
+    function app_port_sendNodesPositionToElm(msg) {
+      app.ports.nodesPositionToElm.send(msg);
+    }
+
+    function app_ports_sendGeometryToElm(msg) {
+      app.ports.sendGeometryToElm.send(msg);
+    }
+
+
+  </script>
+</body>
+
+</html>

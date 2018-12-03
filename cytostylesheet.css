@@ -1,0 +1,314 @@
+input[type="radio"].role-network {
+    padding: 5px;
+}
+
+fieldset[id^="role-network"] {
+    border-top: 1px solid #E6E6E6;
+}
+
+.roles-fieldsets {
+  overflow-y: auto;
+  height: 14em;
+}
+
+.vLayout {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 80px;
+}
+
+.vItem {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  /*padding-left: 10px;
+  padding-right: 10px;*/
+}
+
+#cy {
+    position: absolute;
+    top: 9em;
+    left: 0.4em;
+    bottom: 0.4em;
+    right: 22em;
+    border : 0.1em solid #555;
+}
+
+/*                  gestion des fichiers                 */
+#inputFile {
+    width: 8em;
+    height: 2.5em;
+    position: absolute;
+    top: 0em;
+    left: 1em;
+}
+#saveModel {
+    width: 5em;
+    height: 3em;
+    position: absolute;
+    top: 0em;
+    left: 10em;
+}
+#export {
+  width: 5em;
+  height: 3em;
+  position: absolute;
+  top: 0em;
+  left: 15.5em;
+}
+#loadModel {
+    display: none
+}
+#open  {
+    width: 5em;
+    height: 3em;
+    position: absolute;
+    top: 0em;
+    left: 21em;
+}
+#importModel {
+    display: none
+}
+#import {
+    width: 5em;
+    height: 3em;
+    position: absolute;
+    top: 0em;
+    left: 26.5em;
+}
+#png {
+    width: 5em;
+    height: 3em;
+    position: absolute;
+    top: 0em;
+    left: 32em;
+}
+
+#userInput {
+  width: 8em;
+  height: 2.5em;
+  position: absolute;
+  top: 0em;
+  left: 50em;
+}
+
+#urlInput {
+  width: 15em;
+  height: 2.5em;
+  position: absolute;
+  top: 0em;
+  left: 58.5em;
+}
+
+#fieldset {
+    width: 35em;
+    height: 1em;
+    position: absolute;
+    top: 0.2em;
+    right: 20em;
+}
+
+
+/*                     gestion du modele                        */
+#input {
+    width: 8em;
+    height: 2.5em;
+    position: absolute;
+    top: 3.2em;
+    left: 1em;
+}
+#new {
+    width: 5em;
+    height: 3em;
+    position: absolute;
+    top: 3.2em;
+    left: 10em;
+}
+#edge {
+  width: 5em;
+  height: 3em;
+  position: absolute;
+  top: 3.2em;
+  left: 15.5em;
+}
+#rename {
+  width: 5em;
+  height: 3em;
+  position: absolute;
+  top: 3.2em;
+  left: 21em;
+}
+#undo {
+  width: 5em;
+  height: 3em;
+  position: absolute;
+  top: 3.2em;
+  left: 26.5em;
+}
+#redo {
+  width: 5em;
+  height: 3em;
+  position: absolute;
+  top: 3.2em;
+  left: 32em;
+}
+#group {
+  width: 5em;
+  height: 3em;
+  position: absolute;
+  top: 3.2em;
+  left: 37.5em;
+}
+#Tight {
+  width: 5em;
+  height: 3em;
+  position: absolute;
+  top: 3.2em;
+  left: 43em;
+}
+
+#layoutset {
+  width: 20em;
+  height: 3em;
+  position: absolute;
+  top: 3.2em;
+  right: 15em;
+
+}
+
+#ask {
+  width: 5em;
+  height: 3em;
+  position: absolute;
+  top: 3.2em;
+  left: 54em;
+}
+
+#verification {
+  width: 5em;
+  height: 3em;
+  position: absolute;
+  top: 3.2em;
+  left: 59.5em;
+}
+
+#propagation {
+  width: 8em;
+  height: 3em;
+  position: absolute;
+  top: 3.2em;
+  left: 48.5em;
+}
+
+#menu {
+  width: 1em;
+  height: 3em;
+  position: absolute;
+  /*top: 1.9em;*/
+  /*left: 52.8em;*/
+  top: 4em;
+  right : 19em;
+}
+
+
+
+
+#pos {
+  width: 5em;
+  height: 3em;
+  position: absolute;
+  top: 3.2em;
+  left: 59.5em;
+  visibility: hidden;
+}
+
+
+#label {
+  width: 80em;
+  height: 3em;
+  position: absolute;
+  top: 7em;
+  left: 1em;
+}
+
+#counter {
+  width: 80em;
+  height: 3em;
+  position: absolute;
+  top: 7em;
+  right: -50em;
+
+}
+
+#logo {
+  width: 20em;
+  height: 6em;
+  position: absolute;
+  top: 0.2em;
+  right:0.2em;
+
+}
+
+#leftLayout {
+  width: 20em;
+  height: 70em;
+  position: absolute;
+  top: 8em;
+  right:1em;
+}
+
+#paramView {
+  /*width: 16em;*/
+  /*height: 24em;*/
+  height: 12.5em;
+  /*position: absolute;*/
+  overflow-x: hidden;
+  overflow-y: visible;
+
+}
+
+#attributArea {
+    width: 16em;
+    height: 6em;
+    overflow-x: hidden;
+    overflow-y: visible;
+}
+
+#functionalChainView {
+  /*width: 16em;*/
+  height: 12.5em;
+  /*position: absolute;*/
+  overflow-x: hidden;
+  overflow-y: visible;
+  right:2em;
+}
+
+#geometryView {
+  /*width: 16em;*/
+  height: 12.5em;
+  /*position: absolute;*/
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+#loadGeometryButton
+{
+  position: absolute;
+  right: 0.2em;
+  padding: 0px;
+  width: 2em;
+  height: 2em;
+  font-size: 1em;
+}
+#loadGeometry {
+    display: none
+}
+
+#btnParameters {
+  width: 16em;
+}
+#btnGroups {
+  width: 16em;
+}
+#btnGeometries {
+  width: 16em;
+}
