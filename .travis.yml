@@ -10,6 +10,8 @@ before_script:
 
 script:
 - echo "Script"
+- cd code && make && cd ..
+
 
 after_script:
 - echo "After script"
