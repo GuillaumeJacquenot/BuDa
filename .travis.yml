@@ -19,7 +19,45 @@ after_script:
 - echo "After script"
 
 after_success:
-- if [[ "$TRAVIS_BRANCH" == "master" ]]; then echo "Success" ; fi
+- |
+    echo "TRAVIS_BRANCH  $TRAVIS_BRANCH"
+    echo "TRAVIS_TAG     $TRAVIS_TAG"
+    echo "BUILD_TYPE     $BUILD_TYPE"
+    echo "BUILD_DIR      $BUILD_DIR"
+- if [ "$TRAVIS_BRANCH" == "master" ];
+  then
+  echo "Success";
+  mkdir public;
+  mv code/css/*.css public;
+  mv code/js public/;
+  mv code/src/*.html public/;
+  mv code/src/*.svg public/;
+  mv code/img/*.png public/;
+  mv public/graphTool.html public/index.html;
+  rm -rf public/graphTool.html;
+  fi
+
+# travis setup releases
+# https://docs.travis-ci.com/user/deployment
+# https://docs.travis-ci.com/user/deployment#conditional-releases-with-on
+
+before_deploy:
+- ls -altr public || true;
+
+# https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
+deploy:
+  provider: pages
+  skip-cleanup: true
+  local-dir: public
+  github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  keep-history: true
+  on:
+    branch: master
+
+#  on:
+#    tags: true
+#    repo: sirehna/BuDa
+#    branch: master
 
 notifications:
 email: true
