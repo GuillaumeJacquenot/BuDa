@@ -16,7 +16,9 @@ before_script:
 
 script:
 - echo "Script"
-- cd code && make && cd ..
+- mkdir -p public;
+- mkdir -p public/js;
+- cd code && make && cp js/elm.js ../public/js && cd ..
 - docker run -t --rm -v $(pwd):/work -w /work -u $(id -u):$(id -g) babel
 - mv code/js/cytoutils.babel.js code/js/cytoutils.js
 
@@ -32,12 +34,15 @@ after_success:
 - if [ "$TRAVIS_BRANCH" == "master" ];
   then
   echo "Success";
-  mkdir public;
-  mv code/css/*.css public;
-  mv code/js public/;
-  mv code/src/*.html public/;
-  mv code/src/*.svg public/;
-  mv code/img/*.png public/;
+  mkdir -p public;
+  ls code/css;
+  mv code/css/*.css public/.;
+  ls code/js;
+  mv code/js/* public/js/.;
+  ls code/src;
+  mv code/src/*.html public/.;
+  mv code/src/*.svg public/.;
+  ls code/img && mv code/img/*.png public/.;
   mv public/graphTool.html public/index.html;
   rm -rf public/graphTool.html;
   fi
@@ -66,3 +71,4 @@ deploy:
 
 notifications:
 email: true
+
