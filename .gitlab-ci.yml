@@ -12,7 +12,7 @@ build-code:
      - cd code && make
     artifacts:
       paths:
-        - code/src/*.css
+        - code/css/*.css
         - code/js
         - code/src/*.html
         - code/src/*.svg
@@ -38,7 +38,7 @@ babel:
     - mv code/js/cytoutils.babel.js code/js/cytoutils.js
     artifacts:
       paths:
-        - code/src/*.css
+        - code/css/*.css
         - code/js
         - code/src/*.html
         - code/src/*.svg
@@ -50,7 +50,7 @@ pages:
      - babel
   script:
        - mkdir public
-       - mv code/src/*.css public/
+       - mv code/css/*.css public/
        - mv code/js public/
        - mv code/src/*.html public/
        - mv code/src/*.svg public/
