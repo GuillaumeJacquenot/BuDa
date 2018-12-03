@@ -64,7 +64,7 @@ the same nodes:
     generated automatically by BuDa. 
 
 Both graphs evolve together - for instance, moving one block will have an
-impact on the links of the block. Don't worry, though ! the overall consistency
+impact on the links of the block. Don't worry, though! the overall consistency
 of the multi-level connectivity graph is taken care of by BuDa, thanks to the
 carefully crafted procedures that are used to generate, delete, move, copy /
 paste blocks and links.
@@ -126,7 +126,7 @@ TO BE CONTINUED
 
 6/ building a model from scratch
 
-The following sections provide an overview of the basic features of BuDa, including :
+The following sections provide an overview of the basic features of BuDa, including:
 - a general description of the tool and its GUI
 - a description of operations on models with BuDa
 - a description of the various visualization options with BuDa.
