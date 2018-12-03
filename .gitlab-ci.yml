@@ -16,7 +16,7 @@ build-code:
         - code/js
         - code/src/*.html
         - code/src/*.svg
-        - code/src/*.png
+        - code/img/*.png
 
 build-babel:
     stage: build-prerequisite-containers
@@ -42,7 +42,7 @@ babel:
         - code/js
         - code/src/*.html
         - code/src/*.svg
-        - code/src/*.png
+        - code/img/*.png
 
 pages:
   stage: deploy
@@ -54,7 +54,7 @@ pages:
        - mv code/js public/
        - mv code/src/*.html public/
        - mv code/src/*.svg public/
-       - mv code/src/*.png public/
+       - mv code/img/*.png public/
        - mv public/graphTool.html public/index.html
        - rm -rf public/graphTool.html
   artifacts:
