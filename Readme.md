@@ -121,7 +121,9 @@ Here is a short list of publications related to BuDa:
 
 # Getting started with BuDa
 
-TO BE CONTINUED
+See [the documentation](doc/Readme.md).
+
+Work In Progress...
 
 1/ loading latest build
 
