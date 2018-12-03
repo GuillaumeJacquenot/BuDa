@@ -76,10 +76,11 @@ BuDa.
 
 ## Copyright
 
-The tool has been developed by Sirehna (www.sirehna.com), in collaboration with
-Naval Group, IRT Systemx and Bureau Veritas. Sirehna owns the copyright for all
-the developments related to BuDa at the date of its first public release on
-GitHub.
+The tool has been developed by [SIREHNA](http://www.sirehna.com/), in
+collaboration with [Naval Group](https://www.naval-group.com/en/), [IRT
+SystemX](https://www.irt-systemx.fr/en/) and [Bureau
+Veritas](https://www.bureauveritas.fr/). SIREHNA owns the copyright for all the
+developments related to BuDa at the date of its first public release on GitHub.
 
 The original development team comprised Michel Picard (dev) & Alan Guegan
 (product lead), both from Sirehna. The development was fuelled by contributions
