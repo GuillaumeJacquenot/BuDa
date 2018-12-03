@@ -12,7 +12,8 @@ before_script:
 script:
 - echo "Script"
 - cd code && make && cd ..
-
+- docker run -t --rm -v $(pwd):/work -w /work -u $(id -u):$(id -g) babel
+- mv code/js/cytoutils.babel.js code/js/cytoutils.js
 
 after_script:
 - echo "After script"
