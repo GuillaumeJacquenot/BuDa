@@ -13,7 +13,7 @@ build-code:
     artifacts:
       paths:
         - code/src/*.css
-        - code/src/js
+        - code/js
         - code/src/*.html
         - code/src/*.svg
         - code/src/*.png
@@ -35,11 +35,11 @@ babel:
     - build-babel
     script:
     - docker run -t --rm -v `pwd`:/work -w /work -u $(id -u):$(id -g) babel
-    - mv code/src/js/cytoutils.babel.js code/src/js/cytoutils.js
+    - mv code/js/cytoutils.babel.js code/js/cytoutils.js
     artifacts:
       paths:
         - code/src/*.css
-        - code/src/js
+        - code/js
         - code/src/*.html
         - code/src/*.svg
         - code/src/*.png
@@ -51,7 +51,7 @@ pages:
   script:
        - mkdir public
        - mv code/src/*.css public/
-       - mv code/src/js public/
+       - mv code/js public/
        - mv code/src/*.html public/
        - mv code/src/*.svg public/
        - mv code/src/*.png public/
