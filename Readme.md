@@ -86,7 +86,8 @@ The original development team comprised Michel Picard (dev) & Alan Guegan
 (product lead), both from SIREHNA. The development was fuelled by contributions
 from Benoît Rafine & Romain Le Nena (Naval Group) and Laurent Descombes and
 Hanane Fadiaw (IRT Systemx). The constant and cheerful support from the late
-Philippe Corrignan (Bureau Veritas) was greatly appreciated.
+Philippe Corrignan (Bureau Veritas) was greatly appreciated. Please refer to
+[the full contributors list](contributors).
 
 ## License
 
