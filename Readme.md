@@ -103,8 +103,15 @@ innovation programme under grant agreement n° 689074.
 ## Contributing
 
 BuDa is still under development. All contributions and feedback are warmly
-welcome ! Please refer to the "governance" file in the repository to maximize
-feedback & contribution efficiency.
+welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to maximize feedback & contribution efficiency when submitting issues & pull requests to BuDa.
+Our code of conduct is the [Contributor Covenant](CODE_OF_CONDUCT.md) (original
+version available
+[here](https://www.contributor-covenant.org/version/1/4/code-of-conduct) ).
+
+## Versioning
+
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/sirehna/BuDa/tags).
+
 
 ## Publications
 
