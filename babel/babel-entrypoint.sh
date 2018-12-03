@@ -1,5 +1,4 @@
 #!/bin/sh
-
 cp -r /app/* /work
 cd /work
 npm run build
