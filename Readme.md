@@ -1,6 +1,7 @@
 ![](doc/images/BuDa_GitHub_Logo.png)
 # BuDa - Intuitive system mapping
 
+[![License](https://img.shields.io/badge/License-EPL%202.0-blue.svg)](https://opensource.org/licenses/EPL-2.0)
 
 ## General purpose
 
