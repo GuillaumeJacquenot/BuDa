@@ -69,7 +69,7 @@ of the multi-level connectivity graph is taken care of by BuDa, thanks to the
 carefully crafted procedures that are used to generate, delete, move, copy /
 paste blocks and links.
 
-## Where do I start from ?
+## Where do I start?
 
 The "getting started" section below will help you in your first steps with
 BuDa.
