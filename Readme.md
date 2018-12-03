@@ -83,7 +83,7 @@ Veritas](https://www.bureauveritas.fr/). SIREHNA owns the copyright for all the
 developments related to BuDa at the date of its first public release on GitHub.
 
 The original development team comprised Michel Picard (dev) & Alan Guegan
-(product lead), both from Sirehna. The development was fuelled by contributions
+(product lead), both from SIREHNA. The development was fuelled by contributions
 from Benoît Rafine & Romain Le Nena (Naval Group) and Laurent Descombes and
 Hanane Fadiaw (IRT Systemx). The constant and cheerful support from the late
 Philippe Corrignan (Bureau Veritas) was greatly appreciated.
@@ -108,8 +108,8 @@ feedback & contribution efficiency.
 ## Publications
 
 Here is a short list of publications related to BuDa:
-- A. Guegan (1), B. Rafine (2), L. Descombes (3), H. Fadiaw (3), P. Marty (4) and P. Corrignan (4) / (1) Sirehna, (2) Naval Group, (3) IRT Systemx and (4) Bureau Veritas Marine & Offshore, *A systems engineering approach to ship design*, Proceedings of the 8th International Conference on Complex Systems Design & Management / CSD&M 2017, Paris, France
-- P. Corrignan (1), V. Le Diagon (1), N. Li (1), S. Torben (2), M. de Jongh (2), K.E. Holmefjord (2), B. Rafine (3), R. Le Nena (3), A. Guegan (4), L. Sagaspe (5) & X. de Bossoreille (5) / (1) Bureau Veritas Marine & Offshore, (2) Rolls Royce Marine, (3) Naval Group, (4) Sirehna, (5) APSYS, *System engineering based design for safety and total cost of ownership*, Proceedings of the 13th International Marine Design Conference (IMDC 2018), June 10-14, 2018, Helsinki, Finland
+- A. Guegan (1), B. Rafine (2), L. Descombes (3), H. Fadiaw (3), P. Marty (4) and P. Corrignan (4) / (1) SIREHNA, (2) Naval Group, (3) IRT Systemx and (4) Bureau Veritas Marine & Offshore, *A systems engineering approach to ship design*, Proceedings of the 8th International Conference on Complex Systems Design & Management / CSD&M 2017, Paris, France
+- P. Corrignan (1), V. Le Diagon (1), N. Li (1), S. Torben (2), M. de Jongh (2), K.E. Holmefjord (2), B. Rafine (3), R. Le Nena (3), A. Guegan (4), L. Sagaspe (5) & X. de Bossoreille (5) / (1) Bureau Veritas Marine & Offshore, (2) Rolls Royce Marine, (3) Naval Group, (4) SIREHNA, (5) APSYS, *System engineering based design for safety and total cost of ownership*, Proceedings of the 13th International Marine Design Conference (IMDC 2018), June 10-14, 2018, Helsinki, Finland
 
 # Getting started with BuDa
 
