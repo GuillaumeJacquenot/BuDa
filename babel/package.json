@@ -1,0 +1,12 @@
+{
+  "name": "BuDa",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "babel code/js/cytoutils.js --out-file code/js/cytoutils.babel.js"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.5",
+    "@babel/preset-env": "^7.1.5"
+  }
+}

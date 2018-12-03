@@ -1,39 +1,48 @@
 stages:
-    - build
+    - build-prerequisite-containers
+    - build-code
     - babel
     - deploy
 
-build:
-    stage: build
+build-code:
+    stage: build-code
+    dependencies:
+    - build-elm
     script:
-     - cd graphTool/gui && make
+     - cd code && make
     artifacts:
       paths:
-        - graphTool/gui/src/*.css
-        - graphTool/gui/src/js
-        - graphTool/gui/src/*.html
-        - graphTool/gui/src/*.svg
-        - graphTool/gui/src/*.png
+        - code/css/*.css
+        - code/js
+        - code/src/*.html
+        - code/src/*.svg
+        - code/img/*.png
 
 build-babel:
-    stage: build
+    stage: build-prerequisite-containers
     script:
-    - cd graphTool/babel && make
+    - cd babel && make
+
+build-elm:
+    stage: build-prerequisite-containers
+    script:
+    - cd elm && make
 
 babel:
     stage: babel
     dependencies:
-    - build
+    - build-code
+    - build-babel
     script:
     - docker run -t --rm -v `pwd`:/work -w /work -u $(id -u):$(id -g) babel
-    - mv graphTool/gui/src/js/cytoutils.babel.js graphTool/gui/src/js/cytoutils.js
+    - mv code/js/cytoutils.babel.js code/js/cytoutils.js
     artifacts:
       paths:
-        - graphTool/gui/src/*.css
-        - graphTool/gui/src/js
-        - graphTool/gui/src/*.html
-        - graphTool/gui/src/*.svg
-        - graphTool/gui/src/*.png
+        - code/css/*.css
+        - code/js
+        - code/src/*.html
+        - code/src/*.svg
+        - code/img/*.png
 
 pages:
   stage: deploy
@@ -41,11 +50,11 @@ pages:
      - babel
   script:
        - mkdir public
-       - mv graphTool/gui/src/*.css public/
-       - mv graphTool/gui/src/js public/
-       - mv graphTool/gui/src/*.html public/
-       - mv graphTool/gui/src/*.svg public/
-       - mv graphTool/gui/src/*.png public/
+       - mv code/css/*.css public/
+       - mv code/js public/
+       - mv code/src/*.html public/
+       - mv code/src/*.svg public/
+       - mv code/img/*.png public/
        - mv public/graphTool.html public/index.html
        - rm -rf public/graphTool.html
   artifacts:
