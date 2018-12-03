@@ -51,10 +51,6 @@ BuDa is published under the Eclipse 2.0 public license. For further information,
 
 BuDa has been developed within a project called HOLISHIP. The HOLISHIP project has received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement n° 689074.
 
-## Liability
-
-It shall be understood that BuDa is a Proof-Of-Concept tool. BuDa shall not be used for actual industrial purposes or any purpose other than academic research or testing BuDa as a Proof-Of-Concept. The creators of BuDa and its contributors shall not be held responsible for any damage or financial loss resulting from its use.
-
 ## Contributing
 
 BuDa is still under development. All contributions and feedback are warmly welcome ! Please refer to the "governance" file in the repository to maximize feedback & contribution efficiency.
