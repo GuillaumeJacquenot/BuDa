@@ -1,4 +1,4 @@
-![](images/BuDa_GitHub_Logo.png)
+![](doc/images/BuDa_GitHub_Logo.png)
 # BuDa - Intuitive system mapping
 
 
