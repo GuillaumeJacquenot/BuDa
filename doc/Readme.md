@@ -1,4 +1,4 @@
-![](doc/images/BuDa_GitHub_Logo.png)
+![](images/BuDa_GitHub_Logo.png)
 
 # BuDa - User's Manual
 
