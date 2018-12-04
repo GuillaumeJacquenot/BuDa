@@ -1,6 +1,7 @@
 ![](doc/images/BuDa_GitHub_Logo.png)
 # BuDa - Intuitive system mapping
 
+[![Build Status](https://travis-ci.org/sirehna/BuDa.svg?branch=master)](https://travis-ci.org/sirehna/BuDa)
 [![License](https://img.shields.io/badge/License-EPL%202.0-blue.svg)](https://opensource.org/licenses/EPL-2.0)
 
 ## General purpose
