@@ -11,6 +11,8 @@ interface management across several levels, from the individual part to the
 system assembly as a whole. BuDa is the perfect companion for the designers of
 large, heavily interconnected systems.
 
+Try BuDa [online](https://sirehna.github.io/BuDa)!
+
 ## What BuDa may be used for
 
 The multi-level connectivity graphs that are supported by BuDa are extremely
